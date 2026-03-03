@@ -72,12 +72,13 @@ BEGIN
       AND (last_sign_in_at IS NULL OR last_sign_in_at < (now() - (safe_days || ' days')::interval))
   );
   GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  RAISE NOTICE 'cleanup_orphan_group_members: deleted % rows (days_inactive=%)', deleted_count, safe_days;
   RETURN deleted_count;
 END;
 $$;
 
 COMMENT ON FUNCTION public.cleanup_orphan_group_members(integer) IS
-  '오래 로그인하지 않은 익명 사용자의 group_members 행을 삭제. 기본 180일. 주기적으로 호출하세요.';
+  '오래 로그인하지 않은 익명 사용자의 group_members 행을 삭제합니다. 기본 180일. days_inactive 0/음수는 1로, NULL은 180으로 보정. 대시보드 SQL 또는 Edge Function에서 주기적으로 호출하세요.';
 
 CREATE OR REPLACE FUNCTION public.get_emotion_trend(days integer DEFAULT 7)
   RETURNS TABLE(emotion text, cnt bigint) LANGUAGE plpgsql
@@ -272,7 +273,7 @@ SELECT
   p.id, p.title, p.content, p.author, p.author_id, p.created_at,
   p.board_id, p.group_id, p.is_anonymous, p.display_name, p.member_id, p.image_url,
   (COALESCE(
-    (SELECT SUM(r.count) FROM public.reactions r WHERE r.post_id = p.id AND r.reaction_type = 'like'),
+    (SELECT SUM(r.count) FROM public.reactions r WHERE r.post_id = p.id),
     0
   ))::integer AS like_count,
   (SELECT COUNT(*)::integer FROM public.comments c WHERE c.post_id = p.id AND c.deleted_at IS NULL) AS comment_count,
