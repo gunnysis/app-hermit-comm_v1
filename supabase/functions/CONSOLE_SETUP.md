@@ -29,7 +29,7 @@ supabase functions deploy recommend-posts-by-emotion
 
 ## 3. 콘솔에서 환경 변수 설정
 
-감정 분석 함수(`analyze-post`, `analyze-post-on-demand`)는 **Anthropic API 키**가 필요합니다.
+감정 분석 함수(`analyze-post`, `analyze-post-on-demand`)는 **Google Gemini API 키**가 필요합니다.
 
 ### 3.1 경로
 
@@ -42,8 +42,9 @@ supabase functions deploy recommend-posts-by-emotion
 
 | 변수명 | 값 | 필수 대상 함수 |
 |--------|-----|----------------|
-| `ANTHROPIC_API_KEY` | Anthropic에서 발급한 API 키 (예: `sk-ant-...`) | `analyze-post`, `analyze-post-on-demand`, `smart-service` |
-| `ANTHROPIC_MODEL` | 사용할 Claude 모델 ID (예: `claude-haiku-4-5-20251001`). 미설정 시 기본값 `claude-haiku-4-5-20251001` 사용 | `analyze-post`, `analyze-post-on-demand` (선택) |
+| `GEMINI_API_KEY` | Google AI Studio에서 발급한 API 키 (예: `AIza...`) | `analyze-post`, `analyze-post-on-demand` |
+| `GEMINI_MODEL` | 사용할 Gemini 모델 ID (예: `gemini-2.5-flash`). 미설정 시 기본값 `gemini-2.5-flash` 사용 | `analyze-post`, `analyze-post-on-demand` (선택) |
+| `ANTHROPIC_API_KEY` | Anthropic API 키. `smart-service` 함수에서만 사용 | `smart-service` |
 
 - **Add new secret** 버튼으로 위 변수를 추가합니다.
 - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`는 Supabase가 **자동 주입**하므로 따로 넣지 않아도 됩니다.
@@ -95,9 +96,9 @@ supabase functions deploy recommend-posts-by-emotion
 
 | 함수 | 환경 변수 (Project Settings → Edge Functions) | Webhook (Database → Webhooks) |
 |------|-----------------------------------------------|-------------------------------|
-| `analyze-post` | `ANTHROPIC_API_KEY` | ✅ 필요 — **posts** 테이블 **Insert** → `analyze-post` |
+| `analyze-post` | `GEMINI_API_KEY` | ✅ 필요 — **posts** 테이블 **Insert** → `analyze-post` |
 | `smart-service` | `ANTHROPIC_API_KEY` | ❌ 없음 (앱에서 수동 호출) |
-| `analyze-post-on-demand` | `ANTHROPIC_API_KEY` | ❌ 없음 (앱에서 수동 호출) |
+| `analyze-post-on-demand` | `GEMINI_API_KEY` | ❌ 없음 (앱에서 수동 호출) |
 | `recommend-posts-by-emotion` | 없음 | ❌ 없음 |
 
 ---
@@ -131,7 +132,7 @@ npm run db:migration-list
 | 현상 | 확인 사항 |
 |------|-----------|
 | `analyze-post`가 호출되지 않음 | **Database → Webhooks**에서 **posts / Insert** → `analyze-post` 연결 여부 및 **Enabled** 확인 |
-| `missing_api_key` / 500 에러 | Project Settings → Edge Functions 에 `ANTHROPIC_API_KEY` 설정 여부 확인 |
+| `missing_api_key` / 500 에러 | Project Settings → Edge Functions 에 `GEMINI_API_KEY` 설정 여부 확인 |
 | `recommend-posts-by-emotion` 에러 | 마이그레이션 014 적용 여부 확인 (`get_recommended_posts_by_emotion` RPC 존재 여부) |
 | Webhook은 있는데 로그가 없음 | Webhook이 **Enabled** 인지, **Edge Function** 이름이 `analyze-post` 인지 확인 |
 

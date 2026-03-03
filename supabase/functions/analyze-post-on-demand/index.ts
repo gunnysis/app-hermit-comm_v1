@@ -33,9 +33,9 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
-    if (!anthropicApiKey) {
-      console.error('[analyze-post-on-demand] ANTHROPIC_API_KEY 미설정');
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!geminiApiKey) {
+      console.error('[analyze-post-on-demand] GEMINI_API_KEY 미설정');
       return new Response(JSON.stringify({ ok: false, reason: 'missing_api_key' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -45,7 +45,7 @@ Deno.serve(async (req: Request) => {
     const result = await analyzeAndSave({
       supabaseUrl: Deno.env.get('SUPABASE_URL')!,
       supabaseServiceKey: Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-      anthropicApiKey,
+      geminiApiKey,
       postId,
       content,
       title,

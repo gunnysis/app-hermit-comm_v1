@@ -42,14 +42,14 @@ supabase/functions/
 
 ### 로컬 개발 (`supabase/functions/.env`)
 ```bash
-ANTHROPIC_API_KEY=sk-ant-...
+GEMINI_API_KEY=AIza...
 # SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY는 로컬 supabase start 시 자동 주입
 ```
 
 ### 프로덕션 (Supabase Dashboard → Project Settings → Edge Functions)
 | 변수명 | 값 |
 |--------|-----|
-| `ANTHROPIC_API_KEY` | Anthropic API 키 |
+| `GEMINI_API_KEY` | Google AI Studio API 키 |
 
 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`는 Supabase가 자동 주입하므로 별도 설정 불필요.
 
@@ -97,10 +97,10 @@ supabase functions serve recommend-posts-by-emotion --env-file supabase/function
 | 항목 | 내용 |
 |------|------|
 | 감정 목록 | 고립감, 무기력, 불안, 외로움, 슬픔, 그리움, 두려움, 답답함, 설렘, 기대감, 안도감, 평온함, 즐거움 |
-| 분석 모델 | `claude-haiku-4-5-20251001` |
+| 분석 모델 | `gemini-2.5-flash` (Google Gemini) |
 | 최대 감정 수 | 3개 |
 | 최소 텍스트 길이 | 10자 (미만 시 분석 스킵) |
-| 유효성 검증 | Claude 응답에서 허용 목록 외 단어 자동 필터링 (hallucination 방지) |
+| 유효성 검증 | Gemini 응답에서 허용 목록 외 단어 자동 필터링 (hallucination 방지) |
 | 중복 저장 방지 | `upsert(onConflict: 'post_id')` |
 | 제목 포함 | 있을 때 `제목: ...\n\n내용: ...` 형태로 전달하여 정확도 향상 |
 
