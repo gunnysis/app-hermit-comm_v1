@@ -95,7 +95,9 @@ export async function updateComment(
 }
 
 export async function deleteComment(id: number): Promise<void> {
-  const { error } = await supabase.from('comments').delete().eq('id', id);
+  const { error } = await supabase.rpc('soft_delete_comment', {
+    p_comment_id: id,
+  });
 
   if (error) {
     logger.error('[API] deleteComment 에러:', error.message);

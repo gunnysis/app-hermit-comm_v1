@@ -1,10 +1,30 @@
-// API 타입 정의 (api_memo.md 기반)
+// API 타입 정의
 
 /** 게시판 익명 모드 */
 export type AnonMode = 'always_anon' | 'allow_choice' | 'require_name';
 
+/** 그룹 참여 방식 */
+export type JoinMode = 'invite_only' | 'request_approve' | 'code_join';
+
+/** 그룹 멤버 역할 */
+export type MemberRole = 'owner' | 'member' | 'moderator';
+
+/** 그룹 멤버 상태 */
+export type MemberStatus = 'pending' | 'approved' | 'rejected' | 'left';
+
 /** 감정 분석 상태 */
 export type AnalysisStatus = 'pending' | 'completed' | 'failed' | 'skipped';
+
+export interface Group {
+  id: number;
+  name: string;
+  description: string | null;
+  owner_id: string;
+  join_mode: JoinMode;
+  invite_code: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 export interface Board {
   id: number;
@@ -12,10 +32,21 @@ export interface Board {
   description?: string | null;
   visibility: 'public' | 'private';
   anon_mode: AnonMode;
-  /** 그룹 전용 게시판일 때 설정 (007 마이그레이션) */
+  /** 그룹 전용 게시판일 때 설정 */
   group_id?: number | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface GroupMember {
+  id: number;
+  group_id: number;
+  user_id: string;
+  role: MemberRole;
+  status: MemberStatus;
+  nickname: string | null;
+  joined_at: string;
+  left_at: string | null;
 }
 
 export interface Post {
@@ -25,9 +56,12 @@ export interface Post {
   author: string; // 닉네임 (사용자 입력)
   author_id: string; // UUID (서버 자동 설정)
   created_at: string;
+  updated_at?: string;
+  deleted_at?: string | null;
   /** 게시판/그룹 기반 익명 게시판용 */
-  board_id?: number;
-  group_id?: number;
+  board_id?: number | null;
+  group_id?: number | null;
+  member_id?: number | null;
   is_anonymous: boolean;
   display_name: string;
   /** 목록 조회 시 댓글 수 (선택) */
@@ -35,9 +69,16 @@ export interface Post {
   /** 목록 조회 시 좋아요 수 (posts_with_like_count 뷰) */
   like_count?: number;
   /** 감정 분석 결과 (posts_with_like_count 뷰 또는 post_analysis JOIN) */
-  emotions?: string[];
+  emotions?: string[] | null;
   /** 첨부 이미지 URL */
   image_url?: string | null;
+}
+
+/** 좋아요·댓글 수 포함 게시글 (posts_with_like_count 뷰) */
+export interface PostWithCounts extends Post {
+  like_count: number;
+  comment_count: number;
+  emotions: string[] | null;
 }
 
 export interface PostAnalysis {
@@ -58,16 +99,28 @@ export interface Comment {
   author: string; // 닉네임 (사용자 입력)
   author_id: string; // UUID (서버 자동 설정)
   created_at: string;
+  updated_at?: string;
+  deleted_at?: string | null;
   /** 게시판/그룹 기반 익명 게시판용 */
-  board_id?: number;
-  group_id?: number;
+  board_id?: number | null;
+  group_id?: number | null;
   is_anonymous: boolean;
   display_name: string;
 }
 
 export interface Reaction {
+  id?: number;
+  post_id?: number;
   reaction_type: string;
   count: number;
+}
+
+export interface UserReaction {
+  id: number;
+  user_id: string;
+  post_id: number;
+  reaction_type: string;
+  created_at: string;
 }
 
 export interface ToggleReactionResponse {
@@ -75,16 +128,29 @@ export interface ToggleReactionResponse {
   reaction_type: string;
 }
 
+export interface AppAdmin {
+  user_id: string;
+  created_at: string;
+}
+
+export interface EmotionTrend {
+  emotion: string;
+  cnt: number;
+}
+
 /** 감정 기반 추천 게시글 (get_recommended_posts_by_emotion RPC 반환 타입) */
 export interface RecommendedPost {
   id: number;
   title: string;
-  board_id: number;
+  board_id: number | null;
   like_count: number;
   comment_count: number;
   emotions: string[];
   created_at: string;
 }
+
+export const REACTION_TYPES = ['👍', '❤️', '😂', '😢', '😮'] as const;
+export type ReactionType = (typeof REACTION_TYPES)[number];
 
 // 요청 타입
 export interface CreatePostRequest {
@@ -92,8 +158,8 @@ export interface CreatePostRequest {
   content: string;
   author: string;
   /** 선택: 특정 게시판/그룹 지정 */
-  board_id?: number;
-  group_id?: number;
+  board_id?: number | null;
+  group_id?: number | null;
   /** 선택: 클라이언트에서 직접 익명 여부/표시 이름을 정하고 싶을 때 */
   is_anonymous?: boolean;
   display_name?: string;
@@ -104,8 +170,8 @@ export interface CreatePostRequest {
 export interface CreateCommentRequest {
   content: string;
   author: string;
-  board_id?: number;
-  group_id?: number;
+  board_id?: number | null;
+  group_id?: number | null;
   is_anonymous?: boolean;
   display_name?: string;
 }

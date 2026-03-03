@@ -175,6 +175,67 @@ NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 ```
 
+### 4.5 Docker Desktop 활용 전략
+
+**결론: Supabase 로컬 개발에 사실상 필수, Next.js 개발에는 컨테이너화 비권장**
+
+#### Supabase 로컬 개발 — Docker Desktop이 이미 필요
+
+`supabase start` 명령어는 내부적으로 **Docker 컨테이너**로 PostgreSQL, Auth, Storage, Realtime, Studio 등 모든 Supabase 서비스를 구동한다.
+Docker Desktop이 PC에 설치되어 있다면 별도 설정 없이 로컬 Supabase가 바로 작동한다.
+
+```
+supabase start  →  Docker 컨테이너로 자동 실행
+  ├── supabase-db        (PostgreSQL :54322)
+  ├── supabase-api       (REST/GraphQL :54321)
+  ├── supabase-auth      (:54324)
+  ├── supabase-storage   (:54323)
+  ├── supabase-realtime  (ws)
+  └── supabase-studio    (Dashboard :54323)
+```
+
+`supabase functions serve`(Edge Function 로컬 실행)도 Docker 컨테이너를 사용한다.
+
+> **Docker Desktop 설정 권장**: Settings → General → **Use the WSL 2 based engine** 활성화.
+> WSL2 백엔드는 Windows 네이티브 방식보다 컨테이너 I/O가 빠르고 메모리 관리도 효율적이다.
+
+#### Next.js 웹 개발 — 컨테이너화 비권장
+
+| 실행 방식 | Hot Reload 속도 | 복잡도 | 권장 여부 |
+|-----------|---------------|--------|---------|
+| Windows 네이티브 (fnm + node) | 보통 | 낮음 | ✅ |
+| WSL2 내 직접 실행 (파일도 WSL 경로에) | **가장 빠름** | 중간 | ✅ 최선 |
+| Docker 컨테이너 내 실행 | **느림** | 높음 | ❌ |
+
+Next.js dev 서버를 Docker 컨테이너 안에서 실행하면 **Windows ↔ 컨테이너 파일 bind mount 오버헤드** 때문에 hot reload가 수 초씩 느려진다. Vercel 배포도 Docker를 사용하지 않으므로 컨테이너화할 이유가 없다.
+
+#### 역할별 Docker 사용 여부 요약
+
+| 역할 | Docker 사용 | 비고 |
+|------|------------|------|
+| Supabase 로컬 개발 | ✅ 필수 | `supabase start/functions serve`가 Docker 컨테이너 사용 |
+| Next.js dev 서버 | ❌ 비권장 | 네이티브 또는 WSL2에서 직접 실행이 빠름 |
+| 프로덕션 배포 | ❌ 불필요 | Vercel이 독자 빌드 파이프라인 처리 |
+| CI/CD | ❌ 불필요 | GitHub Actions + Vercel이 처리 |
+| Edge Function 로컬 테스트 | ✅ 필요 | `supabase functions serve`도 Docker 사용 |
+
+#### 실용 정리
+
+- Docker Desktop이 PC에 있으면 **`supabase start`가 바로 작동** → 로컬 개발 준비 완료.
+- Next.js는 `npm run dev`로 **Docker 없이** 개발한다.
+- WSL2를 사용한다면 Next.js 프로젝트 파일을 `/home/user/...` (WSL 파일시스템)에 두고 개발하면 hot reload가 가장 빠르다.
+- PC 메모리가 32GB이므로 WSL2 메모리 상한을 넉넉하게 설정해도 된다. 아래는 권장 `.wslconfig` 예시다.
+
+```ini
+# %USERPROFILE%\.wslconfig
+[wsl2]
+memory=16GB    # 전체 32GB 중 절반. Supabase 컨테이너 + Next.js 동시 개발에 충분
+processors=8   # 코어 수에 맞게 조정
+swap=4GB
+```
+
+> 상한을 굳이 낮출 필요 없이 Docker Desktop이 필요한 만큼 쓰게 둬도 무방하다.
+
 ---
 
 ## 5. 모노레포 구조 (선택 권장)

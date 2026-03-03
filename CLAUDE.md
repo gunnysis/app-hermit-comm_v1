@@ -16,6 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 익명 커뮤니티 앱 (공개·그룹 게시판). React Native(Expo) + Supabase.
 
+- **런타임 버전**: `runtimeVersion`은 fingerprint 정책 사용. 네이티브 변경 시 수동 버전 올림 불필요.
 - **인증**: 기본은 Supabase 익명 로그인. 관리자만 이메일/비밀번호 로그인 후 `app_admin` 테이블로 권한 판단.
 - **익명 표시**: `shared/lib/anonymous.ts`의 `resolveDisplayName`이 보드별 `anon_mode`(`always_anon` / `allow_choice` / `require_name`)에 따라 `is_anonymous`, `display_name`을 결정.
 
@@ -218,3 +219,34 @@ Maestro CLI 설치: [Windows](https://docs.maestro.dev/getting-started/installin
 - **EAS 의존성 설치**: 루트 `.npmrc`에 `legacy-peer-deps=true` 설정. TenTap 등 React 18 peer와의 호환용.
 - **Edge Functions·감정 분석**: 배포는 `supabase functions deploy analyze-post` 등. `ANTHROPIC_API_KEY` 시크릿 및 **Database Webhook(posts INSERT → analyze-post)** 설정은 `supabase/functions/CONSOLE_SETUP.md` 참고.
 - **상세 문서**: `docs/ARCHITECTURE.md`, `docs/supabase_setup.md`, `dev.md` 참고.
+
+---
+
+## 13. 멀티프로젝트 관리
+
+앱(이 레포)과 웹(`\\wsl$\Ubuntu\home\gunny\apps\web`) 두 클라이언트가 동일 Supabase 백엔드를 공유하며 **별도 레포**로 운영됨.
+
+### 역할 경계
+
+| 역할 | 담당 |
+|------|------|
+| Supabase 마이그레이션 원본 | **앱 레포** (이 레포) |
+| Edge Functions | 앱 레포의 `supabase/functions/` |
+| 모바일 UI | 앱 레포 (React Native/Expo) |
+| 웹 UI | 웹 레포 (Next.js 16) |
+
+### 동기화 대상
+
+- `supabase/migrations/` — 앱에서 생성 후 웹에 복사 (`scripts/sync-from-app.sh` 참고)
+- `src/types/index.ts` → 웹 `src/types/database.ts` (수동 검토 후 적용)
+- `src/shared/lib/constants.ts`의 `VALIDATION`, `ALLOWED_EMOTIONS`, `EMOTION_EMOJI` ↔ 웹 `src/lib/constants.ts`의 동일 상수
+
+### 동기화 시 주의사항
+
+- `anonymous.ts` (별칭 해시 알고리즘·목록): **각자 유지**. 변경 시 기존 사용자 alias가 바뀜.
+- 형용사/동물 목록 내용: 기존 alias 불변 우선. 앱·웹 목록이 달라도 상관없음.
+- 상수 값(숫자) 변경 시 양쪽 동시 업데이트 필수.
+
+### 상세 문서
+
+`docs/MULTIPROJECT.md` 참고.

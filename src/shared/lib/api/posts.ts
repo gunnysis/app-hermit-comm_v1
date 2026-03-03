@@ -158,7 +158,9 @@ export async function createPost(postData: CreatePostRequest): Promise<CreatePos
 }
 
 export async function deletePost(id: number): Promise<void> {
-  const { error } = await supabase.from('posts').delete().eq('id', id);
+  const { error } = await supabase.rpc('soft_delete_post', {
+    p_post_id: id,
+  });
 
   if (error) {
     logger.error('[API] deletePost 에러:', error.message);
