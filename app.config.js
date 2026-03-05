@@ -28,6 +28,10 @@ const EXPO_PROJECT_ID = 'bc4199dd-30ad-42bb-ba1c-4e6fce0eecdd';
 //    · 스토어 제출 카운터 (iOS buildNumber / Android versionCode).
 //    · production 프로파일은 eas.json의 autoIncrement:true 로 EAS가 자동 관리.
 //    · development/preview는 필요 시 수동으로 올림.
+//
+//  스토어 배포 시:
+//    · Claude에게 배포 요청하면 NATIVE_VERSION·BUILD_NUMBER 증가 + EAS 빌드를 자동 수행.
+//    · 수동으로 버전을 올릴 필요 없음.
 // ─────────────────────────────────────────────────────────────────────────────
 const NATIVE_VERSION = '1.7.0';
 const BUILD_NUMBER = 1; // production은 EAS autoIncrement 로 자동 관리

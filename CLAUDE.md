@@ -119,6 +119,13 @@ eas build --platform all --profile production --auto-submit
 # OTA 업데이트
 npm run update:preview
 npm run update:production
+
+# 스토어 배포 (Claude가 자동 처리)
+# 사용자가 스토어 배포를 요청하면 Claude가 아래를 순서대로 수행:
+# 1. app.config.js에서 현재 version / versionCode / buildNumber 확인
+# 2. 버전 번호 증가 (version, android.versionCode, ios.buildNumber)
+# 3. eas build --platform all --profile production --auto-submit 실행
+# → 사용자가 수동으로 버전을 올릴 필요 없음
 ```
 
 **`npm test`와 `npx tsc --noEmit` 통과 유지 필수.**
