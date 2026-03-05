@@ -73,6 +73,18 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="search"
+        options={{
+          title: '검색',
+          tabBarLabel: '검색',
+          tabBarIcon: ({ color, focused }) => (
+            <View style={focused ? { transform: [{ scale: 1.1 }] } : undefined}>
+              <Ionicons name={focused ? 'search' : 'search-outline'} size={23} color={color} />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="create"
         options={{
           href: null,
