@@ -45,7 +45,7 @@ const CommentItemComponent = ({ comment, onDelete, onEdit, canEdit }: CommentIte
       <View className="flex-row justify-between items-center mb-2">
         <View className="bg-mint-100 dark:bg-mint-900/40 px-3 py-1 rounded-full">
           <Text className="text-sm font-semibold text-mint-700 dark:text-mint-300">
-            {comment.display_name ?? comment.author}
+            {comment.display_name}
           </Text>
         </View>
         <Text className="text-xs text-gray-400 dark:text-stone-500">

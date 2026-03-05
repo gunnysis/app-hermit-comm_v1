@@ -23,14 +23,32 @@ Deno.serve(async (req: Request) => {
     };
 
     const postId = body.postId;
-    const content = body.content ?? '';
-    const title = body.title;
+    let content = body.content ?? '';
+    let title = body.title;
 
     if (!postId || typeof postId !== 'number') {
       return new Response(JSON.stringify({ ok: false, reason: 'postId_required' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
+
+    // content가 없으면 DB에서 조회 (클라이언트 캐시 미스 대비)
+    if (!content) {
+      const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+      const supabase = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+      );
+      const { data: post } = await supabase
+        .from('posts')
+        .select('content, title')
+        .eq('id', postId)
+        .single();
+      if (post) {
+        content = post.content ?? '';
+        title = title ?? post.title;
+      }
     }
 
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY');

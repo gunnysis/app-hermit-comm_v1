@@ -46,7 +46,7 @@ describe('postSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  it(`author가 ${VALIDATION.AUTHOR_MAX}자를 초과하면 실패한다`, () => {
+  it(`닉네임이 ${VALIDATION.AUTHOR_MAX}자를 초과하면 실패한다`, () => {
     const result = postSchema.safeParse({
       title: '제목',
       content: '내용',

@@ -143,7 +143,7 @@ export async function createPost(postData: CreatePostRequest): Promise<CreatePos
   }
 
   const isAnonymous = postData.is_anonymous ?? true;
-  const displayName = postData.display_name ?? (isAnonymous ? '익명' : postData.author);
+  const displayName = postData.display_name ?? '익명';
 
   const insertRow = {
     ...postData,

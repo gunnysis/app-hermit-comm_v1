@@ -1,9 +1,4 @@
-import {
-  validatePostTitle,
-  validatePostContent,
-  validateAuthor,
-  validateCommentContent,
-} from './validate';
+import { validatePostTitle, validatePostContent, validateCommentContent } from './validate';
 
 describe('validatePostTitle', () => {
   it('빈 문자열이면 isValid false와 에러 메시지 반환', () => {
@@ -71,27 +66,6 @@ describe('validatePostContent', () => {
     expect(validatePostContent('<strong>굵은 글</strong>')).toEqual({
       isValid: true,
     });
-  });
-});
-
-describe('validateAuthor', () => {
-  it('빈 문자열이면 isValid false 반환', () => {
-    expect(validateAuthor('')).toEqual({
-      isValid: false,
-      error: '작성자 이름을 입력해주세요.',
-    });
-  });
-
-  it('50자 초과면 isValid false 반환', () => {
-    const long = '가'.repeat(51);
-    expect(validateAuthor(long)).toEqual({
-      isValid: false,
-      error: '작성자 이름은 50자 이내로 입력해주세요.',
-    });
-  });
-
-  it('1~50자 이름이면 isValid true 반환', () => {
-    expect(validateAuthor('닉네임')).toEqual({ isValid: true });
   });
 });
 

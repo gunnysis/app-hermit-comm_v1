@@ -47,7 +47,7 @@ export function PostDetailBody({
         <View className="flex-row justify-between items-center mb-4">
           <View className="bg-happy-100 dark:bg-happy-900/40 px-3 py-1.5 rounded-full">
             <Text className="text-sm font-semibold text-happy-700 dark:text-happy-300">
-              {post.display_name ?? post.author}
+              {post.display_name}
             </Text>
           </View>
           <Text className="text-xs text-gray-400 dark:text-stone-500">

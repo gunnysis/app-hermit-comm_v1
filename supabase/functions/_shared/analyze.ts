@@ -113,7 +113,8 @@ ${inputText}`,
         },
       ],
       generationConfig: {
-        maxOutputTokens: 256,
+        maxOutputTokens: 1024,
+        thinkingConfig: { thinkingBudget: 0 },
       },
     }),
   });
@@ -136,7 +137,13 @@ ${inputText}`,
           .slice(0, 3)
       : [];
   } catch {
-    // JSON 파싱 실패 시 빈 배열로 저장
+    console.error('[analyze] Gemini 응답 JSON 파싱 실패:', raw);
+    return { ok: false, reason: 'json_parse_error' };
+  }
+
+  if (emotions.length === 0) {
+    console.warn('[analyze] 유효한 감정이 없음 (raw:', raw, ')');
+    return { ok: false, reason: 'no_valid_emotions' };
   }
 
   const { error } = await supabase

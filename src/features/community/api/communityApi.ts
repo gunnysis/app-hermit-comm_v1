@@ -16,7 +16,6 @@ export interface GetBoardPostsOptions {
 export interface CreateAnonymousPostInput {
   title: string;
   content: string;
-  author: string;
   boardId: number;
   groupId?: number;
   isAnonymous?: boolean;
@@ -220,11 +219,10 @@ export async function getBoardPosts(
 }
 
 export async function createBoardPost(input: CreateAnonymousPostInput): Promise<Post> {
-  const { title, content, author, boardId, groupId, isAnonymous, displayName } = input;
+  const { title, content, boardId, groupId, isAnonymous, displayName } = input;
   return api.createPost({
     title,
     content,
-    author,
     board_id: boardId,
     group_id: groupId,
     is_anonymous: isAnonymous,

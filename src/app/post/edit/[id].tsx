@@ -88,7 +88,6 @@ export default function EditPostScreen() {
       await api.updatePost(Number(id), {
         title: title.trim(),
         content: content.trim(),
-        author: savedAuthor ?? '',
         image_url: imageUrl,
       });
 

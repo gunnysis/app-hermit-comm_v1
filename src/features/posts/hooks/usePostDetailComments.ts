@@ -92,7 +92,6 @@ export function usePostDetailComments({
 
         await api.createComment(postId, {
           content: commentContent.trim(),
-          author: rawAuthor || '익명',
           board_id: post?.board_id,
           group_id: post?.group_id,
           is_anonymous: isAnonymous,

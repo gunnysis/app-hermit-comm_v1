@@ -35,19 +35,6 @@ export function validatePostContent(content: string): ValidationResult {
   return { isValid: true };
 }
 
-export function validateAuthor(author: string): ValidationResult {
-  if (!author.trim()) {
-    return { isValid: false, error: '작성자 이름을 입력해주세요.' };
-  }
-  if (author.length > VALIDATION.AUTHOR_MAX) {
-    return {
-      isValid: false,
-      error: `작성자 이름은 ${VALIDATION.AUTHOR_MAX}자 이내로 입력해주세요.`,
-    };
-  }
-  return { isValid: true };
-}
-
 export function validateCommentContent(content: string): ValidationResult {
   if (!content.trim()) {
     return { isValid: false, error: '댓글을 입력해주세요.' };

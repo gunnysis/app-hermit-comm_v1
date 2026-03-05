@@ -12,7 +12,7 @@ interface PostCardProps {
 }
 
 function buildAccessibilityLabel(post: Post): string {
-  const author = post.display_name ?? post.author;
+  const author = post.display_name;
   const commentCount = post.comment_count ?? 0;
   const likeCount = post.like_count ?? 0;
   const reactions = likeCount > 0 ? `, 좋아요 ${likeCount}개` : '';
@@ -116,7 +116,7 @@ const PostCardComponent = ({ post }: PostCardProps) => {
                     isDark ? 'bg-happy-900/40' : 'bg-happy-50'
                   }`}>
                   <Text className="text-xs font-semibold text-happy-700 dark:text-happy-300">
-                    {post.display_name ?? post.author}
+                    {post.display_name}
                   </Text>
                 </View>
                 {post.like_count !== undefined && post.like_count > 0 && (

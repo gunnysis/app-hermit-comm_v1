@@ -42,7 +42,7 @@ export async function createComment(
   }
 
   const isAnonymous = commentData.is_anonymous ?? true;
-  const displayName = commentData.display_name ?? (isAnonymous ? '익명' : commentData.author);
+  const displayName = commentData.display_name ?? '익명';
 
   const { data, error } = await supabase
     .from('comments')

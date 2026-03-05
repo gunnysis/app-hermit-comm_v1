@@ -81,7 +81,6 @@ export function useCreatePost({
         await api.createPost({
           title: data.title.trim(),
           content: data.content.trim(),
-          author: rawAuthor,
           board_id: boardId,
           group_id: groupId ?? undefined,
           is_anonymous: isAnonymous,

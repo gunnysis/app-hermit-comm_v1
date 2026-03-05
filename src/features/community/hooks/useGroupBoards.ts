@@ -12,4 +12,3 @@ export function useGroupBoards(groupId: number | null | undefined) {
     staleTime: 1000 * 60 * 5,
   });
 }
-

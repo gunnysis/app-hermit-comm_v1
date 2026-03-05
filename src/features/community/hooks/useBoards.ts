@@ -9,4 +9,3 @@ export function useBoards() {
     staleTime: 1000 * 60 * 5,
   });
 }
-
