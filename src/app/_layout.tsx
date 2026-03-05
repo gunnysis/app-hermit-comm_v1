@@ -4,7 +4,7 @@ import { Stack } from 'expo-router';
 import Constants from 'expo-constants';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AppState, View, Text, ActivityIndicator } from 'react-native';
+import { Alert, AppState, View, Text, ActivityIndicator } from 'react-native';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { queryClient } from '@/shared/lib/queryClient';
 import { supabase } from '@/shared/lib/supabase';
@@ -61,10 +61,13 @@ async function checkAndApplyUpdate() {
     const result = await Updates.checkForUpdateAsync();
     if (result.isAvailable) {
       await Updates.fetchUpdateAsync();
-      await Updates.reloadAsync();
+      Alert.alert('업데이트 알림', '새 버전이 준비되었어요. 지금 적용할까요?', [
+        { text: '나중에', style: 'cancel' },
+        { text: '적용', onPress: () => Updates.reloadAsync() },
+      ]);
     }
   } catch {
-    // 네트워크 오류 등 시 무시 (사용자 안내 없음)
+    // 네트워크 오류 시 무시
   }
 }
 
