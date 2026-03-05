@@ -8,6 +8,7 @@ import { Container } from '@/shared/components/Container';
 import { Input } from '@/shared/components/Input';
 import { ContentEditor } from '@/shared/components/ContentEditor';
 import { ImagePicker } from '@/features/posts/components/ImagePicker';
+import { MoodSelector } from '@/features/posts/components/MoodSelector';
 import { Button } from '@/shared/components/Button';
 import { AnonModeInfo } from '@/features/posts/components/AnonModeInfo';
 import { useCreatePost } from '@/features/posts/hooks/useCreatePost';
@@ -28,6 +29,7 @@ export default function CreateScreen() {
   const { isWide } = useResponsiveLayout();
   const { data: boards } = useBoards();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [initialEmotions, setInitialEmotions] = useState<string[]>([]);
 
   const board = boards?.find((b) => b.id === DEFAULT_PUBLIC_BOARD_ID);
   const anonMode = board?.anon_mode ?? 'always_anon';
@@ -48,7 +50,10 @@ export default function CreateScreen() {
     user,
     anonMode,
     defaultValues: { author: savedAuthor ?? '' },
-    getExtraPostData: () => ({ image_url: imageUrl ?? undefined }),
+    getExtraPostData: () => ({
+      image_url: imageUrl ?? undefined,
+      ...(initialEmotions.length > 0 ? { initial_emotions: initialEmotions } : {}),
+    }),
     onSuccess: async (data) => {
       const rawAuthor = data.author?.trim() ?? '';
       if (rawAuthor && rawAuthor !== (savedAuthor ?? '')) {
@@ -159,6 +164,13 @@ export default function CreateScreen() {
                 />
               )}
             />
+
+            <View className="mb-3">
+              <Text className="text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">
+                지금 어떤 마음인가요? (선택)
+              </Text>
+              <MoodSelector value={initialEmotions} onChange={setInitialEmotions} />
+            </View>
 
             <Controller
               control={control}
