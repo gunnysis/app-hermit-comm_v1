@@ -41,12 +41,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 src/
-├── app/              # 라우팅만. (tabs)/, post/[id], post/edit/[id], groups/, admin/
+├── app/              # 라우팅만. (tabs)/, post/[id], post/edit/[id], groups/, admin/, settings/, search
+│   └── _layout.tsx   # 화면 전환 애니메이션 (ios_from_right, slide_from_bottom, fade 등)
 ├── features/
 │   ├── auth/         # signInAnonymously, useAuth
 │   ├── admin/        # adminApi (createGroupWithBoard, getMyManagedGroups), useIsAdmin
 │   ├── community/    # communityApi, useBoards, useBoardPosts, useMyGroups, useGroupBoards, useGroupPosts
 │   ├── posts/        # PostCard, PostList, PostBody, usePostDetail, useRealtimePosts, useRealtimeReactions
+│   │   └── components/  # 감정 시각화 컴포넌트 (아래 참고)
 │   └── comments/     # CommentList, useRealtimeComments
 ├── shared/
 │   ├── components/   # 공통 UI (Button, Input, Container, ContentEditor, Loading, ErrorView, ScreenHeader, SortTabs, FloatingActionButton)
@@ -55,6 +57,31 @@ src/
 │   └── utils/        # validate, format, logger, html(stripHtml, getExcerpt, isLikelyHtml)
 └── types/            # Post, Comment, Board, Reaction 등 전역 타입
 ```
+
+### 감정 시각화 컴포넌트 (`src/features/posts/components/`)
+- `CommunityPulse.tsx` — 커뮤니티 감정 버블 시각화 (크기=비율, Reanimated 스프링)
+- `EmotionFilterBar.tsx` — 감정 필터 칩 가로 스크롤
+- `TrendingPosts.tsx` — 트렌딩 게시글 가로 스크롤 카드
+- `GreetingBanner.tsx` — 시간대별 인사 배너
+- `MoodSelector.tsx` — 글쓰기 감정 선택 (멀티 셀렉트, 최대 3개)
+- `EmotionCalendar.tsx` — 감정 캘린더 히트맵 (30일)
+- `EmotionWave.tsx` — 감정 타임라인 차트 (7일)
+- `ReactionBar.tsx` — 리액션 타입별 차별화 애니메이션 (heart=pulse, laugh=wiggle+rotate, sad=droop, surprise=pop)
+
+### 화면 전환 애니메이션 (`_layout.tsx`)
+| 화면 | 애니메이션 | 비고 |
+|---|---|---|
+| `(tabs)` | `none` | 탭 전환 시 애니메이션 없음 |
+| `post/[id]` | `ios_from_right` | iOS 스타일 슬라이드 + 제스처 |
+| `post/edit/[id]` | `slide_from_bottom` | 모달 프레젠테이션 |
+| `groups/[groupId]` | `ios_from_right` | iOS 스타일 슬라이드 + 제스처 |
+| `groups/create` | `slide_from_bottom` | 모달 프레젠테이션 |
+| `search` | `fade` (200ms) | 페이드 전환 |
+| 기타 | `slide_from_right` (250ms) | 기본값 |
+
+### 공유 상수 Re-export (`src/shared/lib/constants.ts`)
+generated에서 re-export하는 상수:
+`ALLOWED_EMOTIONS`, `EMOTION_EMOJI`, `REACTION_COLOR_MAP`, `SHARED_PALETTE`, `EMOTION_COLOR_MAP`, `MOTION`, `EMPTY_STATE_MESSAGES`, `GREETING_MESSAGES`
 
 ---
 
@@ -230,16 +257,19 @@ Maestro CLI 설치: [Windows](https://docs.maestro.dev/getting-started/installin
 
 | 역할 | 담당 |
 |------|------|
-| Supabase 마이그레이션 원본 | **앱 레포** (이 레포) |
+| Supabase 마이그레이션 원본 | **중앙 프로젝트** (`~/apps/supabase-hermit`) |
 | Edge Functions | 앱 레포의 `supabase/functions/` |
 | 모바일 UI | 앱 레포 (React Native/Expo) |
 | 웹 UI | 웹 레포 (Next.js 16) |
+| 공유 상수/타입 | 중앙 프로젝트의 `shared/` |
 
 ### 동기화 대상
 
-- `supabase/migrations/` — 앱에서 생성 후 웹에 복사 (`scripts/sync-from-app.sh` 참고)
-- `src/types/index.ts` → 웹 `src/types/database.ts` (수동 검토 후 적용)
-- `src/shared/lib/constants.ts`의 `VALIDATION`, `ALLOWED_EMOTIONS`, `EMOTION_EMOJI` ↔ 웹 `src/lib/constants.ts`의 동일 상수
+- `supabase/migrations/` — **중앙 프로젝트에서** 생성 후 앱/웹에 복사 (`sync-to-projects.sh`)
+- `src/types/database.types.ts` ← 중앙 `shared/types.ts` (자동 동기화)
+- `src/shared/lib/constants.generated.ts` ← 중앙 `shared/constants.ts` (자동 동기화)
+- `src/types/database.gen.ts` ← 중앙 `types/database.gen.ts` (자동 동기화)
+- **앱/웹의 generated 파일 직접 수정 금지** — 반드시 중앙에서 수정 후 sync
 
 ### 동기화 시 주의사항
 
