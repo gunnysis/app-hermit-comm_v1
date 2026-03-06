@@ -109,13 +109,33 @@ const PostCardComponent = ({ post }: PostCardProps) => {
               <View className="flex-row flex-wrap gap-1.5 mb-2">
                 {post.emotions.slice(0, 2).map((emotion) => {
                   const emoji = EMOTION_EMOJI[emotion] ?? '💬';
+                  const emotionColors = EMOTION_COLOR_MAP[emotion];
                   return (
                     <View
                       key={emotion}
+                      style={
+                        emotionColors
+                          ? {
+                              backgroundColor: isDark
+                                ? emotionColors.gradient[1] + '25'
+                                : emotionColors.gradient[0],
+                              borderColor: emotionColors.gradient[1],
+                              borderWidth: 1,
+                            }
+                          : undefined
+                      }
                       className={`rounded-full px-2.5 py-0.5 ${
-                        isDark ? 'bg-stone-800/80' : 'bg-stone-50'
+                        !emotionColors ? (isDark ? 'bg-stone-800/80' : 'bg-stone-50') : ''
                       }`}>
-                      <Text className="text-xs text-stone-500 dark:text-stone-400">
+                      <Text
+                        style={
+                          emotionColors && !isDark
+                            ? { color: '#57534E' }
+                            : undefined
+                        }
+                        className={`text-xs font-medium ${
+                          !emotionColors ? 'text-stone-500 dark:text-stone-400' : 'dark:text-stone-300'
+                        }`}>
                         {emoji} {emotion}
                       </Text>
                     </View>
@@ -134,22 +154,26 @@ const PostCardComponent = ({ post }: PostCardProps) => {
                     {post.display_name}
                   </Text>
                 </View>
-                <View
-                  className={`px-2 py-0.5 rounded-full ${
-                    isDark ? 'bg-stone-800/60' : 'bg-stone-50'
-                  }`}>
-                  <Text className="text-[11px] font-medium text-stone-500 dark:text-stone-400">
-                    👍 {formatReactionCount(post.like_count ?? 0)}
-                  </Text>
-                </View>
-                <View
-                  className={`px-2 py-0.5 rounded-full ${
-                    isDark ? 'bg-stone-800/60' : 'bg-stone-50'
-                  }`}>
-                  <Text className="text-[11px] font-medium text-stone-500 dark:text-stone-400">
-                    💬 {post.comment_count ?? 0}
-                  </Text>
-                </View>
+                {(post.like_count ?? 0) > 0 && (
+                  <View
+                    className={`flex-row items-center px-2 py-0.5 rounded-full ${
+                      isDark ? 'bg-coral-900/30' : 'bg-coral-50'
+                    }`}>
+                    <Text className="text-[11px] font-medium text-coral-600 dark:text-coral-300">
+                      ❤️ {formatReactionCount(post.like_count ?? 0)}
+                    </Text>
+                  </View>
+                )}
+                {(post.comment_count ?? 0) > 0 && (
+                  <View
+                    className={`flex-row items-center px-2 py-0.5 rounded-full ${
+                      isDark ? 'bg-stone-800/60' : 'bg-stone-50'
+                    }`}>
+                    <Text className="text-[11px] font-medium text-stone-500 dark:text-stone-400">
+                      💬 {post.comment_count}
+                    </Text>
+                  </View>
+                )}
               </View>
               <Text className="text-[11px] text-stone-400 dark:text-stone-500">
                 {formatDate(post.created_at)}

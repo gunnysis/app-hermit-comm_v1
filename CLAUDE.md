@@ -120,11 +120,20 @@ eas build --platform all --profile production --auto-submit
 npm run update:preview
 npm run update:production
 
-# 스토어 배포 (Claude가 자동 처리)
-# 사용자가 스토어 배포를 요청하면 Claude가 아래를 순서대로 수행:
-# 1. app.config.js에서 현재 version / versionCode / buildNumber 확인
-# 2. 버전 번호 증가 (version, android.versionCode, ios.buildNumber)
-# 3. eas build --platform all --profile production --auto-submit 실행
+# 배포 (Claude가 자동 판단)
+# 사용자가 "앱 배포"를 요청하면 Claude는 변경 내용을 분석하여 배포 방식을 결정:
+#
+# ── OTA 배포 (JS/UI만 변경된 경우) ──
+# 조건: 네이티브 모듈·권한·플러그인 변경 없이 JS/TS/스타일만 수정
+# 명령: npm run update:production
+# 버전: 변경하지 않음 (NATIVE_VERSION, BUILD_NUMBER 유지)
+#
+# ── 스토어 배포 (네이티브 변경이 포함된 경우) ──
+# 조건: 네이티브 의존성 추가/변경, expo plugins 수정, permissions 변경 등
+# 절차:
+#   1. app.config.js에서 현재 version / versionCode / buildNumber 확인
+#   2. 버전 번호 증가 (version, android.versionCode, ios.buildNumber)
+#   3. eas build --platform all --profile production --auto-submit 실행
 # → 사용자가 수동으로 버전을 올릴 필요 없음
 ```
 
