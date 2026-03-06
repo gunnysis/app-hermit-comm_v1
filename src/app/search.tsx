@@ -3,19 +3,32 @@ import { View, Text, TextInput, Pressable, ScrollView, useColorScheme } from 're
 import { StatusBar } from 'expo-status-bar';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 import { Container } from '@/shared/components/Container';
-import { PostList } from '@/features/posts/components/PostList';
 import { EmptyState } from '@/shared/components/EmptyState';
+import { HighlightText } from '@/shared/components/HighlightText';
+import { PostCardSkeleton } from '@/shared/components/Skeleton';
 import { api } from '@/shared/lib/api';
 import { draftStorage } from '@/shared/lib/storage';
-import { ALLOWED_EMOTIONS, EMOTION_EMOJI, EMOTION_COLOR_MAP } from '@/shared/lib/constants';
-import { useQuery } from '@tanstack/react-query';
+import {
+  ALLOWED_EMOTIONS,
+  EMOTION_EMOJI,
+  EMOTION_COLOR_MAP,
+  EMPTY_STATE_MESSAGES,
+} from '@/shared/lib/constants';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useThemeColors } from '@/shared/hooks/useThemeColors';
-import type { Post } from '@/types';
+import { formatDate, formatReactionCount } from '@/shared/utils/format';
+import { pushPost } from '@/shared/lib/navigation';
+import { PostCard } from '@/features/posts/components/PostCard';
+import type { SearchResult, SearchSort, Post } from '@/types';
 
 const RECENT_SEARCHES_KEY = 'search_recent';
 const RECENT_MAX = 8;
 const DEBOUNCE_MS = 300;
+const PAGE_SIZE = 20;
+
+// --- 최근 검색어 ---
 
 function getRecentSearches(): string[] {
   try {
@@ -45,6 +58,14 @@ function clearAllRecentSearches(): void {
   draftStorage.remove(RECENT_SEARCHES_KEY);
 }
 
+// --- 정렬 옵션 ---
+
+const SORT_OPTIONS: { value: SearchSort; label: string }[] = [
+  { value: 'relevance', label: '관련도순' },
+  { value: 'recent', label: '최신순' },
+  { value: 'popular', label: '인기순' },
+];
+
 export default function SearchScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -56,9 +77,7 @@ export default function SearchScreen() {
   const [query, setQuery] = useState(initialQ);
   const [debouncedQuery, setDebouncedQuery] = useState(initialQ);
   const [selectedEmotion, setSelectedEmotion] = useState(initialEmotion);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [sort, setSort] = useState<SearchSort>('relevance');
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
   useEffect(() => {
@@ -83,36 +102,62 @@ export default function SearchScreen() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  const search = useCallback(async (q: string) => {
-    const trimmed = q.trim();
-    if (!trimmed) {
-      setPosts([]);
-      setError(null);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await api.searchPosts(trimmed, 50, 0);
-      setPosts(result as Post[]);
-      addRecentSearch(trimmed);
-      setRecentSearches(getRecentSearches());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '검색에 실패했습니다.');
-      setPosts([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const trimmedQuery = debouncedQuery.trim();
+  const hasTextQuery = trimmedQuery.length >= 2;
 
+  // --- v2 검색 (텍스트 있을 때) ---
+  const {
+    data: searchPages,
+    isLoading: searchLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['search', trimmedQuery, selectedEmotion, sort],
+    queryFn: ({ pageParam = 0 }) =>
+      api.searchPosts({
+        query: trimmedQuery,
+        emotion: selectedEmotion || null,
+        sort,
+        limit: PAGE_SIZE,
+        offset: pageParam,
+      }),
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.length === PAGE_SIZE ? allPages.flat().length : undefined,
+    initialPageParam: 0,
+    enabled: hasTextQuery,
+    staleTime: 30_000,
+  });
+
+  // --- 감정 전용 (텍스트 없을 때) ---
+  const { data: emotionPosts, isLoading: emotionLoading } = useQuery({
+    queryKey: ['postsByEmotion', selectedEmotion],
+    queryFn: () => api.getPostsByEmotion(selectedEmotion, 50, 0),
+    enabled: selectedEmotion.length > 0 && !hasTextQuery,
+  });
+
+  // 검색 성공 시 최근 검색어 저장
   useEffect(() => {
-    search(debouncedQuery);
-  }, [debouncedQuery, search]);
+    if (hasTextQuery && searchPages?.pages?.[0]?.length !== undefined) {
+      addRecentSearch(trimmedQuery);
+      setRecentSearches(getRecentSearches());
+    }
+  }, [hasTextQuery, trimmedQuery, searchPages?.pages?.[0]?.length]);
 
-  const handleRefresh = useCallback(() => {
-    if (selectedEmotion && !debouncedQuery.trim()) return;
-    search(debouncedQuery);
-  }, [search, debouncedQuery, selectedEmotion]);
+  const searchResults = useMemo(() => searchPages?.pages.flat() ?? [], [searchPages]);
+
+  const isSearchMode = hasTextQuery;
+  const isEmotionOnlyMode = selectedEmotion.length > 0 && !hasTextQuery;
+  const hasActiveFilter = hasTextQuery || selectedEmotion.length > 0;
+  const showInitial = !hasActiveFilter;
+
+  const isLoading = isSearchMode ? searchLoading : isEmotionOnlyMode ? emotionLoading : false;
+  const displayPosts = isSearchMode ? searchResults : isEmotionOnlyMode ? (emotionPosts ?? []) : [];
+
+  const resultCount = hasActiveFilter && !isLoading ? displayPosts.length : null;
+  const isEmpty = !isLoading && displayPosts.length === 0 && hasActiveFilter;
+
+  // --- 핸들러 ---
 
   const handleRecentPress = useCallback((q: string) => {
     setQuery(q);
@@ -137,32 +182,13 @@ export default function SearchScreen() {
     setDebouncedQuery('');
   }, []);
 
-  // 감정 필터: 텍스트 검색이 없을 때만 RPC로 감정별 조회
-  const { data: emotionPosts, isLoading: emotionLoading } = useQuery({
-    queryKey: ['postsByEmotion', selectedEmotion],
-    queryFn: () => api.getPostsByEmotion(selectedEmotion, 50, 0),
-    enabled: selectedEmotion.length > 0 && debouncedQuery.trim().length === 0,
-  });
-
-  // 텍스트 검색 + 감정 필터 동시: 텍스트 검색 결과에서 감정 필터링
-  const displayPosts = useMemo(() => {
-    if (selectedEmotion && !debouncedQuery.trim()) {
-      return (emotionPosts ?? []) as Post[];
+  const handleEndReached = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
-    if (selectedEmotion && debouncedQuery.trim()) {
-      return posts.filter((p) => p.emotions && p.emotions.includes(selectedEmotion));
-    }
-    return posts;
-  }, [selectedEmotion, debouncedQuery, emotionPosts, posts]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const isLoading = selectedEmotion && !debouncedQuery.trim() ? emotionLoading : loading;
-
-  const hasActiveFilter = debouncedQuery.trim().length > 0 || selectedEmotion.length > 0;
-  const isEmpty = !isLoading && displayPosts.length === 0 && hasActiveFilter;
-  const showInitial = !hasActiveFilter;
-
-  const resultCount = hasActiveFilter && !isLoading ? displayPosts.length : null;
-  const listError = useMemo(() => (isEmpty && error ? error : null), [isEmpty, error]);
+  // --- 렌더 ---
 
   return (
     <Container>
@@ -237,35 +263,72 @@ export default function SearchScreen() {
           })}
         </ScrollView>
 
-        {/* 필터 상태 바 */}
+        {/* 정렬 + 필터 상태 바 */}
         {hasActiveFilter && (
-          <View className="flex-row items-center justify-between px-4 py-2 bg-cream-50/50 dark:bg-stone-900/50">
-            <View className="flex-row items-center gap-2 flex-1">
-              {selectedEmotion ? (
-                <Text className="text-xs text-gray-500 dark:text-stone-400">
-                  {debouncedQuery.trim()
-                    ? `'${debouncedQuery}' + ${selectedEmotion}`
-                    : `${selectedEmotion} 감정의 이야기`}
-                </Text>
-              ) : (
-                <Text className="text-xs text-gray-500 dark:text-stone-400">
-                  {`'${debouncedQuery}' 검색`}
-                </Text>
-              )}
-              {resultCount !== null && (
-                <Text className="text-xs font-medium text-happy-700 dark:text-happy-400">
-                  {resultCount}건
-                </Text>
+          <View className="px-3 py-2 bg-cream-50/50 dark:bg-stone-900/50 border-b border-cream-200/50 dark:border-stone-700/50">
+            {/* 정렬 토글 (텍스트 검색 시에만) */}
+            {isSearchMode && (
+              <View className="flex-row gap-1.5 mb-2">
+                {SORT_OPTIONS.map((opt) => (
+                  <Pressable
+                    key={opt.value}
+                    onPress={() => setSort(opt.value)}
+                    className={`px-3 py-1.5 rounded-full ${
+                      sort === opt.value
+                        ? isDark
+                          ? 'bg-happy-600'
+                          : 'bg-happy-400'
+                        : isDark
+                          ? 'bg-stone-800'
+                          : 'bg-stone-100'
+                    }`}
+                    accessibilityLabel={`${opt.label} 정렬`}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: sort === opt.value }}>
+                    <Text
+                      className={`text-xs font-semibold ${
+                        sort === opt.value
+                          ? 'text-white'
+                          : isDark
+                            ? 'text-stone-400'
+                            : 'text-stone-500'
+                      }`}>
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+
+            {/* 필터 상태 */}
+            <View className="flex-row items-center justify-between">
+              <View className="flex-row items-center gap-2 flex-1">
+                {selectedEmotion ? (
+                  <Text className="text-xs text-gray-500 dark:text-stone-400">
+                    {trimmedQuery
+                      ? `'${trimmedQuery}' + ${selectedEmotion}`
+                      : `${selectedEmotion} 감정의 이야기`}
+                  </Text>
+                ) : (
+                  <Text className="text-xs text-gray-500 dark:text-stone-400">
+                    {`'${trimmedQuery}' 검색`}
+                  </Text>
+                )}
+                {resultCount !== null && (
+                  <Text className="text-xs font-medium text-happy-700 dark:text-happy-400">
+                    {resultCount}건
+                  </Text>
+                )}
+              </View>
+              {selectedEmotion && (
+                <Pressable
+                  onPress={() => setSelectedEmotion('')}
+                  className="px-2 py-1 rounded-full bg-stone-200 dark:bg-stone-700 active:opacity-70"
+                  accessibilityLabel="감정 필터 해제">
+                  <Text className="text-xs text-stone-600 dark:text-stone-300">필터 해제</Text>
+                </Pressable>
               )}
             </View>
-            {selectedEmotion && (
-              <Pressable
-                onPress={() => setSelectedEmotion('')}
-                className="px-2 py-1 rounded-full bg-stone-200 dark:bg-stone-700 active:opacity-70"
-                accessibilityLabel="감정 필터 해제">
-                <Text className="text-xs text-stone-600 dark:text-stone-300">필터 해제</Text>
-              </Pressable>
-            )}
           </View>
         )}
 
@@ -339,35 +402,193 @@ export default function SearchScreen() {
           </ScrollView>
         )}
 
-        {/* 검색 결과 */}
+        {/* 빈 상태 */}
         {!showInitial && isEmpty && (
           <EmptyState
             icon="🔍"
             title={
-              selectedEmotion && !debouncedQuery.trim()
+              selectedEmotion && !hasTextQuery
                 ? `'${selectedEmotion}' 감정의 글이 없어요`
-                : selectedEmotion && debouncedQuery.trim()
-                  ? `'${debouncedQuery}' + ${selectedEmotion} 결과가 없어요`
-                  : '검색 결과가 없어요.'
+                : selectedEmotion && hasTextQuery
+                  ? `'${trimmedQuery}' + ${selectedEmotion} 결과가 없어요`
+                  : EMPTY_STATE_MESSAGES.search.title
             }
             description={
               selectedEmotion
                 ? '다른 감정이나 검색어를 시도해보세요.'
-                : '다른 검색어로 시도해보세요.'
+                : EMPTY_STATE_MESSAGES.search.description
             }
           />
         )}
 
-        {!showInitial && !isEmpty && (
-          <PostList
-            posts={displayPosts}
-            loading={isLoading}
-            error={listError}
-            onRefresh={handleRefresh}
-            hasMore={false}
+        {/* 로딩 스켈레톤 */}
+        {!showInitial && isLoading && displayPosts.length === 0 && (
+          <View className="p-4">
+            {[1, 2, 3].map((i) => (
+              <PostCardSkeleton key={i} />
+            ))}
+          </View>
+        )}
+
+        {/* 검색 결과 (텍스트 검색 — 하이라이트 포함) */}
+        {isSearchMode && !isLoading && searchResults.length > 0 && (
+          <SearchResultList
+            results={searchResults}
+            onEndReached={handleEndReached}
+            isFetchingMore={isFetchingNextPage}
           />
+        )}
+
+        {/* 감정 전용 결과 (기존 PostCard 사용) */}
+        {isEmotionOnlyMode && !emotionLoading && (emotionPosts ?? []).length > 0 && (
+          <EmotionPostList posts={emotionPosts as Post[]} />
         )}
       </View>
     </Container>
+  );
+}
+
+// --- 검색 결과 카드 (하이라이트 포함) ---
+
+function SearchResultCard({ result }: { result: SearchResult }) {
+  const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const handlePress = useCallback(() => {
+    pushPost(router, result.id);
+  }, [router, result.id]);
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      className="mx-4 mb-2.5 rounded-xl overflow-hidden border bg-white dark:bg-stone-900 border-stone-200/80 dark:border-stone-700/60 active:opacity-90"
+      accessibilityRole="button"
+      accessibilityLabel={`검색 결과: ${result.title}`}>
+      {result.emotions?.[0] && EMOTION_COLOR_MAP[result.emotions[0]] && (
+        <View
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 3,
+            backgroundColor: EMOTION_COLOR_MAP[result.emotions[0]].gradient[1],
+            borderTopLeftRadius: 12,
+            borderBottomLeftRadius: 12,
+            zIndex: 1,
+          }}
+        />
+      )}
+      <View className="p-4">
+        <HighlightText
+          text={result.title_highlight}
+          className="text-[17px] font-bold text-gray-800 dark:text-stone-100 leading-6 mb-1.5"
+          numberOfLines={2}
+          highlightStyle={{ backgroundColor: isDark ? '#664E00' : '#FFF3CC' }}
+        />
+
+        <HighlightText
+          text={result.content_highlight}
+          className="text-[14px] text-gray-500 dark:text-stone-400 mb-2 leading-5"
+          numberOfLines={3}
+          highlightStyle={{ backgroundColor: isDark ? '#664E00' : '#FFF3CC' }}
+        />
+
+        {result.emotions && result.emotions.length > 0 && (
+          <View className="flex-row flex-wrap gap-1.5 mb-2">
+            {result.emotions.slice(0, 2).map((emotion) => {
+              const emoji = EMOTION_EMOJI[emotion] ?? '💬';
+              return (
+                <View
+                  key={emotion}
+                  className={`rounded-full px-2.5 py-0.5 ${
+                    isDark ? 'bg-stone-800/80' : 'bg-stone-50'
+                  }`}>
+                  <Text className="text-xs text-stone-500 dark:text-stone-400">
+                    {emoji} {emotion}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+        )}
+
+        <View className="flex-row justify-between items-center flex-wrap gap-2">
+          <View className="flex-row items-center gap-1.5">
+            <View
+              className={`px-2.5 py-1 rounded-full ${isDark ? 'bg-happy-900/40' : 'bg-happy-50'}`}>
+              <Text className="text-xs font-semibold text-happy-700 dark:text-happy-300">
+                {result.display_name}
+              </Text>
+            </View>
+            <View
+              className={`px-2 py-0.5 rounded-full ${isDark ? 'bg-stone-800/60' : 'bg-stone-50'}`}>
+              <Text className="text-[11px] font-medium text-stone-500 dark:text-stone-400">
+                👍 {formatReactionCount(result.like_count ?? 0)}
+              </Text>
+            </View>
+            <View
+              className={`px-2 py-0.5 rounded-full ${isDark ? 'bg-stone-800/60' : 'bg-stone-50'}`}>
+              <Text className="text-[11px] font-medium text-stone-500 dark:text-stone-400">
+                💬 {result.comment_count ?? 0}
+              </Text>
+            </View>
+          </View>
+          <Text className="text-[11px] text-stone-400 dark:text-stone-500">
+            {formatDate(result.created_at)}
+          </Text>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+// --- 검색 결과 FlashList ---
+
+function SearchResultList({
+  results,
+  onEndReached,
+  isFetchingMore,
+}: {
+  results: SearchResult[];
+  onEndReached: () => void;
+  isFetchingMore: boolean;
+}) {
+  return (
+    <View style={{ flex: 1 }} className="min-h-0">
+      <FlashList
+        data={results}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <SearchResultCard result={item} />}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.3}
+        ListFooterComponent={
+          isFetchingMore ? (
+            <View className="py-4">
+              {[1, 2].map((i) => (
+                <PostCardSkeleton key={i} />
+              ))}
+            </View>
+          ) : null
+        }
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: 16 }}
+      />
+    </View>
+  );
+}
+
+// --- 감정 전용 결과 리스트 ---
+
+function EmotionPostList({ posts }: { posts: Post[] }) {
+  return (
+    <View style={{ flex: 1 }} className="min-h-0">
+      <FlashList
+        data={posts}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <PostCard post={item} />}
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: 16 }}
+      />
+    </View>
   );
 }

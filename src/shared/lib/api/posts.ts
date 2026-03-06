@@ -11,6 +11,7 @@ import type {
   CreatePostResponse,
   UpdatePostResponse,
   SearchResult,
+  SearchSort,
 } from '@/types';
 
 export async function getPosts(
@@ -65,16 +66,21 @@ export async function getPosts(
   });
 }
 
-export async function searchPosts(
-  query: string,
-  limit: number = 20,
-  offset: number = 0,
-): Promise<SearchResult[]> {
+export async function searchPosts(params: {
+  query: string;
+  emotion?: string | null;
+  sort?: SearchSort;
+  limit?: number;
+  offset?: number;
+}): Promise<SearchResult[]> {
+  const { query, emotion, sort = 'relevance', limit = 20, offset = 0 } = params;
   const q = query.trim();
-  if (!q) return [];
+  if (q.length < 2) return [];
 
-  const { data, error } = await supabase.rpc('search_posts', {
+  const { data, error } = await supabase.rpc('search_posts_v2', {
     p_query: q,
+    p_emotion: emotion ?? undefined,
+    p_sort: sort,
     p_limit: limit,
     p_offset: offset,
   });
