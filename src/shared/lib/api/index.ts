@@ -10,6 +10,7 @@ export { APIError } from './error';
 export const api = {
   getPosts: posts.getPosts,
   searchPosts: posts.searchPosts,
+  getPostsByEmotion: posts.getPostsByEmotion,
   getPost: posts.getPost,
   createPost: posts.createPost,
   deletePost: posts.deletePost,

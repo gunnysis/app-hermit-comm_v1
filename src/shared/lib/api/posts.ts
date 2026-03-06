@@ -165,6 +165,25 @@ export async function deletePost(id: number): Promise<void> {
   }
 }
 
+export async function getPostsByEmotion(
+  emotion: string,
+  limit: number = 20,
+  offset: number = 0,
+): Promise<Post[]> {
+  const { data, error } = await supabase.rpc('get_posts_by_emotion', {
+    p_emotion: emotion,
+    p_limit: limit,
+    p_offset: offset,
+  });
+
+  if (error) {
+    logger.error('[API] getPostsByEmotion 에러:', error.message);
+    throw new APIError(500, error.message);
+  }
+
+  return (data ?? []) as Post[];
+}
+
 export async function updatePost(id: number, body: UpdatePostRequest): Promise<UpdatePostResponse> {
   const { data, error } = await supabase.from('posts').update(body).eq('id', id).select().single();
 

@@ -9,6 +9,7 @@ import { useResponsiveLayout } from '@/shared/hooks/useResponsiveLayout';
 interface ScreenHeaderProps {
   title: string;
   subtitle?: string;
+  greeting?: string;
   showBack?: boolean;
   backLabel?: string;
   rightContent?: React.ReactNode;
@@ -18,6 +19,7 @@ interface ScreenHeaderProps {
 export function ScreenHeader({
   title,
   subtitle,
+  greeting,
   showBack = false,
   backLabel,
   rightContent,
@@ -63,9 +65,14 @@ export function ScreenHeader({
       )}
       <View className="flex-row items-center justify-between">
         <View className="flex-1">
-          <Text className="text-xl font-bold text-gray-800 dark:text-stone-100 tracking-tight">
-            {title}
-          </Text>
+          <View className="flex-row items-baseline gap-2">
+            <Text className="text-xl font-bold text-gray-800 dark:text-stone-100 tracking-tight">
+              {title}
+            </Text>
+            {greeting && (
+              <Text className="text-xs text-gray-400 dark:text-stone-500">{greeting}</Text>
+            )}
+          </View>
           {subtitle && (
             <Text className="text-sm text-gray-500 dark:text-stone-400 mt-1">{subtitle}</Text>
           )}

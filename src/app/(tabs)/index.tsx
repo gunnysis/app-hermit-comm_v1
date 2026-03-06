@@ -2,8 +2,13 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
+import { useQuery } from '@tanstack/react-query';
 import { Container } from '@/shared/components/Container';
-import { DEFAULT_PUBLIC_BOARD_ID, EMPTY_STATE_MESSAGES } from '@/shared/lib/constants';
+import {
+  DEFAULT_PUBLIC_BOARD_ID,
+  EMPTY_STATE_MESSAGES,
+  GREETING_MESSAGES,
+} from '@/shared/lib/constants';
 import { pushAdmin, pushSearch, pushCreate } from '@/shared/lib/navigation';
 import { ScreenHeader } from '@/shared/components/ScreenHeader';
 import { SortTabs, type SortOrder } from '@/shared/components/SortTabs';
@@ -11,18 +16,31 @@ import { FloatingActionButton } from '@/shared/components/FloatingActionButton';
 import { PostList } from '@/features/posts/components/PostList';
 import { EmotionTrend } from '@/features/posts/components/EmotionTrend';
 import { TrendingPosts } from '@/features/posts/components/TrendingPosts';
-import { GreetingBanner } from '@/features/posts/components/GreetingBanner';
 import { useBoardPosts } from '@/features/community/hooks/useBoardPosts';
 import { useRealtimePosts } from '@/features/posts/hooks/useRealtimePosts';
 import { useResponsiveLayout } from '@/shared/hooks/useResponsiveLayout';
 import { useIsAdmin } from '@/features/admin/hooks/useIsAdmin';
+import { api } from '@/shared/lib/api';
 import type { Post } from '@/types';
+
+type TimeSlot = keyof typeof GREETING_MESSAGES;
+
+function getTimeSlot(): TimeSlot {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return 'morning';
+  if (h >= 12 && h < 17) return 'afternoon';
+  if (h >= 17 && h < 21) return 'evening';
+  return 'night';
+}
 
 export default function HomeScreen() {
   const router = useRouter();
   useResponsiveLayout();
   const { isAdmin, isLoading: isAdminLoading } = useIsAdmin();
   const [sortOrder, setSortOrder] = useState<SortOrder>('latest');
+  const [emotionFilter, setEmotionFilter] = useState<string | null>(null);
+
+  const greeting = useMemo(() => GREETING_MESSAGES[getTimeSlot()].greeting, []);
 
   const {
     data,
@@ -34,10 +52,21 @@ export default function HomeScreen() {
     isFetchingNextPage,
   } = useBoardPosts(DEFAULT_PUBLIC_BOARD_ID, sortOrder);
 
+  const { data: filteredPosts, isLoading: isFilterLoading } = useQuery({
+    queryKey: ['postsByEmotion', emotionFilter],
+    queryFn: () => api.getPostsByEmotion(emotionFilter!, 50, 0),
+    enabled: !!emotionFilter,
+  });
+
   const posts = useMemo(
-    () => (data?.pages.flatMap((p: Post[]) => p) ?? []) as Post[],
-    [data?.pages],
+    () =>
+      emotionFilter
+        ? ((filteredPosts ?? []) as Post[])
+        : ((data?.pages.flatMap((p: Post[]) => p) ?? []) as Post[]),
+    [emotionFilter, filteredPosts, data?.pages],
   );
+
+  const isLoading = emotionFilter ? isFilterLoading : loading;
 
   useRealtimePosts({
     onInsert: useCallback(
@@ -55,14 +84,18 @@ export default function HomeScreen() {
   });
 
   const handleLoadMore = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) {
+    if (!emotionFilter && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [emotionFilter, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleRefresh = useCallback(async () => {
     await refetch();
   }, [refetch]);
+
+  const handleEmotionSelect = useCallback((emotion: string | null) => {
+    setEmotionFilter(emotion);
+  }, []);
 
   const adminButton =
     !isAdminLoading && isAdmin === true ? (
@@ -77,21 +110,31 @@ export default function HomeScreen() {
   const listHeader = useMemo(
     () => (
       <View>
-        <GreetingBanner />
         <View className="px-4">
-          <EmotionTrend days={7} />
-          <TrendingPosts />
+          <EmotionTrend
+            days={7}
+            selectedEmotion={emotionFilter}
+            onEmotionSelect={handleEmotionSelect}
+          />
+          {!emotionFilter && <TrendingPosts />}
         </View>
       </View>
     ),
-    [],
+    [emotionFilter, handleEmotionSelect],
   );
+
+  const emptyTitle = emotionFilter
+    ? `'${emotionFilter}' 감정의 글이 아직 없어요`
+    : EMPTY_STATE_MESSAGES.feed.title;
+  const emptyDescription = emotionFilter
+    ? '다른 감정을 선택해보세요'
+    : EMPTY_STATE_MESSAGES.feed.description;
 
   return (
     <Container>
       <StatusBar style="auto" />
       <View className="flex-1 relative">
-        <ScreenHeader title="은둔마을" rightContent={adminButton}>
+        <ScreenHeader title="은둔마을" greeting={greeting} rightContent={adminButton}>
           <View className="flex-row items-center gap-2 mt-2">
             <Pressable
               onPress={() => pushSearch(router)}
@@ -102,18 +145,31 @@ export default function HomeScreen() {
               <Text className="text-sm text-gray-500 dark:text-stone-400">검색</Text>
             </Pressable>
           </View>
-          <SortTabs value={sortOrder} onChange={setSortOrder} />
+          {!emotionFilter && <SortTabs value={sortOrder} onChange={setSortOrder} />}
+          {emotionFilter && (
+            <View className="flex-row items-center mt-2 gap-2">
+              <Text className="text-sm text-gray-600 dark:text-stone-300">
+                {`'${emotionFilter}' 감정의 이야기들`}
+              </Text>
+              <Pressable
+                onPress={() => setEmotionFilter(null)}
+                className="px-2 py-1 rounded-full bg-stone-200 dark:bg-stone-700 active:opacity-70"
+                accessibilityLabel="필터 해제">
+                <Text className="text-xs text-stone-600 dark:text-stone-300">전체 보기</Text>
+              </Pressable>
+            </View>
+          )}
         </ScreenHeader>
 
         <PostList
           posts={posts}
-          loading={loading || isFetchingNextPage}
+          loading={isLoading || isFetchingNextPage}
           error={error?.message ?? null}
           onRefresh={handleRefresh}
           onLoadMore={handleLoadMore}
-          hasMore={!!hasNextPage}
-          emptyTitle={EMPTY_STATE_MESSAGES.feed.title}
-          emptyDescription={EMPTY_STATE_MESSAGES.feed.description}
+          hasMore={!emotionFilter && !!hasNextPage}
+          emptyTitle={emptyTitle}
+          emptyDescription={emptyDescription}
           listHeader={listHeader}
         />
 

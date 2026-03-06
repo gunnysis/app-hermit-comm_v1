@@ -9,6 +9,7 @@ import { EmptyState } from '@/shared/components/EmptyState';
 import { api } from '@/shared/lib/api';
 import { draftStorage } from '@/shared/lib/storage';
 import { ALLOWED_EMOTIONS, EMOTION_EMOJI } from '@/shared/lib/constants';
+import { useQuery } from '@tanstack/react-query';
 import type { Post } from '@/types';
 
 const RECENT_SEARCHES_KEY = 'search_recent';
@@ -107,8 +108,23 @@ export default function SearchScreen() {
     setSelectedEmotion((prev) => (prev === emotion ? '' : emotion));
   }, []);
 
+  const { data: emotionPosts, isLoading: emotionLoading } = useQuery({
+    queryKey: ['postsByEmotion', selectedEmotion],
+    queryFn: () => api.getPostsByEmotion(selectedEmotion, 50, 0),
+    enabled: selectedEmotion.length > 0 && debouncedQuery.trim().length === 0,
+  });
+
+  const displayPosts = useMemo(() => {
+    if (selectedEmotion && !debouncedQuery.trim()) {
+      return (emotionPosts ?? []) as Post[];
+    }
+    return posts;
+  }, [selectedEmotion, debouncedQuery, emotionPosts, posts]);
+
+  const isLoading = selectedEmotion && !debouncedQuery.trim() ? emotionLoading : loading;
+
   const hasActiveFilter = debouncedQuery.trim().length > 0 || selectedEmotion.length > 0;
-  const isEmpty = !loading && posts.length === 0 && hasActiveFilter;
+  const isEmpty = !isLoading && displayPosts.length === 0 && hasActiveFilter;
   const showRecent = !hasActiveFilter && recentSearches.length > 0;
 
   const listError = useMemo(() => (isEmpty && error ? error : null), [isEmpty, error]);
@@ -194,8 +210,8 @@ export default function SearchScreen() {
           />
         ) : (
           <PostList
-            posts={posts}
-            loading={loading}
+            posts={displayPosts}
+            loading={isLoading}
             error={listError}
             onRefresh={handleRefresh}
             hasMore={false}
