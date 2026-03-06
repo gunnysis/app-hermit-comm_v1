@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { View, Text, Pressable, ScrollView } from 'react-native';
+import { View, Text, Pressable, ScrollView, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Container } from '@/shared/components/Container';
@@ -8,7 +8,12 @@ import { PostList } from '@/features/posts/components/PostList';
 import { EmptyState } from '@/shared/components/EmptyState';
 import { api } from '@/shared/lib/api';
 import { draftStorage } from '@/shared/lib/storage';
-import { ALLOWED_EMOTIONS, EMOTION_EMOJI } from '@/shared/lib/constants';
+import {
+  ALLOWED_EMOTIONS,
+  EMOTION_EMOJI,
+  EMOTION_COLOR_MAP,
+  EMPTY_STATE_MESSAGES,
+} from '@/shared/lib/constants';
 import { useQuery } from '@tanstack/react-query';
 import type { Post } from '@/types';
 
@@ -36,6 +41,7 @@ function addRecentSearch(query: string): void {
 
 export default function SearchScreen() {
   const router = useRouter();
+  const isDark = useColorScheme() === 'dark';
   const params = useLocalSearchParams<{ q?: string; emotion?: string }>();
   const initialQ = params.q ?? '';
   const initialEmotion = params.emotion ?? '';
@@ -160,22 +166,40 @@ export default function SearchScreen() {
           horizontal
           showsHorizontalScrollIndicator={false}
           className="border-b border-cream-200 dark:border-stone-700"
-          contentContainerClassName="px-4 py-2 gap-2">
+          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 10, gap: 8 }}>
           {ALLOWED_EMOTIONS.map((emotion) => {
             const isActive = selectedEmotion === emotion;
             const emoji = EMOTION_EMOJI[emotion] ?? '💬';
+            const colors = EMOTION_COLOR_MAP[emotion];
             return (
               <Pressable
                 key={emotion}
                 onPress={() => handleEmotionPress(emotion)}
-                className={`rounded-full px-3 py-1.5 active:opacity-80 ${
-                  isActive ? 'bg-happy-600 dark:bg-happy-700' : 'bg-stone-100 dark:bg-stone-800'
-                }`}
+                style={
+                  isActive && colors
+                    ? {
+                        backgroundColor: colors.gradient[0],
+                        borderColor: colors.gradient[1],
+                        borderWidth: 1.5,
+                        shadowColor: colors.gradient[1],
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 3,
+                      }
+                    : {
+                        backgroundColor: isDark ? '#292524' : '#F5F5F4',
+                        borderColor: isDark ? '#44403C' : '#E7E5E4',
+                        borderWidth: 1.5,
+                      }
+                }
+                className="rounded-full px-3.5 py-2 active:opacity-80"
                 accessibilityLabel={`${emotion} 필터${isActive ? ' (선택됨)' : ''}`}
                 accessibilityRole="button">
                 <Text
-                  className={`text-sm ${
-                    isActive ? 'text-white font-medium' : 'text-stone-600 dark:text-stone-300'
+                  style={isActive && colors ? { color: '#44403C' } : undefined}
+                  className={`text-sm font-medium ${
+                    isActive ? '' : 'text-stone-600 dark:text-stone-300'
                   }`}>
                   {emoji} {emotion}
                 </Text>
@@ -185,16 +209,25 @@ export default function SearchScreen() {
         </ScrollView>
 
         {selectedEmotion && !debouncedQuery.trim() && (
-          <View className="px-4 py-2 bg-cream-50 dark:bg-stone-900 border-b border-cream-200 dark:border-stone-700">
+          <View
+            style={
+              EMOTION_COLOR_MAP[selectedEmotion]
+                ? { backgroundColor: EMOTION_COLOR_MAP[selectedEmotion].gradient[0] + '40' }
+                : undefined
+            }
+            className="px-4 py-2.5 border-b border-cream-200 dark:border-stone-700">
             <View className="flex-row items-center justify-between">
-              <Text className="text-sm text-gray-600 dark:text-stone-300">
-                {`'${selectedEmotion}' 감정의 이야기들`}
-              </Text>
+              <View className="flex-row items-center gap-2">
+                <Text className="text-lg">{EMOTION_EMOJI[selectedEmotion] ?? '💬'}</Text>
+                <Text className="text-sm font-medium text-stone-700 dark:text-stone-200">
+                  {`'${selectedEmotion}' 감정의 이야기들`}
+                </Text>
+              </View>
               <Pressable
                 onPress={() => setSelectedEmotion('')}
-                className="px-2 py-1 rounded-full bg-stone-200 dark:bg-stone-700 active:opacity-70"
+                className="px-2.5 py-1 rounded-full bg-stone-200/80 dark:bg-stone-700 active:opacity-70"
                 accessibilityLabel="필터 해제">
-                <Text className="text-xs text-stone-600 dark:text-stone-300">초기화</Text>
+                <Text className="text-xs font-medium text-stone-600 dark:text-stone-300">✕ 초기화</Text>
               </Pressable>
             </View>
           </View>
@@ -202,16 +235,18 @@ export default function SearchScreen() {
 
         {showRecent && (
           <View className="px-4 py-3 border-b border-cream-200 dark:border-stone-700">
-            <Text className="text-sm text-gray-500 dark:text-stone-400 mb-2">최근 검색어</Text>
+            <Text className="text-xs font-semibold tracking-wide uppercase text-stone-400 dark:text-stone-500 mb-2.5">
+              최근 검색어
+            </Text>
             <View className="flex-row flex-wrap gap-2">
               {recentSearches.map((q) => (
                 <Pressable
                   key={q}
                   onPress={() => handleRecentPress(q)}
-                  className="rounded-full bg-stone-100 dark:bg-stone-800 px-3 py-1.5 active:opacity-80"
+                  className="rounded-full bg-cream-50 dark:bg-stone-800 px-3.5 py-2 border border-cream-200 dark:border-stone-700 active:opacity-80"
                   accessibilityLabel={`검색어: ${q}`}
                   accessibilityRole="button">
-                  <Text className="text-sm text-stone-600 dark:text-stone-300">{q}</Text>
+                  <Text className="text-sm text-stone-600 dark:text-stone-300">🔍 {q}</Text>
                 </Pressable>
               ))}
             </View>
@@ -220,15 +255,15 @@ export default function SearchScreen() {
 
         {isEmpty ? (
           <EmptyState
-            icon="🔍"
+            icon={selectedEmotion ? (EMOTION_EMOJI[selectedEmotion] ?? '🔍') : '🔍'}
             title={
               selectedEmotion && !debouncedQuery.trim()
-                ? `'${selectedEmotion}' 감정의 글이 없어요`
-                : '검색 결과가 없어요.'
+                ? EMPTY_STATE_MESSAGES.emotion_filter.title
+                : '검색 결과가 없어요'
             }
             description={
               selectedEmotion && !debouncedQuery.trim()
-                ? '다른 감정을 선택해보세요.'
+                ? EMPTY_STATE_MESSAGES.emotion_filter.description
                 : '다른 검색어로 시도해보세요.'
             }
           />
