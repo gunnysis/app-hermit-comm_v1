@@ -75,7 +75,7 @@ export default function SearchScreen() {
   }, [query]);
 
   const trimmedQuery = debouncedQuery.trim();
-  const hasTextQuery = trimmedQuery.length >= 2;
+  const hasTextQuery = trimmedQuery.length >= SEARCH_CONFIG.MIN_QUERY_LENGTH;
 
   // --- v2 검색 (텍스트 있을 때) ---
   const {
