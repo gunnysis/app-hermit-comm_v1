@@ -17,7 +17,7 @@ interface UsePostDetailCommentsOptions {
 
 /**
  * 게시글 댓글 쿼리 + 실시간 구독 + 작성/수정/삭제 핸들러.
- * 댓글 작성/삭제 시 boardPosts·groupPosts 무효화.
+ * 댓글 작성/삭제 시 boardPosts 무효화.
  */
 export function usePostDetailComments({
   postId,
