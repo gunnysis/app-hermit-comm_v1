@@ -1,0 +1,6 @@
+# 중앙 레포(supabase-hermit)에서 동기화되는 generated 파일
+# prettier 포맷팅으로 중앙과 불일치가 발생하므로 제외
+src/types/database.gen.ts
+src/shared/lib/constants.generated.ts
+src/shared/lib/utils.generated.ts
+src/types/database.types.ts

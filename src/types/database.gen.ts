@@ -2,1189 +2,1197 @@
 // Do not edit manually. Run 'bash scripts/gen-types.sh' to regenerate.
 // Generated at: 2026-03-12T10:59:57Z
 
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '14.1';
-  };
+    PostgrestVersion: "14.1"
+  }
   public: {
     Tables: {
       app_admin: {
         Row: {
-          created_at: string;
-          user_id: string;
-        };
+          created_at: string
+          user_id: string
+        }
         Insert: {
-          created_at?: string;
-          user_id: string;
-        };
+          created_at?: string
+          user_id: string
+        }
         Update: {
-          created_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       boards: {
         Row: {
-          anon_mode: string;
-          created_at: string;
-          description: string | null;
-          group_id: number | null;
-          id: number;
-          name: string;
-          updated_at: string;
-          visibility: string;
-        };
+          anon_mode: string
+          created_at: string
+          description: string | null
+          group_id: number | null
+          id: number
+          name: string
+          updated_at: string
+          visibility: string
+        }
         Insert: {
-          anon_mode?: string;
-          created_at?: string;
-          description?: string | null;
-          group_id?: number | null;
-          id?: number;
-          name: string;
-          updated_at?: string;
-          visibility?: string;
-        };
+          anon_mode?: string
+          created_at?: string
+          description?: string | null
+          group_id?: number | null
+          id?: number
+          name: string
+          updated_at?: string
+          visibility?: string
+        }
         Update: {
-          anon_mode?: string;
-          created_at?: string;
-          description?: string | null;
-          group_id?: number | null;
-          id?: number;
-          name?: string;
-          updated_at?: string;
-          visibility?: string;
-        };
+          anon_mode?: string
+          created_at?: string
+          description?: string | null
+          group_id?: number | null
+          id?: number
+          name?: string
+          updated_at?: string
+          visibility?: string
+        }
         Relationships: [
           {
-            foreignKeyName: 'boards_group_id_fkey';
-            columns: ['group_id'];
-            isOneToOne: false;
-            referencedRelation: 'groups';
-            referencedColumns: ['id'];
+            foreignKeyName: "boards_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       comments: {
         Row: {
-          author_id: string;
-          board_id: number | null;
-          content: string;
-          created_at: string;
-          deleted_at: string | null;
-          display_name: string;
-          group_id: number | null;
-          id: number;
-          is_anonymous: boolean;
-          post_id: number;
-          updated_at: string;
-        };
+          author_id: string
+          board_id: number | null
+          content: string
+          created_at: string
+          deleted_at: string | null
+          display_name: string
+          group_id: number | null
+          id: number
+          is_anonymous: boolean
+          post_id: number
+          updated_at: string
+        }
         Insert: {
-          author_id: string;
-          board_id?: number | null;
-          content: string;
-          created_at?: string;
-          deleted_at?: string | null;
-          display_name?: string;
-          group_id?: number | null;
-          id?: number;
-          is_anonymous?: boolean;
-          post_id: number;
-          updated_at?: string;
-        };
+          author_id: string
+          board_id?: number | null
+          content: string
+          created_at?: string
+          deleted_at?: string | null
+          display_name?: string
+          group_id?: number | null
+          id?: number
+          is_anonymous?: boolean
+          post_id: number
+          updated_at?: string
+        }
         Update: {
-          author_id?: string;
-          board_id?: number | null;
-          content?: string;
-          created_at?: string;
-          deleted_at?: string | null;
-          display_name?: string;
-          group_id?: number | null;
-          id?: number;
-          is_anonymous?: boolean;
-          post_id?: number;
-          updated_at?: string;
-        };
+          author_id?: string
+          board_id?: number | null
+          content?: string
+          created_at?: string
+          deleted_at?: string | null
+          display_name?: string
+          group_id?: number | null
+          id?: number
+          is_anonymous?: boolean
+          post_id?: number
+          updated_at?: string
+        }
         Relationships: [
           {
-            foreignKeyName: 'comments_board_id_fkey';
-            columns: ['board_id'];
-            isOneToOne: false;
-            referencedRelation: 'boards';
-            referencedColumns: ['id'];
+            foreignKeyName: "comments_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "boards"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'comments_group_id_fkey';
-            columns: ['group_id'];
-            isOneToOne: false;
-            referencedRelation: 'groups';
-            referencedColumns: ['id'];
+            foreignKeyName: "comments_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'comments_post_id_fkey';
-            columns: ['post_id'];
-            isOneToOne: false;
-            referencedRelation: 'posts';
-            referencedColumns: ['id'];
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'comments_post_id_fkey';
-            columns: ['post_id'];
-            isOneToOne: false;
-            referencedRelation: 'posts_with_like_count';
-            referencedColumns: ['id'];
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_with_like_count"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       group_members: {
         Row: {
-          group_id: number;
-          id: number;
-          joined_at: string;
-          left_at: string | null;
-          nickname: string | null;
-          role: string;
-          status: string;
-          user_id: string;
-        };
+          group_id: number
+          id: number
+          joined_at: string
+          left_at: string | null
+          nickname: string | null
+          role: string
+          status: string
+          user_id: string
+        }
         Insert: {
-          group_id: number;
-          id?: never;
-          joined_at?: string;
-          left_at?: string | null;
-          nickname?: string | null;
-          role?: string;
-          status?: string;
-          user_id: string;
-        };
+          group_id: number
+          id?: never
+          joined_at?: string
+          left_at?: string | null
+          nickname?: string | null
+          role?: string
+          status?: string
+          user_id: string
+        }
         Update: {
-          group_id?: number;
-          id?: never;
-          joined_at?: string;
-          left_at?: string | null;
-          nickname?: string | null;
-          role?: string;
-          status?: string;
-          user_id?: string;
-        };
+          group_id?: number
+          id?: never
+          joined_at?: string
+          left_at?: string | null
+          nickname?: string | null
+          role?: string
+          status?: string
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: 'group_members_group_id_fkey';
-            columns: ['group_id'];
-            isOneToOne: false;
-            referencedRelation: 'groups';
-            referencedColumns: ['id'];
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       groups: {
         Row: {
-          created_at: string;
-          description: string | null;
-          id: number;
-          invite_code: string | null;
-          join_mode: string;
-          name: string;
-          owner_id: string | null;
-          updated_at: string;
-        };
+          created_at: string
+          description: string | null
+          id: number
+          invite_code: string | null
+          join_mode: string
+          name: string
+          owner_id: string | null
+          updated_at: string
+        }
         Insert: {
-          created_at?: string;
-          description?: string | null;
-          id?: number;
-          invite_code?: string | null;
-          join_mode?: string;
-          name: string;
-          owner_id?: string | null;
-          updated_at?: string;
-        };
+          created_at?: string
+          description?: string | null
+          id?: number
+          invite_code?: string | null
+          join_mode?: string
+          name: string
+          owner_id?: string | null
+          updated_at?: string
+        }
         Update: {
-          created_at?: string;
-          description?: string | null;
-          id?: number;
-          invite_code?: string | null;
-          join_mode?: string;
-          name?: string;
-          owner_id?: string | null;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string
+          description?: string | null
+          id?: number
+          invite_code?: string | null
+          join_mode?: string
+          name?: string
+          owner_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       post_analysis: {
         Row: {
-          analyzed_at: string;
-          emotions: string[];
-          error_reason: string | null;
-          id: number;
-          last_attempted_at: string | null;
-          post_id: number;
-          retry_count: number;
-          status: string;
-        };
+          analyzed_at: string
+          emotions: string[]
+          error_reason: string | null
+          id: number
+          last_attempted_at: string | null
+          post_id: number
+          retry_count: number
+          status: string
+        }
         Insert: {
-          analyzed_at?: string;
-          emotions?: string[];
-          error_reason?: string | null;
-          id?: number;
-          last_attempted_at?: string | null;
-          post_id: number;
-          retry_count?: number;
-          status?: string;
-        };
+          analyzed_at?: string
+          emotions?: string[]
+          error_reason?: string | null
+          id?: number
+          last_attempted_at?: string | null
+          post_id: number
+          retry_count?: number
+          status?: string
+        }
         Update: {
-          analyzed_at?: string;
-          emotions?: string[];
-          error_reason?: string | null;
-          id?: number;
-          last_attempted_at?: string | null;
-          post_id?: number;
-          retry_count?: number;
-          status?: string;
-        };
+          analyzed_at?: string
+          emotions?: string[]
+          error_reason?: string | null
+          id?: number
+          last_attempted_at?: string | null
+          post_id?: number
+          retry_count?: number
+          status?: string
+        }
         Relationships: [
           {
-            foreignKeyName: 'post_analysis_post_id_fkey';
-            columns: ['post_id'];
-            isOneToOne: true;
-            referencedRelation: 'posts';
-            referencedColumns: ['id'];
+            foreignKeyName: "post_analysis_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'post_analysis_post_id_fkey';
-            columns: ['post_id'];
-            isOneToOne: true;
-            referencedRelation: 'posts_with_like_count';
-            referencedColumns: ['id'];
+            foreignKeyName: "post_analysis_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "posts_with_like_count"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       posts: {
         Row: {
-          author_id: string;
-          board_id: number | null;
-          content: string;
-          created_at: string;
-          deleted_at: string | null;
-          display_name: string;
-          group_id: number | null;
-          id: number;
-          image_url: string | null;
-          initial_emotions: string[] | null;
-          is_anonymous: boolean;
-          member_id: number | null;
-          title: string;
-          updated_at: string;
-        };
+          author_id: string
+          board_id: number | null
+          content: string
+          created_at: string
+          deleted_at: string | null
+          display_name: string
+          group_id: number | null
+          id: number
+          image_url: string | null
+          initial_emotions: string[] | null
+          is_anonymous: boolean
+          member_id: number | null
+          title: string
+          updated_at: string
+        }
         Insert: {
-          author_id: string;
-          board_id?: number | null;
-          content: string;
-          created_at?: string;
-          deleted_at?: string | null;
-          display_name?: string;
-          group_id?: number | null;
-          id?: number;
-          image_url?: string | null;
-          initial_emotions?: string[] | null;
-          is_anonymous?: boolean;
-          member_id?: number | null;
-          title: string;
-          updated_at?: string;
-        };
+          author_id: string
+          board_id?: number | null
+          content: string
+          created_at?: string
+          deleted_at?: string | null
+          display_name?: string
+          group_id?: number | null
+          id?: number
+          image_url?: string | null
+          initial_emotions?: string[] | null
+          is_anonymous?: boolean
+          member_id?: number | null
+          title: string
+          updated_at?: string
+        }
         Update: {
-          author_id?: string;
-          board_id?: number | null;
-          content?: string;
-          created_at?: string;
-          deleted_at?: string | null;
-          display_name?: string;
-          group_id?: number | null;
-          id?: number;
-          image_url?: string | null;
-          initial_emotions?: string[] | null;
-          is_anonymous?: boolean;
-          member_id?: number | null;
-          title?: string;
-          updated_at?: string;
-        };
+          author_id?: string
+          board_id?: number | null
+          content?: string
+          created_at?: string
+          deleted_at?: string | null
+          display_name?: string
+          group_id?: number | null
+          id?: number
+          image_url?: string | null
+          initial_emotions?: string[] | null
+          is_anonymous?: boolean
+          member_id?: number | null
+          title?: string
+          updated_at?: string
+        }
         Relationships: [
           {
-            foreignKeyName: 'posts_board_id_fkey';
-            columns: ['board_id'];
-            isOneToOne: false;
-            referencedRelation: 'boards';
-            referencedColumns: ['id'];
+            foreignKeyName: "posts_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "boards"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'posts_group_id_fkey';
-            columns: ['group_id'];
-            isOneToOne: false;
-            referencedRelation: 'groups';
-            referencedColumns: ['id'];
+            foreignKeyName: "posts_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'posts_member_id_fkey';
-            columns: ['member_id'];
-            isOneToOne: false;
-            referencedRelation: 'group_members';
-            referencedColumns: ['id'];
+            foreignKeyName: "posts_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "group_members"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       reactions: {
         Row: {
-          count: number;
-          id: number;
-          post_id: number;
-          reaction_type: string;
-        };
+          count: number
+          id: number
+          post_id: number
+          reaction_type: string
+        }
         Insert: {
-          count?: number;
-          id?: number;
-          post_id: number;
-          reaction_type: string;
-        };
+          count?: number
+          id?: number
+          post_id: number
+          reaction_type: string
+        }
         Update: {
-          count?: number;
-          id?: number;
-          post_id?: number;
-          reaction_type?: string;
-        };
+          count?: number
+          id?: number
+          post_id?: number
+          reaction_type?: string
+        }
         Relationships: [
           {
-            foreignKeyName: 'reactions_post_id_fkey';
-            columns: ['post_id'];
-            isOneToOne: false;
-            referencedRelation: 'posts';
-            referencedColumns: ['id'];
+            foreignKeyName: "reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'reactions_post_id_fkey';
-            columns: ['post_id'];
-            isOneToOne: false;
-            referencedRelation: 'posts_with_like_count';
-            referencedColumns: ['id'];
+            foreignKeyName: "reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_with_like_count"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       user_preferences: {
         Row: {
-          created_at: string | null;
-          notification_enabled: boolean | null;
-          onboarding_completed: boolean | null;
-          preferred_emotions: string[] | null;
-          theme_preference: string | null;
-          updated_at: string | null;
-          user_id: string;
-        };
+          created_at: string | null
+          notification_enabled: boolean | null
+          onboarding_completed: boolean | null
+          preferred_emotions: string[] | null
+          theme_preference: string | null
+          updated_at: string | null
+          user_id: string
+        }
         Insert: {
-          created_at?: string | null;
-          notification_enabled?: boolean | null;
-          onboarding_completed?: boolean | null;
-          preferred_emotions?: string[] | null;
-          theme_preference?: string | null;
-          updated_at?: string | null;
-          user_id: string;
-        };
+          created_at?: string | null
+          notification_enabled?: boolean | null
+          onboarding_completed?: boolean | null
+          preferred_emotions?: string[] | null
+          theme_preference?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
         Update: {
-          created_at?: string | null;
-          notification_enabled?: boolean | null;
-          onboarding_completed?: boolean | null;
-          preferred_emotions?: string[] | null;
-          theme_preference?: string | null;
-          updated_at?: string | null;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          created_at?: string | null
+          notification_enabled?: boolean | null
+          onboarding_completed?: boolean | null
+          preferred_emotions?: string[] | null
+          theme_preference?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_reactions: {
         Row: {
-          created_at: string | null;
-          id: number;
-          post_id: number;
-          reaction_type: string;
-          user_id: string;
-        };
+          created_at: string | null
+          id: number
+          post_id: number
+          reaction_type: string
+          user_id: string
+        }
         Insert: {
-          created_at?: string | null;
-          id?: number;
-          post_id: number;
-          reaction_type: string;
-          user_id: string;
-        };
+          created_at?: string | null
+          id?: number
+          post_id: number
+          reaction_type: string
+          user_id: string
+        }
         Update: {
-          created_at?: string | null;
-          id?: number;
-          post_id?: number;
-          reaction_type?: string;
-          user_id?: string;
-        };
+          created_at?: string | null
+          id?: number
+          post_id?: number
+          reaction_type?: string
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: 'user_reactions_post_id_fkey';
-            columns: ['post_id'];
-            isOneToOne: false;
-            referencedRelation: 'posts';
-            referencedColumns: ['id'];
+            foreignKeyName: "user_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'user_reactions_post_id_fkey';
-            columns: ['post_id'];
-            isOneToOne: false;
-            referencedRelation: 'posts_with_like_count';
-            referencedColumns: ['id'];
+            foreignKeyName: "user_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts_with_like_count"
+            referencedColumns: ["id"]
           },
-        ];
-      };
-    };
+        ]
+      }
+    }
     Views: {
       posts_with_like_count: {
         Row: {
-          analysis_status: string | null;
-          author_id: string | null;
-          board_id: number | null;
-          comment_count: number | null;
-          content: string | null;
-          created_at: string | null;
-          display_name: string | null;
-          emotions: string[] | null;
-          group_id: number | null;
-          id: number | null;
-          image_url: string | null;
-          initial_emotions: string[] | null;
-          is_anonymous: boolean | null;
-          like_count: number | null;
-          member_id: number | null;
-          title: string | null;
-        };
+          analysis_status: string | null
+          author_id: string | null
+          board_id: number | null
+          comment_count: number | null
+          content: string | null
+          created_at: string | null
+          display_name: string | null
+          emotions: string[] | null
+          group_id: number | null
+          id: number | null
+          image_url: string | null
+          initial_emotions: string[] | null
+          is_anonymous: boolean | null
+          like_count: number | null
+          member_id: number | null
+          title: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: 'posts_board_id_fkey';
-            columns: ['board_id'];
-            isOneToOne: false;
-            referencedRelation: 'boards';
-            referencedColumns: ['id'];
+            foreignKeyName: "posts_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "boards"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'posts_group_id_fkey';
-            columns: ['group_id'];
-            isOneToOne: false;
-            referencedRelation: 'groups';
-            referencedColumns: ['id'];
+            foreignKeyName: "posts_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'posts_member_id_fkey';
-            columns: ['member_id'];
-            isOneToOne: false;
-            referencedRelation: 'group_members';
-            referencedColumns: ['id'];
+            foreignKeyName: "posts_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "group_members"
+            referencedColumns: ["id"]
           },
-        ];
-      };
-    };
+        ]
+      }
+    }
     Functions: {
       cleanup_orphan_group_members: {
-        Args: { days_inactive?: number };
-        Returns: number;
-      };
-      cleanup_stuck_analyses: { Args: never; Returns: number };
+        Args: { days_inactive?: number }
+        Returns: number
+      }
+      cleanup_stuck_analyses: { Args: never; Returns: number }
       get_emotion_timeline: {
-        Args: { p_days?: number };
+        Args: { p_days?: number }
         Returns: {
-          cnt: number;
-          day: string;
-          emotion: string;
-        }[];
-      };
+          cnt: number
+          day: string
+          emotion: string
+        }[]
+      }
       get_emotion_trend: {
-        Args: { days?: number };
+        Args: { days?: number }
         Returns: {
-          cnt: number;
-          emotion: string;
-          pct: number;
-        }[];
-      };
-      get_my_activity_summary: { Args: never; Returns: Json };
+          cnt: number
+          emotion: string
+          pct: number
+        }[]
+      }
+      get_my_activity_summary: { Args: never; Returns: Json }
       get_post_reactions: {
-        Args: { p_post_id: number };
+        Args: { p_post_id: number }
         Returns: {
-          count: number;
-          reaction_type: string;
-          user_reacted: boolean;
-        }[];
-      };
+          count: number
+          reaction_type: string
+          user_reacted: boolean
+        }[]
+      }
       get_posts_by_emotion: {
-        Args: { p_emotion: string; p_limit?: number; p_offset?: number };
+        Args: { p_emotion: string; p_limit?: number; p_offset?: number }
         Returns: {
-          author_id: string;
-          board_id: number;
-          comment_count: number;
-          content: string;
-          created_at: string;
-          display_name: string;
-          emotions: string[];
-          group_id: number;
-          id: number;
-          image_url: string;
-          initial_emotions: string[];
-          is_anonymous: boolean;
-          like_count: number;
-          title: string;
-        }[];
-      };
+          author_id: string
+          board_id: number
+          comment_count: number
+          content: string
+          created_at: string
+          display_name: string
+          emotions: string[]
+          group_id: number
+          id: number
+          image_url: string
+          initial_emotions: string[]
+          is_anonymous: boolean
+          like_count: number
+          title: string
+        }[]
+      }
       get_recommended_posts_by_emotion: {
-        Args: { p_limit?: number; p_post_id: number };
+        Args: { p_limit?: number; p_post_id: number }
         Returns: {
-          board_id: number;
-          comment_count: number;
-          created_at: string;
-          emotions: string[];
-          id: number;
-          like_count: number;
-          score: number;
-          title: string;
-        }[];
-      };
+          board_id: number
+          comment_count: number
+          created_at: string
+          emotions: string[]
+          id: number
+          like_count: number
+          score: number
+          title: string
+        }[]
+      }
       get_similar_feeling_count: {
-        Args: { p_days?: number; p_post_id: number };
-        Returns: number;
-      };
+        Args: { p_days?: number; p_post_id: number }
+        Returns: number
+      }
       get_trending_posts: {
-        Args: { p_hours?: number; p_limit?: number };
+        Args: { p_hours?: number; p_limit?: number }
         Returns: {
-          board_id: number;
-          comment_count: number;
-          created_at: string;
-          display_name: string;
-          emotions: string[];
-          id: number;
-          like_count: number;
-          score: number;
-          title: string;
-        }[];
-      };
+          board_id: number
+          comment_count: number
+          created_at: string
+          display_name: string
+          emotions: string[]
+          id: number
+          like_count: number
+          score: number
+          title: string
+        }[]
+      }
       get_user_emotion_calendar: {
-        Args: { p_end?: string; p_start?: string; p_user_id: string };
+        Args: { p_end?: string; p_start?: string; p_user_id: string }
         Returns: {
-          day: string;
-          emotions: string[];
-          post_count: number;
-        }[];
-      };
-      is_group_member: { Args: { p_group_id: number }; Returns: boolean };
+          day: string
+          emotions: string[]
+          post_count: number
+        }[]
+      }
+      is_group_member: { Args: { p_group_id: number }; Returns: boolean }
       pgroonga_command:
         | { Args: { groongacommand: string }; Returns: string }
         | {
-            Args: { arguments: string[]; groongacommand: string };
-            Returns: string;
-          };
+            Args: { arguments: string[]; groongacommand: string }
+            Returns: string
+          }
       pgroonga_command_escape_value: {
-        Args: { value: string };
-        Returns: string;
-      };
+        Args: { value: string }
+        Returns: string
+      }
       pgroonga_condition: {
         Args: {
-          column_name?: string;
-          fuzzy_max_distance_ratio?: number;
-          index_name?: string;
-          query?: string;
-          schema_name?: string;
-          scorers?: string[];
-          weights?: number[];
-        };
-        Returns: Database['public']['CompositeTypes']['pgroonga_condition'];
+          column_name?: string
+          fuzzy_max_distance_ratio?: number
+          index_name?: string
+          query?: string
+          schema_name?: string
+          scorers?: string[]
+          weights?: number[]
+        }
+        Returns: Database["public"]["CompositeTypes"]["pgroonga_condition"]
         SetofOptions: {
-          from: '*';
-          to: 'pgroonga_condition';
-          isOneToOne: true;
-          isSetofReturn: false;
-        };
-      };
+          from: "*"
+          to: "pgroonga_condition"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       pgroonga_equal_query_text_array: {
-        Args: { query: string; targets: string[] };
-        Returns: boolean;
-      };
+        Args: { query: string; targets: string[] }
+        Returns: boolean
+      }
       pgroonga_equal_query_text_array_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              targets: string[];
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              targets: string[]
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              targets: string[];
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              targets: string[]
+            }
+            Returns: boolean
+          }
       pgroonga_equal_query_varchar_array: {
-        Args: { query: string; targets: string[] };
-        Returns: boolean;
-      };
+        Args: { query: string; targets: string[] }
+        Returns: boolean
+      }
       pgroonga_equal_query_varchar_array_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              targets: string[];
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              targets: string[]
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              targets: string[];
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              targets: string[]
+            }
+            Returns: boolean
+          }
       pgroonga_equal_text: {
-        Args: { other: string; target: string };
-        Returns: boolean;
-      };
+        Args: { other: string; target: string }
+        Returns: boolean
+      }
       pgroonga_equal_text_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              target: string;
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              target: string
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              target: string;
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              target: string
+            }
+            Returns: boolean
+          }
       pgroonga_equal_varchar: {
-        Args: { other: string; target: string };
-        Returns: boolean;
-      };
+        Args: { other: string; target: string }
+        Returns: boolean
+      }
       pgroonga_equal_varchar_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              target: string;
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              target: string
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              target: string;
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              target: string
+            }
+            Returns: boolean
+          }
       pgroonga_escape:
         | {
-            Args: { value: number };
+            Args: { value: number }
             Returns: {
-              error: true;
-            } & 'Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved';
+              error: true
+            } & "Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
           }
         | {
-            Args: { value: boolean };
+            Args: { value: boolean }
             Returns: {
-              error: true;
-            } & 'Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved';
+              error: true
+            } & "Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
           }
         | {
-            Args: { value: number };
+            Args: { value: number }
             Returns: {
-              error: true;
-            } & 'Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved';
+              error: true
+            } & "Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
           }
         | {
-            Args: { value: number };
+            Args: { value: number }
             Returns: {
-              error: true;
-            } & 'Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved';
+              error: true
+            } & "Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
           }
         | {
-            Args: { value: number };
+            Args: { value: number }
             Returns: {
-              error: true;
-            } & 'Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved';
+              error: true
+            } & "Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
           }
         | {
-            Args: { value: number };
+            Args: { value: number }
             Returns: {
-              error: true;
-            } & 'Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved';
+              error: true
+            } & "Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
           }
         | {
-            Args: { value: string };
+            Args: { value: string }
             Returns: {
-              error: true;
-            } & 'Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved';
+              error: true
+            } & "Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
           }
         | {
-            Args: { special_characters: string; value: string };
-            Returns: string;
+            Args: { special_characters: string; value: string }
+            Returns: string
           }
         | {
-            Args: { value: string };
+            Args: { value: string }
             Returns: {
-              error: true;
-            } & 'Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved';
+              error: true
+            } & "Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
           }
         | {
-            Args: { value: string };
+            Args: { value: string }
             Returns: {
-              error: true;
-            } & 'Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved';
-          };
-      pgroonga_flush: { Args: { indexname: unknown }; Returns: boolean };
+              error: true
+            } & "Could not choose the best candidate function between: public.pgroonga_escape(value => bool), public.pgroonga_escape(value => int8), public.pgroonga_escape(value => int2), public.pgroonga_escape(value => int4), public.pgroonga_escape(value => text), public.pgroonga_escape(value => float4), public.pgroonga_escape(value => float8), public.pgroonga_escape(value => timestamp), public.pgroonga_escape(value => timestamptz). Try renaming the parameters or the function itself in the database so function overloading can be resolved"
+          }
+      pgroonga_flush: { Args: { indexname: unknown }; Returns: boolean }
       pgroonga_highlight_html:
         | { Args: { keywords: string[]; target: string }; Returns: string }
         | {
-            Args: { indexname: unknown; keywords: string[]; target: string };
-            Returns: string;
+            Args: { indexname: unknown; keywords: string[]; target: string }
+            Returns: string
           }
         | { Args: { keywords: string[]; targets: string[] }; Returns: string[] }
         | {
-            Args: { indexname: unknown; keywords: string[]; targets: string[] };
-            Returns: string[];
-          };
+            Args: { indexname: unknown; keywords: string[]; targets: string[] }
+            Returns: string[]
+          }
       pgroonga_index_column_name:
         | { Args: { columnindex: number; indexname: unknown }; Returns: string }
-        | { Args: { columnname: string; indexname: unknown }; Returns: string };
-      pgroonga_is_writable: { Args: never; Returns: boolean };
-      pgroonga_list_broken_indexes: { Args: never; Returns: string[] };
-      pgroonga_list_lagged_indexes: { Args: never; Returns: string[] };
+        | { Args: { columnname: string; indexname: unknown }; Returns: string }
+      pgroonga_is_writable: { Args: never; Returns: boolean }
+      pgroonga_list_broken_indexes: { Args: never; Returns: string[] }
+      pgroonga_list_lagged_indexes: { Args: never; Returns: string[] }
       pgroonga_match_positions_byte:
         | { Args: { keywords: string[]; target: string }; Returns: number[] }
         | {
-            Args: { indexname: unknown; keywords: string[]; target: string };
-            Returns: number[];
-          };
+            Args: { indexname: unknown; keywords: string[]; target: string }
+            Returns: number[]
+          }
       pgroonga_match_positions_character:
         | { Args: { keywords: string[]; target: string }; Returns: number[] }
         | {
-            Args: { indexname: unknown; keywords: string[]; target: string };
-            Returns: number[];
-          };
+            Args: { indexname: unknown; keywords: string[]; target: string }
+            Returns: number[]
+          }
       pgroonga_match_term:
         | { Args: { target: string; term: string }; Returns: boolean }
         | { Args: { target: string[]; term: string }; Returns: boolean }
         | { Args: { target: string; term: string }; Returns: boolean }
-        | { Args: { target: string[]; term: string }; Returns: boolean };
+        | { Args: { target: string[]; term: string }; Returns: boolean }
       pgroonga_match_text_array_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              target: string[];
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              target: string[]
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              target: string[];
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              target: string[]
+            }
+            Returns: boolean
+          }
       pgroonga_match_text_array_condition_with_scorers: {
         Args: {
-          condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition_with_scorers'];
-          target: string[];
-        };
-        Returns: boolean;
-      };
+          condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition_with_scorers"]
+          target: string[]
+        }
+        Returns: boolean
+      }
       pgroonga_match_text_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              target: string;
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              target: string
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              target: string;
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              target: string
+            }
+            Returns: boolean
+          }
       pgroonga_match_text_condition_with_scorers: {
         Args: {
-          condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition_with_scorers'];
-          target: string;
-        };
-        Returns: boolean;
-      };
+          condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition_with_scorers"]
+          target: string
+        }
+        Returns: boolean
+      }
       pgroonga_match_varchar_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              target: string;
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              target: string
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              target: string;
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              target: string
+            }
+            Returns: boolean
+          }
       pgroonga_match_varchar_condition_with_scorers: {
         Args: {
-          condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition_with_scorers'];
-          target: string;
-        };
-        Returns: boolean;
-      };
+          condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition_with_scorers"]
+          target: string
+        }
+        Returns: boolean
+      }
       pgroonga_normalize:
         | { Args: { target: string }; Returns: string }
-        | { Args: { normalizername: string; target: string }; Returns: string };
+        | { Args: { normalizername: string; target: string }; Returns: string }
       pgroonga_prefix_varchar_condition:
         | {
             Args: {
-              conditoin: Database['public']['CompositeTypes']['pgroonga_condition'];
-              target: string;
-            };
-            Returns: boolean;
+              conditoin: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              target: string
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              conditoin: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              target: string;
-            };
-            Returns: boolean;
-          };
-      pgroonga_query_escape: { Args: { query: string }; Returns: string };
+              conditoin: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              target: string
+            }
+            Returns: boolean
+          }
+      pgroonga_query_escape: { Args: { query: string }; Returns: string }
       pgroonga_query_expand: {
         Args: {
-          query: string;
-          synonymscolumnname: string;
-          tablename: unknown;
-          termcolumnname: string;
-        };
-        Returns: string;
-      };
+          query: string
+          synonymscolumnname: string
+          tablename: unknown
+          termcolumnname: string
+        }
+        Returns: string
+      }
       pgroonga_query_extract_keywords: {
-        Args: { index_name?: string; query: string };
-        Returns: string[];
-      };
+        Args: { index_name?: string; query: string }
+        Returns: string[]
+      }
       pgroonga_query_text_array_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              targets: string[];
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              targets: string[]
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              targets: string[];
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              targets: string[]
+            }
+            Returns: boolean
+          }
       pgroonga_query_text_array_condition_with_scorers: {
         Args: {
-          condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition_with_scorers'];
-          targets: string[];
-        };
-        Returns: boolean;
-      };
+          condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition_with_scorers"]
+          targets: string[]
+        }
+        Returns: boolean
+      }
       pgroonga_query_text_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              target: string;
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              target: string
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              target: string;
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              target: string
+            }
+            Returns: boolean
+          }
       pgroonga_query_text_condition_with_scorers: {
         Args: {
-          condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition_with_scorers'];
-          target: string;
-        };
-        Returns: boolean;
-      };
+          condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition_with_scorers"]
+          target: string
+        }
+        Returns: boolean
+      }
       pgroonga_query_varchar_condition:
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_condition'];
-              target: string;
-            };
-            Returns: boolean;
+              condition: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+              target: string
+            }
+            Returns: boolean
           }
         | {
             Args: {
-              condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition'];
-              target: string;
-            };
-            Returns: boolean;
-          };
+              condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition"]
+              target: string
+            }
+            Returns: boolean
+          }
       pgroonga_query_varchar_condition_with_scorers: {
         Args: {
-          condition: Database['public']['CompositeTypes']['pgroonga_full_text_search_condition_with_scorers'];
-          target: string;
-        };
-        Returns: boolean;
-      };
+          condition: Database["public"]["CompositeTypes"]["pgroonga_full_text_search_condition_with_scorers"]
+          target: string
+        }
+        Returns: boolean
+      }
       pgroonga_regexp_text_array: {
-        Args: { pattern: string; targets: string[] };
-        Returns: boolean;
-      };
+        Args: { pattern: string; targets: string[] }
+        Returns: boolean
+      }
       pgroonga_regexp_text_array_condition: {
         Args: {
-          pattern: Database['public']['CompositeTypes']['pgroonga_condition'];
-          targets: string[];
-        };
-        Returns: boolean;
-      };
+          pattern: Database["public"]["CompositeTypes"]["pgroonga_condition"]
+          targets: string[]
+        }
+        Returns: boolean
+      }
       pgroonga_result_to_jsonb_objects: {
-        Args: { result: Json };
-        Returns: Json;
-      };
+        Args: { result: Json }
+        Returns: Json
+      }
       pgroonga_result_to_recordset: {
-        Args: { result: Json };
-        Returns: Record<string, unknown>[];
-      };
+        Args: { result: Json }
+        Returns: Record<string, unknown>[]
+      }
       pgroonga_score:
         | { Args: { row: Record<string, unknown> }; Returns: number }
-        | { Args: { ctid: unknown; tableoid: unknown }; Returns: number };
+        | { Args: { ctid: unknown; tableoid: unknown }; Returns: number }
       pgroonga_set_writable: {
-        Args: { newwritable: boolean };
-        Returns: boolean;
-      };
+        Args: { newwritable: boolean }
+        Returns: boolean
+      }
       pgroonga_snippet_html: {
-        Args: { keywords: string[]; target: string; width?: number };
-        Returns: string[];
-      };
-      pgroonga_table_name: { Args: { indexname: unknown }; Returns: string };
+        Args: { keywords: string[]; target: string; width?: number }
+        Returns: string[]
+      }
+      pgroonga_table_name: { Args: { indexname: unknown }; Returns: string }
       pgroonga_tokenize: {
-        Args: { options: string[]; target: string };
-        Returns: Json[];
-      };
-      pgroonga_vacuum: { Args: never; Returns: boolean };
+        Args: { options: string[]; target: string }
+        Returns: Json[]
+      }
+      pgroonga_vacuum: { Args: never; Returns: boolean }
       pgroonga_wal_apply:
         | { Args: never; Returns: number }
-        | { Args: { indexname: unknown }; Returns: number };
+        | { Args: { indexname: unknown }; Returns: number }
       pgroonga_wal_set_applied_position:
         | { Args: never; Returns: boolean }
         | { Args: { block: number; offset: number }; Returns: boolean }
         | { Args: { indexname: unknown }; Returns: boolean }
         | {
-            Args: { block: number; indexname: unknown; offset: number };
-            Returns: boolean;
-          };
+            Args: { block: number; indexname: unknown; offset: number }
+            Returns: boolean
+          }
       pgroonga_wal_status: {
-        Args: never;
+        Args: never
         Returns: {
-          current_block: number;
-          current_offset: number;
-          current_size: number;
-          last_block: number;
-          last_offset: number;
-          last_size: number;
-          name: string;
-          oid: unknown;
-        }[];
-      };
+          current_block: number
+          current_offset: number
+          current_size: number
+          last_block: number
+          last_offset: number
+          last_size: number
+          name: string
+          oid: unknown
+        }[]
+      }
       pgroonga_wal_truncate:
         | { Args: never; Returns: number }
-        | { Args: { indexname: unknown }; Returns: number };
+        | { Args: { indexname: unknown }; Returns: number }
       search_posts_v2: {
         Args: {
-          p_emotion?: string;
-          p_limit?: number;
-          p_offset?: number;
-          p_query: string;
-          p_sort?: string;
-        };
+          p_emotion?: string
+          p_limit?: number
+          p_offset?: number
+          p_query: string
+          p_sort?: string
+        }
         Returns: {
-          author_id: string;
-          board_id: number;
-          comment_count: number;
-          content: string;
-          content_highlight: string;
-          created_at: string;
-          display_name: string;
-          emotions: string[];
-          group_id: number;
-          id: number;
-          image_url: string;
-          initial_emotions: string[];
-          is_anonymous: boolean;
-          like_count: number;
-          relevance_score: number;
-          title: string;
-          title_highlight: string;
-        }[];
-      };
-      show_limit: { Args: never; Returns: number };
-      show_trgm: { Args: { '': string }; Returns: string[] };
+          author_id: string
+          board_id: number
+          comment_count: number
+          content: string
+          content_highlight: string
+          created_at: string
+          display_name: string
+          emotions: string[]
+          group_id: number
+          id: number
+          image_url: string
+          initial_emotions: string[]
+          is_anonymous: boolean
+          like_count: number
+          relevance_score: number
+          title: string
+          title_highlight: string
+        }[]
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
       soft_delete_comment: {
-        Args: { p_comment_id: number };
-        Returns: undefined;
-      };
-      soft_delete_post: { Args: { p_post_id: number }; Returns: undefined };
+        Args: { p_comment_id: number }
+        Returns: undefined
+      }
+      soft_delete_post: { Args: { p_post_id: number }; Returns: undefined }
       toggle_reaction: {
-        Args: { p_post_id: number; p_type: string };
-        Returns: Json;
-      };
-    };
+        Args: { p_post_id: number; p_type: string }
+        Returns: Json
+      }
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     CompositeTypes: {
       pgroonga_condition: {
-        query: string | null;
-        weigths: number[] | null;
-        scorers: string[] | null;
-        schema_name: string | null;
-        index_name: string | null;
-        column_name: string | null;
-        fuzzy_max_distance_ratio: number | null;
-      };
+        query: string | null
+        weigths: number[] | null
+        scorers: string[] | null
+        schema_name: string | null
+        index_name: string | null
+        column_name: string | null
+        fuzzy_max_distance_ratio: number | null
+      }
       pgroonga_full_text_search_condition: {
-        query: string | null;
-        weigths: number[] | null;
-        indexname: string | null;
-      };
+        query: string | null
+        weigths: number[] | null
+        indexname: string | null
+      }
       pgroonga_full_text_search_condition_with_scorers: {
-        query: string | null;
-        weigths: number[] | null;
-        scorers: string[] | null;
-        indexname: string | null;
-      };
-    };
-  };
-};
+        query: string | null
+        weigths: number[] | null
+        scorers: string[] | null
+        indexname: string | null
+      }
+    }
+  }
+}
 
-type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>;
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>];
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
-      Row: infer R;
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
-    ? (DefaultSchema['Tables'] & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R;
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
       }
       ? R
       : never
-    : never;
+    : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
-      Insert: infer I;
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I;
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
       }
       ? I
       : never
-    : never;
+    : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
-      Update: infer U;
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U;
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
       }
       ? U
       : never
-    : never;
+    : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema['Enums']
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
-    : never;
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema['CompositeTypes']
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
-    : never;
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
 
 export const Constants = {
   public: {
     Enums: {},
   },
-} as const;
+} as const

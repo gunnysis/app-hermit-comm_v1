@@ -2,268 +2,268 @@
 // 수정 시 반드시 이 파일에서만 수정하고 sync 실행할 것
 
 /** 게시판 익명 모드 */
-export type AnonMode = 'always_anon' | 'allow_choice' | 'require_name';
+export type AnonMode = 'always_anon' | 'allow_choice' | 'require_name'
 
 /** 그룹 참여 방식 */
-export type JoinMode = 'invite_only' | 'request_approve' | 'code_join';
+export type JoinMode = 'invite_only' | 'request_approve' | 'code_join'
 
 /** 그룹 멤버 역할 */
-export type MemberRole = 'owner' | 'member' | 'moderator';
+export type MemberRole = 'owner' | 'member' | 'moderator'
 
 /** 그룹 멤버 상태 */
-export type MemberStatus = 'pending' | 'approved' | 'rejected' | 'left';
+export type MemberStatus = 'pending' | 'approved' | 'rejected' | 'left'
 
 /** 감정 분석 상태 */
-export type AnalysisStatus = 'pending' | 'analyzing' | 'done' | 'failed';
+export type AnalysisStatus = 'pending' | 'analyzing' | 'done' | 'failed'
 
 export interface Group {
-  id: number;
-  name: string;
-  description: string | null;
-  owner_id: string;
-  join_mode: JoinMode;
-  invite_code: string | null;
-  created_at: string;
-  updated_at: string;
+  id: number
+  name: string
+  description: string | null
+  owner_id: string
+  join_mode: JoinMode
+  invite_code: string | null
+  created_at: string
+  updated_at: string
 }
 
 export interface Board {
-  id: number;
-  name: string;
-  description?: string | null;
-  visibility: 'public' | 'private';
-  anon_mode: AnonMode;
+  id: number
+  name: string
+  description?: string | null
+  visibility: 'public' | 'private'
+  anon_mode: AnonMode
   /** 그룹 전용 게시판일 때 설정 */
-  group_id?: number | null;
-  created_at: string;
-  updated_at: string;
+  group_id?: number | null
+  created_at: string
+  updated_at: string
 }
 
 export interface GroupMember {
-  id: number;
-  group_id: number;
-  user_id: string;
-  role: MemberRole;
-  status: MemberStatus;
-  nickname: string | null;
-  joined_at: string;
-  left_at: string | null;
+  id: number
+  group_id: number
+  user_id: string
+  role: MemberRole
+  status: MemberStatus
+  nickname: string | null
+  joined_at: string
+  left_at: string | null
 }
 
 export interface Post {
-  id: number;
-  title: string;
-  content: string;
-  author_id: string;
-  created_at: string;
-  updated_at?: string;
-  deleted_at?: string | null;
-  board_id?: number | null;
-  group_id?: number | null;
-  member_id?: number | null;
-  is_anonymous: boolean;
-  display_name: string;
-  comment_count?: number;
-  like_count?: number;
-  emotions?: string[] | null;
-  initial_emotions?: string[] | null;
-  image_url?: string | null;
+  id: number
+  title: string
+  content: string
+  author_id: string
+  created_at: string
+  updated_at?: string
+  deleted_at?: string | null
+  board_id?: number | null
+  group_id?: number | null
+  member_id?: number | null
+  is_anonymous: boolean
+  display_name: string
+  comment_count?: number
+  like_count?: number
+  emotions?: string[] | null
+  initial_emotions?: string[] | null
+  image_url?: string | null
 }
 
 /** 좋아요·댓글 수 포함 게시글 (posts_with_like_count 뷰) */
 export interface PostWithCounts extends Post {
-  like_count: number;
-  comment_count: number;
-  emotions: string[] | null;
+  like_count: number
+  comment_count: number
+  emotions: string[] | null
 }
 
 export interface PostAnalysis {
-  id: number;
-  post_id: number;
-  emotions: string[];
-  analyzed_at: string | null;
-  status: AnalysisStatus;
-  retry_count: number;
-  error_reason: string | null;
-  last_attempted_at: string | null;
+  id: number
+  post_id: number
+  emotions: string[]
+  analyzed_at: string | null
+  status: AnalysisStatus
+  retry_count: number
+  error_reason: string | null
+  last_attempted_at: string | null
 }
 
 export interface Comment {
-  id: number;
-  post_id: number;
-  content: string;
-  author_id: string;
-  created_at: string;
-  updated_at?: string;
-  deleted_at?: string | null;
-  board_id?: number | null;
-  group_id?: number | null;
-  is_anonymous: boolean;
-  display_name: string;
+  id: number
+  post_id: number
+  content: string
+  author_id: string
+  created_at: string
+  updated_at?: string
+  deleted_at?: string | null
+  board_id?: number | null
+  group_id?: number | null
+  is_anonymous: boolean
+  display_name: string
 }
 
 export interface Reaction {
-  id?: number;
-  post_id?: number;
-  reaction_type: string;
-  count: number;
+  id?: number
+  post_id?: number
+  reaction_type: string
+  count: number
 }
 
 export interface UserReaction {
-  id: number;
-  user_id: string;
-  post_id: number;
-  reaction_type: string;
-  created_at: string;
+  id: number
+  user_id: string
+  post_id: number
+  reaction_type: string
+  created_at: string
 }
 
 export interface ToggleReactionResponse {
-  reacted: boolean;
-  reaction_type: string;
+  reacted: boolean
+  reaction_type: string
 }
 
 export interface AppAdmin {
-  user_id: string;
-  created_at: string;
+  user_id: string
+  created_at: string
 }
 
 export interface EmotionTrend {
-  emotion: string;
-  cnt: number;
-  pct?: number;
+  emotion: string
+  cnt: number
+  pct?: number
 }
 
 /** 감정 기반 추천 게시글 (get_recommended_posts_by_emotion RPC 반환 타입) */
 export interface RecommendedPost {
-  id: number;
-  title: string;
-  board_id: number | null;
-  like_count: number;
-  comment_count: number;
-  emotions: string[];
-  created_at: string;
-  score?: number;
+  id: number
+  title: string
+  board_id: number | null
+  like_count: number
+  comment_count: number
+  emotions: string[]
+  created_at: string
+  score?: number
 }
 
 /** 트렌딩 게시글 (get_trending_posts RPC 반환 타입) */
 export interface TrendingPost {
-  id: number;
-  title: string;
-  board_id: number | null;
-  like_count: number;
-  comment_count: number;
-  emotions: string[] | null;
-  created_at: string;
-  display_name: string;
-  score: number;
+  id: number
+  title: string
+  board_id: number | null
+  like_count: number
+  comment_count: number
+  emotions: string[] | null
+  created_at: string
+  display_name: string
+  score: number
 }
 
-export const REACTION_TYPES = ['like', 'heart', 'laugh', 'sad', 'surprise'] as const;
-export type ReactionType = (typeof REACTION_TYPES)[number];
+export const REACTION_TYPES = ['like', 'heart', 'laugh', 'sad', 'surprise'] as const
+export type ReactionType = (typeof REACTION_TYPES)[number]
 
 /** 그룹 생성 입력 (앱/웹 공통) */
 export interface CreateGroupInput {
-  name: string; // 1~100자
-  inviteCode?: string; // 4~50자, 선택 (미입력 시 자동 생성)
-  description?: string; // 0~500자
+  name: string            // 1~100자
+  inviteCode?: string     // 4~50자, 선택 (미입력 시 자동 생성)
+  description?: string    // 0~500자
 }
 
 // 요청 타입
 export interface CreatePostRequest {
-  title: string;
-  content: string;
-  board_id?: number | null;
-  group_id?: number | null;
-  is_anonymous?: boolean;
-  display_name?: string;
-  image_url?: string | null;
-  initial_emotions?: string[] | null;
+  title: string
+  content: string
+  board_id?: number | null
+  group_id?: number | null
+  is_anonymous?: boolean
+  display_name?: string
+  image_url?: string | null
+  initial_emotions?: string[] | null
 }
 
 export interface CreateCommentRequest {
-  content: string;
-  board_id?: number | null;
-  group_id?: number | null;
-  is_anonymous?: boolean;
-  display_name?: string;
+  content: string
+  board_id?: number | null
+  group_id?: number | null
+  is_anonymous?: boolean
+  display_name?: string
 }
 
 export interface CreateReactionRequest {
-  reaction_type: string;
+  reaction_type: string
 }
 
 export interface UpdatePostRequest {
-  title?: string;
-  content?: string;
-  image_url?: string | null;
-  initial_emotions?: string[] | null;
+  title?: string
+  content?: string
+  image_url?: string | null
+  initial_emotions?: string[] | null
 }
 
 export interface UpdateCommentRequest {
-  content: string;
+  content: string
 }
 
 export interface UserPreferences {
-  user_id: string;
-  preferred_emotions: string[];
-  onboarding_completed: boolean;
-  theme_preference: 'light' | 'dark' | 'system';
-  notification_enabled: boolean;
-  created_at: string;
-  updated_at: string;
+  user_id: string
+  preferred_emotions: string[]
+  onboarding_completed: boolean
+  theme_preference: 'light' | 'dark' | 'system'
+  notification_enabled: boolean
+  created_at: string
+  updated_at: string
 }
 
 export interface EmotionCalendarDay {
-  day: string;
-  emotions: string[];
-  post_count: number;
+  day: string
+  emotions: string[]
+  post_count: number
 }
 
 export interface EmotionTimelineEntry {
-  day: string;
-  emotion: string;
-  cnt: number;
+  day: string
+  emotion: string
+  cnt: number
 }
 
 /** 검색 정렬 옵션 */
-export type SearchSort = 'relevance' | 'recent' | 'popular';
+export type SearchSort = 'relevance' | 'recent' | 'popular'
 
 /** 검색 결과 게시글 (search_posts_v2 RPC 반환 타입) */
 export interface SearchResult {
-  id: number;
-  title: string;
-  content: string;
-  board_id: number | null;
-  like_count: number;
-  comment_count: number;
-  emotions: string[] | null;
-  created_at: string;
-  display_name: string;
-  author_id: string;
-  is_anonymous: boolean;
-  image_url: string | null;
-  initial_emotions: string[] | null;
-  group_id: number | null;
-  title_highlight: string;
-  content_highlight: string;
-  relevance_score: number;
+  id: number
+  title: string
+  content: string
+  board_id: number | null
+  like_count: number
+  comment_count: number
+  emotions: string[] | null
+  created_at: string
+  display_name: string
+  author_id: string
+  is_anonymous: boolean
+  image_url: string | null
+  initial_emotions: string[] | null
+  group_id: number | null
+  title_highlight: string
+  content_highlight: string
+  relevance_score: number
 }
 
 // 응답 타입
-export type GetPostsResponse = Post[];
-export type GetPostResponse = Post;
-export type CreatePostResponse = Post;
-export type UpdatePostResponse = Post;
-export type GetCommentsResponse = Comment[];
-export type CreateCommentResponse = Comment;
-export type UpdateCommentResponse = Comment;
-export type GetReactionsResponse = Reaction[];
-export type CreateReactionResponse = Reaction;
+export type GetPostsResponse = Post[]
+export type GetPostResponse = Post
+export type CreatePostResponse = Post
+export type UpdatePostResponse = Post
+export type GetCommentsResponse = Comment[]
+export type CreateCommentResponse = Comment
+export type UpdateCommentResponse = Comment
+export type GetReactionsResponse = Reaction[]
+export type CreateReactionResponse = Reaction
 
 // 타입 가드 함수
 export function isPost(obj: unknown): obj is Post {
-  if (typeof obj !== 'object' || obj === null) return false;
-  const post = obj as Partial<Post>;
+  if (typeof obj !== 'object' || obj === null) return false
+  const post = obj as Partial<Post>
   return (
     typeof post.id === 'number' &&
     typeof post.title === 'string' &&
@@ -272,12 +272,12 @@ export function isPost(obj: unknown): obj is Post {
     typeof post.created_at === 'string' &&
     typeof post.is_anonymous === 'boolean' &&
     typeof post.display_name === 'string'
-  );
+  )
 }
 
 export function isComment(obj: unknown): obj is Comment {
-  if (typeof obj !== 'object' || obj === null) return false;
-  const comment = obj as Partial<Comment>;
+  if (typeof obj !== 'object' || obj === null) return false
+  const comment = obj as Partial<Comment>
   return (
     typeof comment.id === 'number' &&
     typeof comment.post_id === 'number' &&
@@ -286,5 +286,5 @@ export function isComment(obj: unknown): obj is Comment {
     typeof comment.created_at === 'string' &&
     typeof comment.is_anonymous === 'boolean' &&
     typeof comment.display_name === 'string'
-  );
+  )
 }
