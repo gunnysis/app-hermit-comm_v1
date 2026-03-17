@@ -118,14 +118,22 @@ function DailyPostCardInner({ post }: DailyPostCardProps) {
         )}
 
         {/* 리액션 바 */}
-        <View className="flex-row items-center gap-3 mt-1">
-          <Text className={`text-xs ${isDark ? 'text-stone-500' : 'text-stone-400'}`}>
-            ❤️ {post.like_count}
-          </Text>
-          <Text className={`text-xs ${isDark ? 'text-stone-500' : 'text-stone-400'}`}>
-            💬 {post.comment_count}
-          </Text>
-        </View>
+        {(post.like_count > 0 || post.comment_count > 0) && (
+          <View
+            className="flex-row items-center gap-3 mt-1"
+            accessibilityLabel={`좋아요 ${post.like_count}개, 댓글 ${post.comment_count}개`}>
+            {post.like_count > 0 && (
+              <Text className={`text-xs ${isDark ? 'text-stone-500' : 'text-stone-400'}`}>
+                ❤️ {post.like_count}
+              </Text>
+            )}
+            {post.comment_count > 0 && (
+              <Text className={`text-xs ${isDark ? 'text-stone-500' : 'text-stone-400'}`}>
+                💬 {post.comment_count}
+              </Text>
+            )}
+          </View>
+        )}
       </Pressable>
     </Animated.View>
   );
