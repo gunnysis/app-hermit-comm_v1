@@ -11,6 +11,7 @@ import { EmotionWaveNative } from '@/features/my/components/EmotionWaveNative';
 import { DailyInsights } from '@/features/my/components/DailyInsights';
 import { WeeklySummary } from '@/features/my/components/WeeklySummary';
 import { BlockedUsersSection } from '@/features/my/components/BlockedUsersSection';
+import { ReminderSetting } from '@/features/my/components/ReminderSetting';
 import { Loading } from '@/shared/components/Loading';
 
 export default function MyScreen() {
@@ -67,6 +68,8 @@ export default function MyScreen() {
           className={`text-xs font-semibold mb-2 ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
           설정
         </Text>
+        <ReminderSetting />
+        <View className="h-3" />
         <BlockedUsersSection enabled={!!user} />
 
         <View className="mt-4 mb-2">
