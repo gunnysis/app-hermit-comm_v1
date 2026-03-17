@@ -33,34 +33,48 @@ export function HomeCheckinBanner() {
   if (todayDaily) {
     const emotions = todayDaily.emotions ?? todayDaily.initial_emotions ?? [];
     const likeCount = todayDaily.like_count ?? 0;
+    const commentCount = todayDaily.comment_count ?? 0;
+    const hasReactions = likeCount > 0 || commentCount > 0;
     return (
       <View
-        className="mx-4 mb-3 rounded-xl px-4 py-3 flex-row items-center justify-between"
+        className="mx-4 mb-3 rounded-xl px-4 py-3"
         style={{
           backgroundColor: isDark ? 'rgba(41,37,36,0.5)' : SHARED_PALETTE.cream[50],
           borderWidth: 1,
           borderColor: isDark ? 'rgba(68,64,60,0.4)' : SHARED_PALETTE.cream[200],
-        }}>
+        }}
+        accessibilityLabel={`오늘의 하루 - ${emotions[0] ?? ''}, 좋아요 ${likeCount}개, 댓글 ${commentCount}개`}>
         <Pressable
           onPress={() => router.push(`/post/${todayDaily.id}`)}
-          className="flex-1 flex-row items-center">
-          <Text className={`text-xs flex-1 ${isDark ? 'text-stone-300' : 'text-stone-600'}`}>
+          className="flex-row items-center">
+          <Text
+            className={`text-xs flex-1 ${isDark ? 'text-stone-300' : 'text-stone-600'}`}
+            numberOfLines={1}>
             오늘의 하루: {emotions.map((e) => `${EMOTION_EMOJI[e] ?? ''} ${e}`).join(' ')}
           </Text>
-          {likeCount > 0 && (
-            <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
-              ❤️ {likeCount}명이 공감
-            </Text>
-          )}
+          <Pressable
+            onPress={() => router.push(`/create?type=daily&edit=${todayDaily.id}`)}
+            className="ml-2 rounded-full px-2.5 py-1"
+            style={{
+              backgroundColor: isDark ? 'rgba(68,64,60,0.6)' : SHARED_PALETTE.cream[200],
+            }}>
+            <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>수정</Text>
+          </Pressable>
         </Pressable>
-        <Pressable
-          onPress={() => router.push(`/create?type=daily&edit=${todayDaily.id}`)}
-          className="ml-2 rounded-full px-2.5 py-1"
-          style={{
-            backgroundColor: isDark ? 'rgba(68,64,60,0.6)' : SHARED_PALETTE.cream[200],
-          }}>
-          <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>수정</Text>
-        </Pressable>
+        {hasReactions && (
+          <View className="flex-row items-center gap-3 mt-1.5">
+            {likeCount > 0 && (
+              <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
+                ❤️ {likeCount}명이 공감
+              </Text>
+            )}
+            {commentCount > 0 && (
+              <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
+                💬 {commentCount}개 댓글
+              </Text>
+            )}
+          </View>
+        )}
       </View>
     );
   }
