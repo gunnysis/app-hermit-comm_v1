@@ -36,6 +36,7 @@ export const api = {
   getYesterdayDailyReactions: my.getYesterdayDailyReactions,
   getSameMoodDailies: my.getSameMoodDailies,
   getMyAlias: my.getMyAlias,
+  getUserEmotionCalendar: my.getUserEmotionCalendar,
   createDailyPost: posts.createDailyPost,
   updateDailyPost: posts.updateDailyPost,
   getTodayDaily: posts.getTodayDaily,

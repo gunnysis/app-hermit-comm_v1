@@ -1,13 +1,8 @@
 import { supabase } from '../supabase';
 import { logger } from '@/shared/utils/logger';
-import type { EmotionTimelineEntry } from '@/types';
+import type { EmotionTimelineEntry, ActivitySummary, EmotionCalendarDay } from '@/types';
 
-export interface ActivitySummary {
-  post_count: number;
-  comment_count: number;
-  reaction_count: number;
-  streak: number;
-}
+export type { ActivitySummary };
 
 export async function getActivitySummary(): Promise<ActivitySummary> {
   const { data, error } = await supabase.rpc('get_my_activity_summary');
@@ -124,6 +119,24 @@ export async function getSameMoodDailies(
 
   if (error || !data) return [];
   return data as SameMoodDaily[];
+}
+
+export async function getUserEmotionCalendar(
+  userId: string,
+  days = 30,
+): Promise<EmotionCalendarDay[]> {
+  const start = new Date();
+  start.setDate(start.getDate() - days);
+  const { data, error } = await supabase.rpc('get_user_emotion_calendar', {
+    p_user_id: userId,
+    p_start: start.toISOString().slice(0, 10),
+    p_end: new Date().toISOString().slice(0, 10),
+  });
+  if (error) {
+    logger.error('[getUserEmotionCalendar] failed:', error);
+    throw error;
+  }
+  return (data ?? []) as EmotionCalendarDay[];
 }
 
 export async function getMyAlias(): Promise<string | null> {

@@ -1,21 +1,9 @@
 import React, { useMemo } from 'react';
 import { View, Text, useColorScheme, Pressable } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/shared/lib/supabase';
+import { api } from '@/shared/lib/api';
 import { EMOTION_COLOR_MAP } from '@/shared/lib/constants';
 import type { EmotionCalendarDay } from '@/types';
-
-async function getUserEmotionCalendar(userId: string, days = 30): Promise<EmotionCalendarDay[]> {
-  const start = new Date();
-  start.setDate(start.getDate() - days);
-  const { data, error } = await supabase.rpc('get_user_emotion_calendar', {
-    p_user_id: userId,
-    p_start: start.toISOString().slice(0, 10),
-    p_end: new Date().toISOString().slice(0, 10),
-  });
-  if (error) throw error;
-  return (data ?? []) as EmotionCalendarDay[];
-}
 
 interface EmotionCalendarProps {
   userId: string;
@@ -27,7 +15,7 @@ export function EmotionCalendar({ userId, days = 30, onDayPress }: EmotionCalend
   const isDark = useColorScheme() === 'dark';
   const { data: calendarData = [] } = useQuery({
     queryKey: ['emotionCalendar', userId, days],
-    queryFn: () => getUserEmotionCalendar(userId, days),
+    queryFn: () => api.getUserEmotionCalendar(userId, days),
     staleTime: 5 * 60 * 1000,
   });
 

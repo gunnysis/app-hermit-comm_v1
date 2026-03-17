@@ -6,6 +6,6 @@ export function useTodayDaily(enabled = true) {
     queryKey: ['todayDaily'],
     queryFn: api.getTodayDaily,
     enabled,
-    staleTime: 0, // always fresh for home banner accuracy
+    staleTime: 60_000,
   });
 }

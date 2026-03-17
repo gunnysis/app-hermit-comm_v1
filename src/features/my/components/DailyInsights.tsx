@@ -26,7 +26,7 @@ export function DailyInsights({ enabled = true }: { enabled?: boolean }) {
     return (
       <View className="mb-4">
         <Text
-          className={`text-sm font-semibold mb-2 ${isDark ? 'text-stone-100' : 'text-gray-800'}`}>
+          className={`text-sm font-semibold mb-2 ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>
           나의 패턴
         </Text>
         <View className={`rounded-xl px-4 py-4 ${isDark ? 'bg-stone-800' : 'bg-stone-50'}`}>
@@ -38,7 +38,14 @@ export function DailyInsights({ enabled = true }: { enabled?: boolean }) {
             {DAILY_INSIGHTS_CONFIG.MIN_DAILIES_FOR_INSIGHTS}일)
           </Text>
           {/* Progress bar */}
-          <View className={`mt-2 h-1.5 rounded-full ${isDark ? 'bg-stone-700' : 'bg-stone-200'}`}>
+          <View
+            className={`mt-2 h-1.5 rounded-full ${isDark ? 'bg-stone-700' : 'bg-stone-200'}`}
+            accessibilityRole="progressbar"
+            accessibilityValue={{
+              now: total_dailies,
+              max: DAILY_INSIGHTS_CONFIG.MIN_DAILIES_FOR_INSIGHTS,
+            }}
+            accessibilityLabel={`패턴 수집 진행률 ${total_dailies}/${DAILY_INSIGHTS_CONFIG.MIN_DAILIES_FOR_INSIGHTS}일`}>
             <View
               className="h-1.5 rounded-full bg-happy-400"
               style={{
@@ -52,7 +59,22 @@ export function DailyInsights({ enabled = true }: { enabled?: boolean }) {
   }
 
   // No activity data despite enough dailies
-  if (!activity_emotion_map || activity_emotion_map.length === 0) return null;
+  if (!activity_emotion_map || activity_emotion_map.length === 0) {
+    return (
+      <View className="mb-4">
+        <Text
+          className={`text-sm font-semibold mb-2 ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>
+          나의 패턴 (최근 30일)
+        </Text>
+        <View className={`rounded-xl px-4 py-3 ${isDark ? 'bg-stone-800' : 'bg-stone-50'}`}>
+          <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
+            활동 데이터를 모으는 중이에요. 오늘의 하루를 기록할 때 활동 태그를 선택하면 패턴이
+            보여요.
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   // Find top insight for message
   const topActivity = activity_emotion_map[0];
@@ -60,7 +82,8 @@ export function DailyInsights({ enabled = true }: { enabled?: boolean }) {
 
   return (
     <View className="mb-4">
-      <Text className={`text-sm font-semibold mb-2 ${isDark ? 'text-stone-100' : 'text-gray-800'}`}>
+      <Text
+        className={`text-sm font-semibold mb-2 ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>
         나의 패턴 (최근 30일)
       </Text>
 

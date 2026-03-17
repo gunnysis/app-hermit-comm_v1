@@ -10,7 +10,7 @@ interface EmotionWaveNativeProps {
 
 export function EmotionWaveNative({ days = 7 }: EmotionWaveNativeProps) {
   const isDark = useColorScheme() === 'dark';
-  const { data: timeline = [] } = useEmotionTimeline(days);
+  const { data: timeline = [], isLoading } = useEmotionTimeline(days);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const { bars, topEmotions, maxTotal, topEmotion } = useMemo(
@@ -18,12 +18,38 @@ export function EmotionWaveNative({ days = 7 }: EmotionWaveNativeProps) {
     [timeline],
   );
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <View className="mb-4">
+        <Text
+          className={`text-sm font-semibold mb-2 ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>
+          마을의 감정 흐름
+        </Text>
+        <View className="flex-row items-end gap-1.5" style={{ height: 128 }}>
+          {[40, 55, 30, 65, 45, 60, 35].map((h, i) => (
+            <View key={i} className="flex-1 justify-end" style={{ height: '100%' }}>
+              <View
+                className="rounded-t-sm"
+                style={{
+                  height: `${h}%`,
+                  backgroundColor: isDark ? '#292524' : '#e7e5e4',
+                  opacity: 0.4,
+                }}
+              />
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  }
+
   // Empty state
   if (!bars.length) {
     return (
       <View className="mb-4">
         <Text
-          className={`text-sm font-semibold mb-2 ${isDark ? 'text-stone-100' : 'text-gray-800'}`}>
+          className={`text-sm font-semibold mb-2 ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>
           마을의 감정 흐름
         </Text>
         <View className="relative" style={{ height: 128 }}>
@@ -66,7 +92,7 @@ export function EmotionWaveNative({ days = 7 }: EmotionWaveNativeProps) {
     <View className="mb-4">
       {/* Header */}
       <View className="flex-row items-center justify-between mb-1">
-        <Text className={`text-sm font-semibold ${isDark ? 'text-stone-100' : 'text-gray-800'}`}>
+        <Text className={`text-sm font-semibold ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>
           마을의 감정 흐름
         </Text>
         <Text style={{ fontSize: 10 }} className={isDark ? 'text-stone-500' : 'text-stone-400'}>
