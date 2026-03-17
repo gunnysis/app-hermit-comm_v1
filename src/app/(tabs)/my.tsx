@@ -72,28 +72,32 @@ export default function MyScreen() {
         <View className="h-3" />
         <BlockedUsersSection enabled={!!user} />
 
-        <View className="mt-4 mb-2">
-          <Pressable
-            onPress={() => {
-              Alert.alert(
-                '로그아웃',
-                '익명 사용자가 로그아웃하면 새로운 계정이 생성되어 기존 글을 수정/삭제할 수 없게 됩니다.',
-                [
-                  { text: '취소', style: 'cancel' },
-                  {
-                    text: '로그아웃',
-                    style: 'destructive',
-                    onPress: () => auth.signOut(),
-                  },
-                ],
-              );
-            }}
-            className={`rounded-lg px-4 py-3 ${isDark ? 'bg-stone-800' : 'bg-stone-100'}`}>
-            <Text className={`text-sm text-center ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
-              로그아웃
-            </Text>
-          </Pressable>
-        </View>
+        {/* 로그아웃: 개발 환경에서만 표시 (익명 사용자 데이터 손실 방지) */}
+        {__DEV__ && (
+          <View className="mt-4 mb-2">
+            <Pressable
+              onPress={() => {
+                Alert.alert(
+                  '⚠️ 개발용 로그아웃',
+                  '익명 사용자가 로그아웃하면 새로운 계정이 생성되어 기존 글을 수정/삭제할 수 없게 됩니다.\n\n이 버튼은 개발 환경에서만 표시됩니다.',
+                  [
+                    { text: '취소', style: 'cancel' },
+                    {
+                      text: '로그아웃',
+                      style: 'destructive',
+                      onPress: () => auth.signOut(),
+                    },
+                  ],
+                );
+              }}
+              className={`rounded-lg px-4 py-3 ${isDark ? 'bg-stone-800' : 'bg-stone-100'}`}>
+              <Text
+                className={`text-sm text-center ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
+                🔧 로그아웃 (개발용)
+              </Text>
+            </Pressable>
+          </View>
+        )}
       </ScrollView>
     </View>
   );

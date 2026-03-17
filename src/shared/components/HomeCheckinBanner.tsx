@@ -6,8 +6,6 @@ import { useTodayDaily } from '@/features/my/hooks/useTodayDaily';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { EMOTION_EMOJI, SHARED_PALETTE } from '@/shared/lib/constants';
 
-const DISMISS_KEY = 'daily_banner_dismissed';
-
 export function HomeCheckinBanner() {
   const isDark = useColorScheme() === 'dark';
   const router = useRouter();
@@ -15,18 +13,21 @@ export function HomeCheckinBanner() {
   const { data: todayDaily } = useTodayDaily(!!user);
   const [dismissed, setDismissed] = useState(false);
 
-  // Check if dismissed today
+  // 사용자별 dismiss 키 (공유 기기 대응)
+  const dismissKey = user ? `daily_banner_dismissed_${user.id}` : 'daily_banner_dismissed';
+
   React.useEffect(() => {
-    AsyncStorage.getItem(DISMISS_KEY).then((val) => {
+    if (!user) return;
+    AsyncStorage.getItem(dismissKey).then((val) => {
       if (val === new Date().toISOString().slice(0, 10)) setDismissed(true);
     });
-  }, []);
+  }, [user, dismissKey]);
 
   if (!user || dismissed) return null;
 
   const handleDismiss = async () => {
     setDismissed(true);
-    await AsyncStorage.setItem(DISMISS_KEY, new Date().toISOString().slice(0, 10));
+    await AsyncStorage.setItem(dismissKey, new Date().toISOString().slice(0, 10));
   };
 
   // Already posted today
