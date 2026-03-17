@@ -12,6 +12,7 @@ import { DailyInsights } from '@/features/my/components/DailyInsights';
 import { WeeklySummary } from '@/features/my/components/WeeklySummary';
 import { BlockedUsersSection } from '@/features/my/components/BlockedUsersSection';
 import { ReminderSetting } from '@/features/my/components/ReminderSetting';
+import { StreakBadge } from '@/features/my/components/StreakBadge';
 import { Loading } from '@/shared/components/Loading';
 
 export default function MyScreen() {
@@ -44,6 +45,9 @@ export default function MyScreen() {
         <View className="mt-4">
           <ProfileSection user={user} />
         </View>
+
+        {/* 스트릭 */}
+        <StreakBadge enabled={!!user} />
 
         {/* 활동 요약 */}
         <Text

@@ -10,6 +10,7 @@ export function useCreateDaily() {
       queryClient.invalidateQueries({ queryKey: ['boardPosts'] });
       queryClient.invalidateQueries({ queryKey: ['activitySummary'] });
       queryClient.invalidateQueries({ queryKey: ['dailyInsights'] });
+      queryClient.invalidateQueries({ queryKey: ['myStreak'] });
     },
   });
 }
@@ -23,6 +24,7 @@ export function useUpdateDaily() {
       queryClient.invalidateQueries({ queryKey: ['boardPosts'] });
       queryClient.invalidateQueries({ queryKey: ['activitySummary'] });
       queryClient.invalidateQueries({ queryKey: ['dailyInsights'] });
+      queryClient.invalidateQueries({ queryKey: ['myStreak'] });
     },
   });
 }

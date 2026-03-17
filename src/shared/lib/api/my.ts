@@ -95,6 +95,23 @@ export async function getWeeklyEmotionSummary(
   return data as unknown as WeeklyEmotionSummary | null;
 }
 
+export interface StreakData {
+  current_streak: number;
+  total_days: number;
+  longest_streak: number;
+  completed_today: boolean;
+  new_milestone: number;
+}
+
+export async function getMyStreak(): Promise<StreakData> {
+  const { data, error } = await supabase.rpc('get_my_streak');
+  if (error) {
+    logger.error('[getMyStreak] failed:', error);
+    throw error;
+  }
+  return data as unknown as StreakData;
+}
+
 export async function getUserEmotionCalendar(
   userId: string,
   days = 30,
