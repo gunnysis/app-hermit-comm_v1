@@ -9,6 +9,7 @@ import { ActivitySummary } from '@/features/my/components/ActivitySummary';
 import { EmotionCalendar } from '@/features/posts/components/EmotionCalendar';
 import { EmotionWaveNative } from '@/features/my/components/EmotionWaveNative';
 import { DailyInsights } from '@/features/my/components/DailyInsights';
+import { WeeklySummary } from '@/features/my/components/WeeklySummary';
 import { BlockedUsersSection } from '@/features/my/components/BlockedUsersSection';
 import { Loading } from '@/shared/components/Loading';
 
@@ -50,6 +51,7 @@ export default function MyScreen() {
         </Text>
         <ActivitySummary enabled={!!user} />
 
+        <WeeklySummary enabled={!!user} />
         <DailyInsights enabled={!!user} />
 
         <EmotionCalendar userId={user.id} />

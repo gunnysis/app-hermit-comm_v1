@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, TextInput, useColorScheme } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { ACTIVITY_PRESETS, DAILY_CONFIG } from '@/shared/lib/constants';
+import { supabase } from '@/shared/lib/supabase';
 
 interface ActivityTagSelectorProps {
   selected: string[];
@@ -11,8 +13,28 @@ export function ActivityTagSelector({ selected, onSelect }: ActivityTagSelectorP
   const isDark = useColorScheme() === 'dark';
   const [customInput, setCustomInput] = useState('');
   const [showCustom, setShowCustom] = useState(false);
+  const [savedCustoms, setSavedCustoms] = useState<string[]>([]);
+
+  // 저장된 커스텀 활동 로드
+  useEffect(() => {
+    (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from('user_preferences')
+        .select('custom_activities')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (data?.custom_activities?.length) {
+        setSavedCustoms(data.custom_activities as string[]);
+      }
+    })();
+  }, []);
 
   const toggle = (id: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (selected.includes(id)) {
       onSelect(selected.filter((s) => s !== id));
     } else if (selected.length < DAILY_CONFIG.MAX_ACTIVITIES) {
@@ -20,14 +42,33 @@ export function ActivityTagSelector({ selected, onSelect }: ActivityTagSelectorP
     }
   };
 
-  const addCustom = () => {
+  const addCustom = async () => {
     const trimmed = customInput.trim().slice(0, DAILY_CONFIG.MAX_CUSTOM_ACTIVITY_LENGTH);
     if (trimmed && !selected.includes(trimmed) && selected.length < DAILY_CONFIG.MAX_ACTIVITIES) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       onSelect([...selected, trimmed]);
       setCustomInput('');
       setShowCustom(false);
+
+      // DB에 커스텀 활동 저장 (중복 제거)
+      if (!ACTIVITY_PRESETS.some((p) => p.id === trimmed) && !savedCustoms.includes(trimmed)) {
+        const updated = [...savedCustoms, trimmed].slice(-10); // 최대 10개 유지
+        setSavedCustoms(updated);
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (user) {
+          await supabase
+            .from('user_preferences')
+            .update({ custom_activities: updated })
+            .eq('user_id', user.id);
+        }
+      }
     }
   };
+
+  const presetIds: string[] = ACTIVITY_PRESETS.map((p) => p.id);
+  const customTags = savedCustoms.filter((s) => !presetIds.includes(s));
 
   return (
     <View>
@@ -52,7 +93,8 @@ export function ActivityTagSelector({ selected, onSelect }: ActivityTagSelectorP
                     : 'border-stone-300'
               }`}
               accessibilityLabel={`${preset.name} ${isActive ? '선택됨' : '선택'}`}
-              accessibilityRole="button">
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: isActive }}>
               <Text className={`text-xs ${isDark ? 'text-stone-300' : 'text-stone-600'}`}>
                 {preset.icon}
                 {isActive ? ` ${preset.name}` : ''}
@@ -60,6 +102,33 @@ export function ActivityTagSelector({ selected, onSelect }: ActivityTagSelectorP
             </Pressable>
           );
         })}
+
+        {/* 저장된 커스텀 활동 */}
+        {customTags.map((custom) => {
+          const isActive = selected.includes(custom);
+          return (
+            <Pressable
+              key={custom}
+              onPress={() => toggle(custom)}
+              className={`rounded-full px-2.5 py-1 border ${
+                isActive
+                  ? isDark
+                    ? 'border-lavender-400 bg-lavender-900/30'
+                    : 'border-lavender-400 bg-lavender-50'
+                  : isDark
+                    ? 'border-stone-600'
+                    : 'border-stone-300'
+              }`}
+              accessibilityLabel={`${custom} ${isActive ? '선택됨' : '선택'}`}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: isActive }}>
+              <Text className={`text-xs ${isDark ? 'text-stone-300' : 'text-stone-600'}`}>
+                {isActive ? `✦ ${custom}` : custom}
+              </Text>
+            </Pressable>
+          );
+        })}
+
         {/* Custom input toggle */}
         {!showCustom ? (
           <Pressable
@@ -89,9 +158,9 @@ export function ActivityTagSelector({ selected, onSelect }: ActivityTagSelectorP
           </View>
         )}
       </View>
-      {/* Show selected custom tags */}
+      {/* Show selected custom tags not in presets or saved */}
       {selected
-        .filter((s) => !ACTIVITY_PRESETS.some((p) => p.id === s))
+        .filter((s: string) => !presetIds.includes(s) && !savedCustoms.includes(s))
         .map((custom) => (
           <Pressable key={custom} onPress={() => toggle(custom)} className="mt-1">
             <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
