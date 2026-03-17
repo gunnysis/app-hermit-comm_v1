@@ -51,14 +51,14 @@ const CommentItemComponent = ({
 
   return (
     <View
-      className={`bg-cream-50 dark:bg-stone-800 rounded-2xl p-4 mb-3 border border-cream-200 dark:border-stone-700 ${isReply ? 'ml-8' : ''}`}>
+      className={`bg-cream-50 dark:bg-stone-800 rounded-2xl p-4 mb-3 border border-cream-200 dark:border-stone-700 ${isReply ? 'ml-6' : ''}`}>
       <View className="flex-row justify-between items-center mb-2">
-        <View className="bg-mint-100 dark:bg-mint-900/40 px-3 py-1 rounded-full">
-          <Text className="text-sm font-semibold text-mint-700 dark:text-mint-300">
+        <View className="bg-mint-100 dark:bg-mint-900/40 px-3 py-1 rounded-full flex-shrink max-w-[60%]">
+          <Text className="text-sm font-semibold text-mint-700 dark:text-mint-300 truncate">
             {comment.display_name}
           </Text>
         </View>
-        <Text className="text-xs text-gray-400 dark:text-stone-500">
+        <Text className="text-xs text-gray-400 dark:text-stone-500 flex-shrink-0">
           {formatDate(comment.created_at)}
         </Text>
       </View>

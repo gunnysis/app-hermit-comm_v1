@@ -1,5 +1,5 @@
 import React, { Component, memo, useCallback, useMemo, type ReactNode } from 'react';
-import { Linking, useWindowDimensions, Image } from 'react-native';
+import { Linking, useWindowDimensions, Image, ScrollView } from 'react-native';
 import { Text } from 'react-native';
 import RenderHTML, { type CustomRendererProps } from 'react-native-render-html';
 import type { TBlock } from '@native-html/transient-render-engine';
@@ -84,6 +84,7 @@ function useHtmlStyles() {
           marginVertical: 8,
           paddingLeft: 12,
           paddingVertical: 8,
+          overflow: 'hidden' as const,
         },
         code: {
           backgroundColor: codeBackground,
@@ -147,7 +148,17 @@ function PostBodyComponent({ content, imageUrl }: PostBodyProps) {
     [handleLinkPress, contentWidth],
   );
 
-  const renderers = useMemo(() => ({ img: SafeImageRenderer }), []);
+  const renderers = useMemo(
+    () => ({
+      img: SafeImageRenderer,
+      pre: ({ TDefaultRenderer, ...props }: CustomRendererProps<TBlock>) => (
+        <ScrollView horizontal showsHorizontalScrollIndicator style={{ marginVertical: 8 }}>
+          <TDefaultRenderer {...props} />
+        </ScrollView>
+      ),
+    }),
+    [],
+  );
 
   const bodyContent =
     !content || !content.trim() ? (
@@ -162,11 +173,13 @@ function PostBodyComponent({ content, imageUrl }: PostBodyProps) {
         <RenderHTML
           source={{ html: content }}
           contentWidth={contentWidth}
+          computeEmbeddedMaxWidth={() => contentWidth}
           tagsStyles={htmlStyles.tagsStyles}
           baseStyle={htmlStyles.baseStyle}
           ignoredDomTags={IGNORED_DOM_TAGS}
           renderers={renderers}
           renderersProps={renderersProps}
+          defaultTextProps={{ selectable: true }}
         />
       </PostBodyHtmlErrorBoundary>
     ) : (

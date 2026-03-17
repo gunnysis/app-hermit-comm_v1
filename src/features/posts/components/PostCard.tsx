@@ -146,12 +146,12 @@ const PostCardComponent = ({ post }: PostCardProps) => {
             ) : null}
 
             <View className="flex-row justify-between items-center flex-wrap gap-2">
-              <View className="flex-row items-center gap-1.5">
+              <View className="flex-row items-center gap-1.5 flex-shrink">
                 <View
-                  className={`px-2.5 py-1 rounded-full ${
+                  className={`px-2.5 py-1 rounded-full flex-shrink max-w-[60%] ${
                     isDark ? 'bg-happy-900/40' : 'bg-happy-50'
                   }`}>
-                  <Text className="text-xs font-semibold text-happy-700 dark:text-happy-300">
+                  <Text className="text-xs font-semibold text-happy-700 dark:text-happy-300 truncate">
                     {post.display_name}
                   </Text>
                 </View>

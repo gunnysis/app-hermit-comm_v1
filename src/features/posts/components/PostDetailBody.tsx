@@ -146,12 +146,12 @@ export function PostDetailBody({
           {post.title}
         </Text>
         <View className="flex-row justify-between items-center mb-3">
-          <View className="bg-happy-100 dark:bg-happy-900/40 px-2.5 py-1 rounded-full">
-            <Text className="text-sm font-semibold text-happy-700 dark:text-happy-300">
+          <View className="bg-happy-100 dark:bg-happy-900/40 px-2.5 py-1 rounded-full flex-shrink max-w-[60%]">
+            <Text className="text-sm font-semibold text-happy-700 dark:text-happy-300 truncate">
               {post.display_name}
             </Text>
           </View>
-          <Text className="text-xs text-gray-400 dark:text-stone-500">
+          <Text className="text-xs text-gray-400 dark:text-stone-500 flex-shrink-0">
             {formatDate(post.created_at)}
           </Text>
         </View>

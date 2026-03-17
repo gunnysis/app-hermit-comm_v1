@@ -115,6 +115,7 @@ export function PostList({
         data={posts}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <PostCard post={item} />}
+        getItemType={(item) => item.post_type ?? 'post'}
         ListHeaderComponent={listHeader}
         ListEmptyComponent={ListEmpty}
         refreshControl={

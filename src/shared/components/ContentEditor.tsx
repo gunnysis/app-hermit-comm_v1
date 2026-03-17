@@ -85,7 +85,9 @@ export function ContentEditor({
         <View className="bg-cream-100 dark:bg-stone-800 border-b border-cream-200 dark:border-stone-600 px-2 py-1">
           <Toolbar editor={editor} />
         </View>
-        <View className="bg-cream-50 dark:bg-stone-900 flex-1" style={{ minHeight: 160 }}>
+        <View
+          className="bg-cream-50 dark:bg-stone-900 flex-1"
+          style={{ minHeight: 160, maxHeight: 400 }}>
           <RichText editor={editor} />
         </View>
       </View>
