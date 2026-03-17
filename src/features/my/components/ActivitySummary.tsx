@@ -34,7 +34,7 @@ export function ActivitySummary({ enabled = true }: { enabled?: boolean }) {
   if (isLoading) {
     return (
       <View className="flex-row gap-2 mb-4">
-        {[0, 1, 2, 3].map((i) => (
+        {[0, 1, 2].map((i) => (
           <View key={i} className="flex-1 items-center py-3 px-2 rounded-xl">
             <Skeleton className="w-12 h-12" />
           </View>
@@ -48,7 +48,6 @@ export function ActivitySummary({ enabled = true }: { enabled?: boolean }) {
       <StatItem emoji="📝" label="작성한 글" value={summary?.post_count ?? 0} isDark={isDark} />
       <StatItem emoji="💬" label="댓글" value={summary?.comment_count ?? 0} isDark={isDark} />
       <StatItem emoji="💛" label="반응" value={summary?.reaction_count ?? 0} isDark={isDark} />
-      <StatItem emoji="🔥" label="연속" value={`${summary?.streak ?? 0}일`} isDark={isDark} />
     </View>
   );
 }

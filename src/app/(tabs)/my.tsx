@@ -3,6 +3,7 @@ import { ScrollView, View, Text, useColorScheme } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ScreenHeader } from '@/shared/components/ScreenHeader';
+import { ProfileSection } from '@/features/my/components/ProfileSection';
 import { ActivitySummary } from '@/features/my/components/ActivitySummary';
 import { EmotionCalendar } from '@/features/posts/components/EmotionCalendar';
 import { EmotionWaveNative } from '@/features/my/components/EmotionWaveNative';
@@ -35,11 +36,17 @@ export default function MyScreen() {
         className="flex-1 px-4"
         contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
         showsVerticalScrollIndicator={false}>
+        {/* 프로필 히어로 */}
         <View className="mt-4">
-          <ActivitySummary enabled={!!user} />
+          <ProfileSection user={user} />
         </View>
 
-        <View className={`h-px my-3 ${isDark ? 'bg-stone-700' : 'bg-stone-200'}`} />
+        {/* 활동 요약 */}
+        <Text
+          className={`text-xs font-semibold mb-2 ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
+          활동
+        </Text>
+        <ActivitySummary enabled={!!user} />
 
         <DailyInsights enabled={!!user} />
 
