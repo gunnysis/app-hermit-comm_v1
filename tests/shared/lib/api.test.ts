@@ -127,7 +127,7 @@ describe('api', () => {
       expect(result).toBeNull();
     });
 
-    it('에러 시 null을 반환한다', async () => {
+    it('에러 시 throw한다', async () => {
       (supabase.from as jest.Mock)()
         .select()
         .eq()
@@ -136,9 +136,7 @@ describe('api', () => {
           error: { message: '조회 실패' },
         });
 
-      const result = await api.getPostAnalysis(1);
-
-      expect(result).toBeNull();
+      await expect(api.getPostAnalysis(1)).rejects.toThrow();
     });
   });
 
@@ -159,15 +157,13 @@ describe('api', () => {
       expect(result[0].emotion).toBe('슬픔');
     });
 
-    it('에러 시 빈 배열을 반환한다', async () => {
+    it('에러 시 throw한다', async () => {
       (supabase.rpc as jest.Mock).mockResolvedValue({
         data: null,
         error: { message: 'RPC 에러' },
       });
 
-      const result = await api.getEmotionTrend(7);
-
-      expect(result).toEqual([]);
+      await expect(api.getEmotionTrend(7)).rejects.toThrow();
     });
   });
 

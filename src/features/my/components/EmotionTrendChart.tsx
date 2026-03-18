@@ -21,24 +21,28 @@ export function EmotionTrendChart({ enabled = true }: EmotionTrendChartProps) {
     queryFn: () => getWeeklyEmotionSummary(0),
     enabled,
     staleTime: 30 * 60 * 1000,
+    meta: { silent: true },
   });
   const week1 = useQuery({
     queryKey: ['weeklySummary', 1],
     queryFn: () => getWeeklyEmotionSummary(1),
     enabled,
     staleTime: 30 * 60 * 1000,
+    meta: { silent: true },
   });
   const week2 = useQuery({
     queryKey: ['weeklySummary', 2],
     queryFn: () => getWeeklyEmotionSummary(2),
     enabled,
     staleTime: 30 * 60 * 1000,
+    meta: { silent: true },
   });
   const week3 = useQuery({
     queryKey: ['weeklySummary', 3],
     queryFn: () => getWeeklyEmotionSummary(3),
     enabled,
     staleTime: 30 * 60 * 1000,
+    meta: { silent: true },
   });
 
   const weeks = [week3.data, week2.data, week1.data, week0.data].filter(Boolean);

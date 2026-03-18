@@ -25,7 +25,10 @@ export async function getNotifications(limit = 20, offset = 0): Promise<Notifica
 
 export async function getUnreadCount(): Promise<number> {
   const { data, error } = await supabase.rpc('get_unread_notification_count');
-  if (error) return 0;
+  if (error) {
+    logger.error('[getUnreadCount] failed:', error);
+    throw error;
+  }
   return (data as number) ?? 0;
 }
 

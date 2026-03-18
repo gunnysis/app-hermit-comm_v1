@@ -8,6 +8,7 @@ export function useBlockedAliases(enabled = true) {
     queryFn: api.getBlockedAliases,
     staleTime: 5 * 60 * 1000,
     enabled,
+    meta: { silent: true },
   });
 }
 

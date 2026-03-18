@@ -18,6 +18,7 @@ export function EmotionCalendar({ userId, days = 30, onDayPress }: EmotionCalend
     queryKey: ['emotionCalendar', userId, days],
     queryFn: () => api.getUserEmotionCalendar(userId, days),
     staleTime: 5 * 60 * 1000,
+    meta: { silent: true },
   });
 
   const weeks = useMemo(() => {

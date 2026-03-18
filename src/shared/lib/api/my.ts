@@ -48,7 +48,11 @@ export interface YesterdayDailyReactions {
 
 export async function getYesterdayDailyReactions(): Promise<YesterdayDailyReactions | null> {
   const { data, error } = await supabase.rpc('get_yesterday_daily_reactions');
-  if (error || !data) return null;
+  if (error) {
+    logger.error('[getYesterdayDailyReactions] failed:', error);
+    throw error;
+  }
+  if (!data) return null;
   const result = data as unknown as YesterdayDailyReactions;
   if (!result?.post_id) return null;
   return result;
@@ -70,7 +74,11 @@ export async function getSameMoodDailies(
     p_post_id: postId,
     p_emotions: emotions,
   });
-  if (error || !data) return [];
+  if (error) {
+    logger.error('[getSameMoodDailies] failed:', error);
+    throw error;
+  }
+  if (!data) return [];
   return (Array.isArray(data) ? data : []) as unknown as SameMoodDaily[];
 }
 
@@ -90,7 +98,7 @@ export async function getWeeklyEmotionSummary(
   });
   if (error) {
     logger.error('[getWeeklyEmotionSummary] failed:', error);
-    return null;
+    throw error;
   }
   return data as unknown as WeeklyEmotionSummary | null;
 }
@@ -132,6 +140,9 @@ export async function getUserEmotionCalendar(
 
 export async function getMyAlias(): Promise<string | null> {
   const { data, error } = await supabase.rpc('get_my_alias');
-  if (error) return null;
+  if (error) {
+    logger.error('[getMyAlias] failed:', error);
+    throw error;
+  }
   return data as string | null;
 }

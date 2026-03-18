@@ -1,5 +1,6 @@
 import { supabase } from '../supabase';
 import { logger } from '@/shared/utils/logger';
+import { APIError } from './error';
 import type { PostAnalysis } from '@/types';
 
 // 배포된 Edge Function 이름 (수동/fallback 감정 분석)
@@ -16,7 +17,7 @@ export async function getEmotionTrend(
       details: error.details,
       hint: error.hint,
     });
-    return [];
+    throw new APIError(500, errorMsg);
   }
   return (data ?? []) as { emotion: string; cnt: number; pct: number }[];
 }
@@ -37,7 +38,7 @@ export async function getPostAnalysis(postId: number): Promise<PostAnalysis | nu
       details: error.details,
       hint: error.hint,
     });
-    return null;
+    throw new APIError(500, errorMsg);
   }
   return data as PostAnalysis | null;
 }

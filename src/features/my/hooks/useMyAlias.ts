@@ -7,5 +7,6 @@ export function useMyAlias(enabled = true) {
     queryFn: api.getMyAlias,
     enabled,
     staleTime: 60 * 60 * 1000,
+    meta: { silent: true },
   });
 }
