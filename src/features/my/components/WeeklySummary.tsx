@@ -3,6 +3,7 @@ import { View, Text, Pressable, useColorScheme } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useWeeklySummary } from '../hooks/useWeeklySummary';
 import { EMOTION_EMOJI, ACTIVITY_PRESETS } from '@/shared/lib/constants';
+import { Skeleton } from '@/shared/components/Skeleton';
 
 interface WeeklySummaryProps {
   enabled?: boolean;
@@ -13,16 +14,62 @@ export function WeeklySummary({ enabled = true }: WeeklySummaryProps) {
   const [weekOffset, setWeekOffset] = useState(0);
   const { data, isLoading } = useWeeklySummary(weekOffset, enabled);
 
-  if (isLoading || !data) return null;
-  if (!data.days_logged || data.days_logged === 0) return null;
+  const weekLabel =
+    weekOffset === 0 ? '이번 주' : weekOffset === 1 ? '지난주' : `${weekOffset}주 전`;
+
+  if (isLoading) {
+    return (
+      <View
+        className={`mx-4 mt-4 rounded-2xl p-4 ${isDark ? 'bg-stone-800/50' : 'bg-cream-50'}`}
+        style={{ borderWidth: 1, borderColor: isDark ? 'rgba(68,64,60,0.4)' : '#E8DCC8' }}>
+        <Skeleton className="w-32 h-5 mb-3" />
+        <Skeleton className="w-20 h-4 mb-3" />
+        <View className="flex-row flex-wrap gap-1.5">
+          <Skeleton className="w-16 h-7 rounded-full" />
+          <Skeleton className="w-20 h-7 rounded-full" />
+          <Skeleton className="w-14 h-7 rounded-full" />
+        </View>
+      </View>
+    );
+  }
+
+  if (!data) return null;
+
+  if (!data.days_logged || data.days_logged === 0) {
+    return (
+      <Animated.View
+        entering={FadeIn.duration(300)}
+        className={`mx-4 mt-4 rounded-2xl p-4 ${isDark ? 'bg-stone-800/50' : 'bg-cream-50'}`}
+        style={{
+          borderWidth: 1,
+          borderColor: isDark ? 'rgba(68,64,60,0.4)' : '#E8DCC8',
+        }}>
+        <View className="flex-row justify-between items-center mb-3">
+          <Text className={`text-sm font-semibold ${isDark ? 'text-stone-200' : 'text-stone-800'}`}>
+            📅 {weekLabel} 감정 회고
+          </Text>
+          <View className="flex-row gap-2">
+            <Pressable onPress={() => setWeekOffset(weekOffset + 1)} className="px-2 py-1">
+              <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>◀</Text>
+            </Pressable>
+            {weekOffset > 0 && (
+              <Pressable onPress={() => setWeekOffset(weekOffset - 1)} className="px-2 py-1">
+                <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>▶</Text>
+              </Pressable>
+            )}
+          </View>
+        </View>
+        <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
+          이번 주는 아직 기록이 없어요
+        </Text>
+      </Animated.View>
+    );
+  }
 
   const getActivityLabel = (id: string) => {
     const preset = ACTIVITY_PRESETS.find((p) => p.id === id);
     return preset ? `${preset.icon} ${preset.name}` : id;
   };
-
-  const weekLabel =
-    weekOffset === 0 ? '이번 주' : weekOffset === 1 ? '지난주' : `${weekOffset}주 전`;
 
   return (
     <Animated.View
