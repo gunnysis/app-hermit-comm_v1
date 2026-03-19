@@ -153,7 +153,7 @@ export default function HomeScreen() {
         )}
       </View>
     ),
-    [emotionFilter, handleEmotionSelect],
+    [emotionFilter, handleEmotionSelect, openDailySheet],
   );
 
   const emptyTitle = emotionFilter

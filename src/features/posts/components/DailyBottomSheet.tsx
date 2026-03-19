@@ -31,6 +31,12 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
     const queryClient = useQueryClient();
     const { mutate: createDaily, isPending } = useCreateDaily();
 
+    const resetState = useCallback(() => {
+      setEmotions([]);
+      setActivities([]);
+      setNote('');
+    }, []);
+
     const toggleEmotion = useCallback(
       (emotion: string) => {
         Haptics.selectionAsync();
@@ -51,9 +57,7 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
         {
           onSuccess: () => {
             Toast.show({ type: 'success', text1: '오늘의 하루를 나눴어요' });
-            setEmotions([]);
-            setActivities([]);
-            setNote('');
+            resetState();
             (ref as React.RefObject<BottomSheet>)?.current?.close();
           },
           onError: (err: unknown) => {
@@ -67,7 +71,7 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
           },
         },
       );
-    }, [emotions, activities, note, isPending, createDaily, ref]);
+    }, [emotions, activities, note, isPending, createDaily, resetState, ref]);
 
     const renderBackdrop = useCallback(
       (props: BottomSheetBackdropProps) => (
@@ -85,7 +89,10 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
         snapPoints={snapPoints}
         enablePanDownToClose
         backdropComponent={renderBackdrop}
-        onChange={(index) => setCurrentIndex(index)}
+        onChange={(index) => {
+          setCurrentIndex(index);
+          if (index === -1) resetState();
+        }}
         onClose={onDismiss}
         handleIndicatorStyle={{ backgroundColor: isDark ? '#57534e' : '#a8a29e' }}
         backgroundStyle={{ backgroundColor: bgColor, borderRadius: 24 }}>
@@ -112,7 +119,10 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
                   style={isActive ? { backgroundColor: colors?.gradient[0] } : undefined}
                   className={`rounded-full px-3 py-1.5 ${
                     isActive ? '' : isDark ? 'bg-stone-800' : 'bg-stone-100'
-                  }`}>
+                  }`}
+                  accessibilityLabel={`감정 선택: ${emotion}`}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: isActive }}>
                   <Text
                     className={`text-xs ${isActive ? 'font-semibold' : ''}`}
                     style={
