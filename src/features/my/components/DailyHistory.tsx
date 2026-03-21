@@ -2,8 +2,6 @@ import React from 'react';
 import { View, Text, Pressable, useColorScheme } from 'react-native';
 import { useRouter } from 'expo-router';
 import { EMOTION_EMOJI } from '@/shared/lib/constants';
-import { getActivityLabel } from '@/shared/lib/utils.generated';
-import { ACTIVITY_PRESETS } from '@/shared/lib/constants';
 import { useDailyHistory } from '../hooks/useDailyHistory';
 import { Skeleton } from '@/shared/components/Skeleton';
 
