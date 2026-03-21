@@ -1,15 +1,8 @@
 import React, { useMemo } from 'react';
 import { View, Text, useColorScheme } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/shared/lib/supabase';
+import { api } from '@/shared/lib/api';
 import { EMOTION_COLOR_MAP, EMOTION_EMOJI } from '@/shared/lib/constants';
-import type { EmotionTimelineEntry } from '@/types';
-
-async function getEmotionTimeline(days = 7): Promise<EmotionTimelineEntry[]> {
-  const { data, error } = await supabase.rpc('get_emotion_timeline', { p_days: days });
-  if (error) throw error;
-  return (data ?? []) as EmotionTimelineEntry[];
-}
 
 interface EmotionWaveProps {
   days?: number;
@@ -19,7 +12,7 @@ export function EmotionWave({ days = 7 }: EmotionWaveProps) {
   const isDark = useColorScheme() === 'dark';
   const { data: timeline = [] } = useQuery({
     queryKey: ['emotionTimeline', days],
-    queryFn: () => getEmotionTimeline(days),
+    queryFn: () => api.getEmotionTimeline(days),
     staleTime: 5 * 60 * 1000,
   });
 

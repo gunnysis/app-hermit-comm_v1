@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, useColorScheme } from 'react-native';
 import { EMOTION_EMOJI, ACTIVITY_PRESETS } from '@/shared/lib/constants';
-import { getActivityLabel } from '@/shared/lib/utils.generated';
+import { getActivityLabel, getCurrentKST } from '@/shared/lib/utils.generated';
 import { useMonthlyReport } from '../hooks/useMonthlyReport';
 import { Skeleton } from '@/shared/components/Skeleton';
 
@@ -19,12 +19,6 @@ const MONTH_NAMES = [
   '11월',
   '12월',
 ];
-
-function getCurrentKST() {
-  const now = new Date();
-  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  return { year: kst.getUTCFullYear(), month: kst.getUTCMonth() + 1 };
-}
 
 interface MonthlyReportProps {
   enabled?: boolean;
