@@ -1,9 +1,9 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import { Pressable, Animated, useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useThemeColors } from '@/shared/hooks/useThemeColors';
+import { useTabBarHeight } from '@/shared/hooks/useTabBarHeight';
 import { MOTION } from '@/shared/lib/constants';
 
 interface FloatingActionButtonProps {
@@ -18,7 +18,7 @@ export function FloatingActionButton({
   accessibilityLabel = '새 글 작성',
 }: FloatingActionButtonProps) {
   const { fabIcon } = useThemeColors();
-  const insets = useSafeAreaInsets();
+  const tabBarHeight = useTabBarHeight();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -63,7 +63,7 @@ export function FloatingActionButton({
       style={{
         position: 'absolute',
         right: 20,
-        bottom: insets.bottom + 24,
+        bottom: tabBarHeight + 16,
         transform: [{ scale: combinedScale }],
         shadowColor: isDark ? '#FFC300' : '#997500',
         shadowOffset: { width: 0, height: 4 },

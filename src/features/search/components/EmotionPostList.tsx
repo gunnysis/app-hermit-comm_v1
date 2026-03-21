@@ -2,16 +2,18 @@ import React from 'react';
 import { View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { PostCard } from '@/features/posts/components/PostCard';
+import { useTabBarHeight } from '@/shared/hooks/useTabBarHeight';
 import type { Post } from '@/types';
 
 export function EmotionPostList({ posts }: { posts: Post[] }) {
+  const tabBarHeight = useTabBarHeight();
   return (
     <View style={{ flex: 1 }} className="min-h-0">
       <FlashList
         data={posts}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <PostCard post={item} />}
-        contentContainerStyle={{ paddingTop: 8, paddingBottom: 16 }}
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: tabBarHeight + 16 }}
       />
     </View>
   );

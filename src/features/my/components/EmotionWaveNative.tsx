@@ -8,7 +8,9 @@ interface EmotionWaveNativeProps {
   days?: number;
 }
 
-export function EmotionWaveNative({ days = 7 }: EmotionWaveNativeProps) {
+export const EmotionWaveNative = React.memo(function EmotionWaveNative({
+  days = 7,
+}: EmotionWaveNativeProps) {
   const isDark = useColorScheme() === 'dark';
   const { data: timeline = [], isLoading } = useEmotionTimeline(days);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -237,4 +239,4 @@ export function EmotionWaveNative({ days = 7 }: EmotionWaveNativeProps) {
       </View>
     </View>
   );
-}
+});

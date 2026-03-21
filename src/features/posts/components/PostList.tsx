@@ -7,6 +7,7 @@ import { PostCardSkeleton } from '@/shared/components/Skeleton';
 import { Loading } from '@/shared/components/Loading';
 import { ErrorView } from '@/shared/components/ErrorView';
 import { EmptyState } from '@/shared/components/EmptyState';
+import { useTabBarHeight } from '@/shared/hooks/useTabBarHeight';
 
 interface PostListProps {
   posts: Post[];
@@ -33,6 +34,7 @@ export function PostList({
   emptyDescription,
   listHeader,
 }: PostListProps) {
+  const tabBarHeight = useTabBarHeight();
   const [refreshing, setRefreshing] = useState(false);
   const onEndReachedFired = useRef(false);
   const prevLoading = useRef(loading);
@@ -132,7 +134,7 @@ export function PostList({
           onEndReachedFired.current = false;
         }}
         ListFooterComponent={ListFooter}
-        contentContainerStyle={{ paddingTop: 8, paddingBottom: 16 }}
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: tabBarHeight + 16 }}
       />
     </View>
   );

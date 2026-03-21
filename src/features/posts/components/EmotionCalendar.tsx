@@ -12,7 +12,11 @@ interface EmotionCalendarProps {
   onDayPress?: (day: EmotionCalendarDay) => void;
 }
 
-export function EmotionCalendar({ userId, days = 30, onDayPress }: EmotionCalendarProps) {
+export const EmotionCalendar = React.memo(function EmotionCalendar({
+  userId,
+  days = 30,
+  onDayPress,
+}: EmotionCalendarProps) {
   const isDark = useColorScheme() === 'dark';
   const { data: calendarData = [], isLoading } = useQuery({
     queryKey: ['emotionCalendar', userId, days],
@@ -124,4 +128,4 @@ export function EmotionCalendar({ userId, days = 30, onDayPress }: EmotionCalend
       )}
     </View>
   );
-}
+});

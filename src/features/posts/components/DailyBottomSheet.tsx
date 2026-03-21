@@ -12,6 +12,7 @@ import {
   SHARED_PALETTE,
 } from '@/shared/lib/constants';
 import { ActivityTagSelector } from '@/shared/components/ActivityTagSelector';
+import { useTabBarHeight } from '@/shared/hooks/useTabBarHeight';
 import { useCreateDaily } from '@/features/my/hooks/useCreateDaily';
 import { useQueryClient } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
@@ -23,6 +24,7 @@ interface DailyBottomSheetProps {
 export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
   function DailyBottomSheet({ onDismiss }, ref) {
     const isDark = useColorScheme() === 'dark';
+    const tabBarHeight = useTabBarHeight();
     const snapPoints = useMemo(() => ['45%', '75%', '92%'], []);
     const [emotions, setEmotions] = useState<string[]>([]);
     const [activities, setActivities] = useState<string[]>([]);
@@ -88,6 +90,8 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
         index={-1}
         snapPoints={snapPoints}
         enablePanDownToClose
+        bottomInset={tabBarHeight}
+        detached={false}
         backdropComponent={renderBackdrop}
         onChange={(index) => {
           setCurrentIndex(index);
@@ -96,7 +100,7 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
         onClose={onDismiss}
         handleIndicatorStyle={{ backgroundColor: isDark ? '#57534e' : '#a8a29e' }}
         backgroundStyle={{ backgroundColor: bgColor, borderRadius: 24 }}>
-        <BottomSheetView style={{ flex: 1, paddingHorizontal: 16, paddingBottom: 24 }}>
+        <BottomSheetView style={{ flex: 1, paddingHorizontal: 16, paddingBottom: 16 }}>
           {/* 헤더 */}
           <Text
             className={`text-lg font-bold mb-4 ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>

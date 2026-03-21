@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { PostCardSkeleton } from '@/shared/components/Skeleton';
 import { SearchResultCard } from './SearchResultCard';
+import { useTabBarHeight } from '@/shared/hooks/useTabBarHeight';
 import type { SearchResult } from '@/types';
 
 export function SearchResultList({
@@ -14,6 +15,7 @@ export function SearchResultList({
   onEndReached: () => void;
   isFetchingMore: boolean;
 }) {
+  const tabBarHeight = useTabBarHeight();
   return (
     <View style={{ flex: 1 }} className="min-h-0">
       <FlashList
@@ -31,7 +33,7 @@ export function SearchResultList({
             </View>
           ) : null
         }
-        contentContainerStyle={{ paddingTop: 8, paddingBottom: 16 }}
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: tabBarHeight + 16 }}
       />
     </View>
   );
