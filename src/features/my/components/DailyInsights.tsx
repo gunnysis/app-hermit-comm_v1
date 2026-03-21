@@ -40,11 +40,10 @@ export function DailyInsights({ enabled = true }: { enabled?: boolean }) {
         </Text>
         <View className={`rounded-xl px-4 py-4 ${isDark ? 'bg-stone-800' : 'bg-stone-50'}`}>
           <Text className={`text-sm ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
-            💡 아직 패턴을 찾고 있어요.
+            💡 {total_dailies > 0 ? `${total_dailies}일째 기록하고 있어요!` : '패턴을 발견하려면 기록이 필요해요'}
           </Text>
           <Text className={`text-xs mt-1 ${isDark ? 'text-stone-500' : 'text-stone-400'}`}>
-            하루를 나눌수록 더 잘 보여요 :) ({total_dailies}/
-            {DAILY_INSIGHTS_CONFIG.MIN_DAILIES_FOR_INSIGHTS}일)
+            {DAILY_INSIGHTS_CONFIG.MIN_DAILIES_FOR_INSIGHTS - total_dailies}일만 더 나누면 나만의 패턴이 보여요
           </Text>
           {/* Progress bar */}
           <View

@@ -155,26 +155,24 @@ const PostCardComponent = ({ post }: PostCardProps) => {
                     {post.display_name}
                   </Text>
                 </View>
-                {(post.like_count ?? 0) > 0 && (
-                  <View
-                    className={`flex-row items-center px-2 py-0.5 rounded-full ${
-                      isDark ? 'bg-coral-900/30' : 'bg-coral-50'
-                    }`}>
-                    <Text className="text-[11px] font-medium text-coral-600 dark:text-coral-300">
-                      ❤️ {formatReactionCount(post.like_count ?? 0)}
-                    </Text>
-                  </View>
-                )}
-                {(post.comment_count ?? 0) > 0 && (
-                  <View
-                    className={`flex-row items-center px-2 py-0.5 rounded-full ${
-                      isDark ? 'bg-stone-800/60' : 'bg-stone-50'
-                    }`}>
-                    <Text className="text-[11px] font-medium text-stone-500 dark:text-stone-400">
-                      💬 {post.comment_count}
-                    </Text>
-                  </View>
-                )}
+                <View
+                  className={`flex-row items-center px-2 py-0.5 rounded-full ${
+                    isDark ? 'bg-coral-900/30' : 'bg-coral-50'
+                  }`}
+                  style={(post.like_count ?? 0) === 0 ? { opacity: 0.4 } : undefined}>
+                  <Text className="text-[11px] font-medium text-coral-600 dark:text-coral-300">
+                    ❤️ {formatReactionCount(post.like_count ?? 0)}
+                  </Text>
+                </View>
+                <View
+                  className={`flex-row items-center px-2 py-0.5 rounded-full ${
+                    isDark ? 'bg-stone-800/60' : 'bg-stone-50'
+                  }`}
+                  style={(post.comment_count ?? 0) === 0 ? { opacity: 0.4 } : undefined}>
+                  <Text className="text-[11px] font-medium text-stone-500 dark:text-stone-400">
+                    💬 {post.comment_count ?? 0}
+                  </Text>
+                </View>
               </View>
               <Text className="text-[11px] text-stone-400 dark:text-stone-500">
                 {formatDate(post.created_at)}

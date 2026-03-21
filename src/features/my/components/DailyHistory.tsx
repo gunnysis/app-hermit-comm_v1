@@ -26,7 +26,20 @@ export function DailyHistory({ enabled = true }: DailyHistoryProps) {
     );
   }
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <View
+        className={`mt-4 rounded-2xl p-4 ${isDark ? 'bg-stone-800/50' : 'bg-cream-50'}`}
+        style={{ borderWidth: 1, borderColor: isDark ? 'rgba(68,64,60,0.4)' : '#E8DCC8' }}>
+        <Text className={`text-sm font-semibold mb-2 ${isDark ? 'text-stone-200' : 'text-stone-800'}`}>
+          📖 나의 기록
+        </Text>
+        <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
+          오늘의 하루를 나누면 여기에 기록이 쌓여요
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View

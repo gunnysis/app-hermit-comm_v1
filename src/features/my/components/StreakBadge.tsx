@@ -67,7 +67,9 @@ export function StreakBadge({ enabled = true }: StreakBadgeProps) {
                   ? `${data.current_streak}일 연속 기록`
                   : data.completed_today
                     ? '오늘 기록 완료'
-                    : '오늘 하루를 나눠보세요'}
+                    : data.total_days > 0
+                      ? '오늘도 이어가볼까요?'
+                      : '첫 하루를 나눠보세요'}
               </Text>
               <Text className={`text-xs ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
                 총 {data.total_days}일 기록

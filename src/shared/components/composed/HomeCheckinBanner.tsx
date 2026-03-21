@@ -113,9 +113,9 @@ export function HomeCheckinBanner({ onCreatePress }: HomeCheckinBannerProps = {}
             나눠볼까요?
           </Text>
         </Pressable>
-        <Pressable onPress={handleDismiss}>
-          <Text className={`text-xs ${isDark ? 'text-stone-500' : 'text-stone-400'}`}>
-            괜찮아요
+        <Pressable onPress={handleDismiss} hitSlop={8} style={{ opacity: 0.5 }}>
+          <Text className={`text-[10px] ${isDark ? 'text-stone-600' : 'text-stone-350'}`}>
+            다음에
           </Text>
         </Pressable>
       </View>
