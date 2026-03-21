@@ -127,8 +127,8 @@ const PostCardComponent = ({ post }: PostCardProps) => {
                             }
                           : undefined
                       }
-                      className={`rounded-full px-2.5 py-0.5 ${
-                        !emotionColors ? (isDark ? 'bg-stone-800/80' : 'bg-stone-50') : ''
+                      className={`rounded-full px-3 py-1.5 ${
+                        !emotionColors ? (isDark ? 'bg-stone-800' : 'bg-stone-100') : ''
                       }`}>
                       <Text
                         style={emotionColors && !isDark ? { color: '#57534E' } : undefined}

@@ -75,7 +75,7 @@ export function PostList({
         <View className="py-4 px-4">
           <Pressable
             onPress={handleLoadMorePress}
-            className="py-3 rounded-xl bg-happy-400 active:opacity-80"
+            className="py-3 rounded-xl bg-happy-500 active:opacity-80"
             accessibilityLabel="더 보기"
             accessibilityRole="button">
             <Text className="text-center font-semibold text-happy-700">더 보기</Text>
