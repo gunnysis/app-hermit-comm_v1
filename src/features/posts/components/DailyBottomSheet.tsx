@@ -1,6 +1,6 @@
 import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import { View, Text, TextInput, Pressable, useColorScheme } from 'react-native';
-import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import type { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
@@ -92,6 +92,9 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
         enablePanDownToClose
         bottomInset={tabBarHeight}
         detached={false}
+        keyboardBehavior="interactive"
+        keyboardBlurBehavior="restore"
+        android_keyboardInputMode="adjustResize"
         backdropComponent={renderBackdrop}
         onChange={(index) => {
           setCurrentIndex(index);
@@ -100,7 +103,9 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
         onClose={onDismiss}
         handleIndicatorStyle={{ backgroundColor: isDark ? '#57534e' : '#a8a29e' }}
         backgroundStyle={{ backgroundColor: bgColor, borderRadius: 24 }}>
-        <BottomSheetView style={{ flex: 1, paddingHorizontal: 16, paddingBottom: 16 }}>
+        <BottomSheetScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}>
           {/* 헤더 */}
           <Text
             className={`text-lg font-bold mb-4 ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>
@@ -160,6 +165,8 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
                 maxLength={DAILY_CONFIG.MAX_NOTE_LENGTH}
                 placeholder="오늘 하루는..."
                 placeholderTextColor={isDark ? '#78716c' : '#a8a29e'}
+                returnKeyType="done"
+                blurOnSubmit
                 className={`rounded-xl px-4 py-3 text-sm mb-4 ${
                   isDark
                     ? 'bg-stone-800 text-stone-100 border-stone-700'
@@ -186,7 +193,7 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
               </Pressable>
             </Animated.View>
           )}
-        </BottomSheetView>
+        </BottomSheetScrollView>
       </BottomSheet>
     );
   },

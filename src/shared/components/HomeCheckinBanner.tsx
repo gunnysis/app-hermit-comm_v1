@@ -27,6 +27,14 @@ export function HomeCheckinBanner({ onCreatePress }: HomeCheckinBannerProps = {}
     });
   }, [user, dismissKey]);
 
+  // BottomSheet等で記録後、バナーを自動リセット
+  React.useEffect(() => {
+    if (todayDaily && dismissed) {
+      AsyncStorage.removeItem(dismissKey);
+      setDismissed(false);
+    }
+  }, [todayDaily, dismissed, dismissKey]);
+
   if (!user || dismissed) return null;
 
   const handleDismiss = async () => {

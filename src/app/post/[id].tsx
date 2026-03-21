@@ -153,6 +153,14 @@ export default function PostDetailScreen() {
               });
             }
             queryClient.invalidateQueries({ queryKey: ['boardPosts'] });
+            if (post?.post_type === 'daily') {
+              queryClient.invalidateQueries({ queryKey: ['todayDaily'] });
+              queryClient.invalidateQueries({ queryKey: ['myStreak'] });
+              queryClient.invalidateQueries({ queryKey: ['activitySummary'] });
+              queryClient.invalidateQueries({ queryKey: ['dailyInsights'] });
+              queryClient.invalidateQueries({ queryKey: ['dailyHistory'] });
+              queryClient.invalidateQueries({ queryKey: ['monthlyReport'] });
+            }
             Alert.alert('완료', '게시글이 삭제되었습니다.', [
               { text: '확인', onPress: () => router.back() },
             ]);

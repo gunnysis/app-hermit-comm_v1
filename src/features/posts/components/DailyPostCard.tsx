@@ -22,7 +22,7 @@ function DailyPostCardInner({ post }: DailyPostCardProps) {
   const router = useRouter();
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  const emotions = post.emotions ?? post.initial_emotions ?? [];
+  const emotions = post.initial_emotions ?? post.emotions ?? [];
   const activities = post.activities ?? [];
   const content = post.content || '';
 
