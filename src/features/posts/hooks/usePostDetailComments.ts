@@ -41,9 +41,10 @@ export function usePostDetailComments({
   });
 
   const invalidateListQueries = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['post', postId] });
     if (!post?.board_id) return;
     queryClient.invalidateQueries({ queryKey: ['boardPosts', post.board_id] });
-  }, [post?.board_id, queryClient]);
+  }, [postId, post?.board_id, queryClient]);
 
   useRealtimeComments({
     postId,

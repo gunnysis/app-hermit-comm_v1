@@ -16,8 +16,9 @@ export default function NotificationsScreen() {
   const isDark = useColorScheme() === 'dark';
   const router = useRouter();
   const { data: notifications = [] } = useNotifications();
-  const { mutate: markAllRead } = useMarkAllRead();
+  const { mutate: markAllRead, isPending: isMarkingAll } = useMarkAllRead();
   const { mutate: markRead } = useMarkRead();
+  const hasUnread = notifications.some((n) => !n.read);
 
   const getLabel = (n: Notification) => {
     const actor = n.actor_alias ?? '누군가';
@@ -33,11 +34,19 @@ export default function NotificationsScreen() {
         title="알림"
         showBack
         rightContent={
-          <Pressable onPress={() => markAllRead()} className="px-2 py-1.5">
-            <Text className="text-xs font-semibold text-happy-700 dark:text-happy-400">
-              모두 읽음
-            </Text>
-          </Pressable>
+          hasUnread ? (
+            <Pressable
+              onPress={() => markAllRead()}
+              disabled={isMarkingAll}
+              className="px-2 py-1.5"
+              style={{ opacity: isMarkingAll ? 0.5 : 1 }}
+              accessibilityLabel="모든 알림 읽음 처리"
+              accessibilityRole="button">
+              <Text className="text-xs font-semibold text-happy-700 dark:text-happy-400">
+                {isMarkingAll ? '처리 중...' : '모두 읽음'}
+              </Text>
+            </Pressable>
+          ) : undefined
         }
       />
       <FlatList
@@ -49,6 +58,8 @@ export default function NotificationsScreen() {
               if (!item.read) markRead([item.id]);
               if (item.post_id) router.push(`/post/${item.post_id}`);
             }}
+            accessibilityLabel={`${getLabel(item)}, ${formatDistanceToNow(new Date(item.created_at), { addSuffix: true, locale: ko })}${item.read ? '' : ', 읽지 않음'}`}
+            accessibilityRole="button"
             className={`px-4 py-3 border-b ${
               item.read
                 ? isDark

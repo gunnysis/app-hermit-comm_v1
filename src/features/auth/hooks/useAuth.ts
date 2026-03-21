@@ -19,6 +19,7 @@ export function useAuth() {
   useEffect(() => {
     let mounted = true;
     let retryCount = 0;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
     const MAX_RETRIES = 3;
 
     const initAuth = async () => {
@@ -47,7 +48,7 @@ export function useAuth() {
         if (mounted && retryCount < MAX_RETRIES) {
           retryCount++;
           logger.log(`[useAuth] 재시도 ${retryCount}/${MAX_RETRIES}`);
-          setTimeout(() => initAuth(), 1000 * retryCount);
+          retryTimer = setTimeout(() => initAuth(), 1000 * retryCount);
         } else if (mounted) {
           setError('인증에 실패했습니다. 앱을 재시작해주세요.');
         }
@@ -80,6 +81,7 @@ export function useAuth() {
     // 클린업
     return () => {
       mounted = false;
+      if (retryTimer) clearTimeout(retryTimer);
       authListener?.subscription.unsubscribe();
     };
   }, []); // 빈 의존성 배열 - 한 번만 실행
