@@ -1,5 +1,7 @@
 import { supabase } from '../supabase';
 import { logger } from '@/shared/utils/logger';
+import { extractErrorMessage } from './helpers';
+import { APIError } from './error';
 
 export interface Notification {
   id: number;
@@ -17,8 +19,9 @@ export async function getNotifications(limit = 20, offset = 0): Promise<Notifica
     p_offset: offset,
   });
   if (error) {
-    logger.error('[getNotifications]', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getNotifications 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return (data ?? []) as Notification[];
 }
@@ -26,8 +29,9 @@ export async function getNotifications(limit = 20, offset = 0): Promise<Notifica
 export async function getUnreadCount(): Promise<number> {
   const { data, error } = await supabase.rpc('get_unread_notification_count');
   if (error) {
-    logger.error('[getUnreadCount] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getUnreadCount 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return (data as number) ?? 0;
 }
@@ -35,15 +39,17 @@ export async function getUnreadCount(): Promise<number> {
 export async function markRead(ids: number[]): Promise<void> {
   const { error } = await supabase.rpc('mark_notifications_read', { p_ids: ids });
   if (error) {
-    logger.error('[markRead]', error.message, { code: error.code });
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] markRead 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
 }
 
 export async function markAllRead(): Promise<void> {
   const { error } = await supabase.rpc('mark_all_notifications_read');
   if (error) {
-    logger.error('[markAllRead]', error.message, { code: error.code });
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] markAllRead 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
 }

@@ -44,7 +44,7 @@ describe('Daily API', () => {
 
     it('에러 시 throw', async () => {
       mockRpc.mockResolvedValue({ data: null, error: { message: 'DB error', code: '500' } });
-      await expect(getDailyHistory()).rejects.toEqual({ message: 'DB error', code: '500' });
+      await expect(getDailyHistory()).rejects.toThrow('DB error');
     });
 
     it('data null이면 빈 배열', async () => {
@@ -62,7 +62,10 @@ describe('Daily API', () => {
       });
       const result = await getMonthlyEmotionReport(2026, 3);
       expect(result.days_logged).toBe(15);
-      expect(mockRpc).toHaveBeenCalledWith('get_monthly_emotion_report', { p_year: 2026, p_month: 3 });
+      expect(mockRpc).toHaveBeenCalledWith('get_monthly_emotion_report', {
+        p_year: 2026,
+        p_month: 3,
+      });
     });
 
     it('에러 시 throw', async () => {
@@ -74,7 +77,13 @@ describe('Daily API', () => {
   describe('getMyStreak', () => {
     it('스트릭 데이터 반환', async () => {
       mockRpc.mockResolvedValue({
-        data: { current_streak: 5, total_days: 20, longest_streak: 10, completed_today: true, new_milestone: 0 },
+        data: {
+          current_streak: 5,
+          total_days: 20,
+          longest_streak: 10,
+          completed_today: true,
+          new_milestone: 0,
+        },
         error: null,
       });
       const result = await getMyStreak();
@@ -86,7 +95,13 @@ describe('Daily API', () => {
   describe('getWeeklyEmotionSummary', () => {
     it('기본 weekOffset=0', async () => {
       mockRpc.mockResolvedValue({
-        data: { week_start: '2026-03-16', week_end: '2026-03-22', days_logged: 5, top_emotions: null, top_activity: null },
+        data: {
+          week_start: '2026-03-16',
+          week_end: '2026-03-22',
+          days_logged: 5,
+          top_emotions: null,
+          top_activity: null,
+        },
         error: null,
       });
       const result = await getWeeklyEmotionSummary(0);

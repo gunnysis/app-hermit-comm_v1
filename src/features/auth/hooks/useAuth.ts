@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { User } from '@supabase/supabase-js';
 import { auth } from '../auth';
 import { supabase } from '@/shared/lib/supabase';
@@ -15,6 +15,13 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryKey, setRetryKey] = useState(0);
+
+  const retry = useCallback(() => {
+    setError(null);
+    setLoading(true);
+    setRetryKey((k) => k + 1);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -50,7 +57,14 @@ export function useAuth() {
           logger.log(`[useAuth] 재시도 ${retryCount}/${MAX_RETRIES}`);
           retryTimer = setTimeout(() => initAuth(), 1000 * retryCount);
         } else if (mounted) {
-          setError('인증에 실패했습니다. 앱을 재시작해주세요.');
+          const errMsg = err instanceof Error ? err.message : String(err);
+          const isNetwork = /network|fetch|timeout|504|503|ECONNREFUSED/i.test(errMsg);
+
+          setError(
+            isNetwork
+              ? '서버에 연결할 수 없습니다.\n잠시 후 다시 시도해주세요.'
+              : '인증에 실패했습니다.\n잠시 후 다시 시도해주세요.',
+          );
         }
       } finally {
         if (mounted) {
@@ -84,7 +98,7 @@ export function useAuth() {
       if (retryTimer) clearTimeout(retryTimer);
       authListener?.subscription.unsubscribe();
     };
-  }, []); // 빈 의존성 배열 - 한 번만 실행
+  }, [retryKey]); // retryKey 변경 시 재실행
 
-  return { user, loading, error };
+  return { user, loading, error, retry };
 }

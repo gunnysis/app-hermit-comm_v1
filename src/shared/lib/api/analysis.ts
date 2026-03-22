@@ -1,5 +1,6 @@
 import { supabase } from '../supabase';
 import { logger } from '@/shared/utils/logger';
+import { extractErrorMessage } from './helpers';
 import { APIError } from './error';
 import type { PostAnalysis } from '@/types';
 
@@ -11,7 +12,7 @@ export async function getEmotionTrend(
 ): Promise<{ emotion: string; cnt: number; pct: number }[]> {
   const { data, error } = await supabase.rpc('get_emotion_trend', { days });
   if (error) {
-    const errorMsg = error.message || error.code || 'unknown_supabase_error';
+    const errorMsg = extractErrorMessage(error);
     logger.error('[API] getEmotionTrend 에러:', errorMsg, {
       code: error.code,
       details: error.details,
@@ -32,7 +33,7 @@ export async function getPostAnalysis(postId: number): Promise<PostAnalysis | nu
     .maybeSingle();
 
   if (error) {
-    const errorMsg = error.message || error.code || 'unknown_supabase_error';
+    const errorMsg = extractErrorMessage(error);
     logger.error('[API] getPostAnalysis 에러:', errorMsg, {
       code: error.code,
       details: error.details,

@@ -1,5 +1,7 @@
 import { supabase } from '../supabase';
 import { logger } from '@/shared/utils/logger';
+import { extractErrorMessage } from './helpers';
+import { APIError } from './error';
 import type { EmotionTimelineEntry, ActivitySummary, EmotionCalendarDay } from '@/types';
 
 export type { ActivitySummary };
@@ -7,8 +9,9 @@ export type { ActivitySummary };
 export async function getActivitySummary(): Promise<ActivitySummary> {
   const { data, error } = await supabase.rpc('get_my_activity_summary');
   if (error) {
-    logger.error('[getActivitySummary] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getActivitySummary 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return data as unknown as ActivitySummary;
 }
@@ -16,8 +19,9 @@ export async function getActivitySummary(): Promise<ActivitySummary> {
 export async function getEmotionTimeline(days = 7): Promise<EmotionTimelineEntry[]> {
   const { data, error } = await supabase.rpc('get_emotion_timeline', { p_days: days });
   if (error) {
-    logger.error('[getEmotionTimeline] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getEmotionTimeline 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return (data ?? []) as EmotionTimelineEntry[];
 }
@@ -34,8 +38,9 @@ export interface DailyInsightsResult {
 export async function getDailyInsights(days = 30): Promise<DailyInsightsResult> {
   const { data, error } = await supabase.rpc('get_daily_activity_insights', { p_days: days });
   if (error) {
-    logger.error('[getDailyInsights] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getDailyInsights 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return data as unknown as DailyInsightsResult;
 }
@@ -49,8 +54,9 @@ export interface YesterdayDailyReactions {
 export async function getYesterdayDailyReactions(): Promise<YesterdayDailyReactions | null> {
   const { data, error } = await supabase.rpc('get_yesterday_daily_reactions');
   if (error) {
-    logger.error('[getYesterdayDailyReactions] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getYesterdayDailyReactions 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   if (!data) return null;
   const result = data as unknown as YesterdayDailyReactions;
@@ -75,8 +81,9 @@ export async function getSameMoodDailies(
     p_emotions: emotions,
   });
   if (error) {
-    logger.error('[getSameMoodDailies] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getSameMoodDailies 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   if (!data) return [];
   return (Array.isArray(data) ? data : []) as unknown as SameMoodDaily[];
@@ -97,8 +104,9 @@ export async function getWeeklyEmotionSummary(
     p_week_offset: weekOffset,
   });
   if (error) {
-    logger.error('[getWeeklyEmotionSummary] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getWeeklyEmotionSummary 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return data as unknown as WeeklyEmotionSummary | null;
 }
@@ -114,8 +122,9 @@ export interface StreakData {
 export async function getMyStreak(): Promise<StreakData> {
   const { data, error } = await supabase.rpc('get_my_streak');
   if (error) {
-    logger.error('[getMyStreak] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getMyStreak 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return data as unknown as StreakData;
 }
@@ -132,8 +141,9 @@ export async function getUserEmotionCalendar(
     p_end: new Date().toISOString().slice(0, 10),
   });
   if (error) {
-    logger.error('[getUserEmotionCalendar] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getUserEmotionCalendar 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return (data ?? []) as EmotionCalendarDay[];
 }
@@ -155,8 +165,9 @@ export async function getDailyHistory(limit = 20, offset = 0): Promise<DailyHist
     p_offset: offset,
   });
   if (error) {
-    logger.error('[getDailyHistory] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getDailyHistory 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return (data ?? []) as unknown as DailyHistoryItem[];
 }
@@ -181,8 +192,9 @@ export async function getMonthlyEmotionReport(
     p_month: month,
   });
   if (error) {
-    logger.error('[getMonthlyEmotionReport] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getMonthlyEmotionReport 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return data as unknown as MonthlyEmotionReport;
 }
@@ -190,8 +202,9 @@ export async function getMonthlyEmotionReport(
 export async function getMyAlias(): Promise<string | null> {
   const { data, error } = await supabase.rpc('get_my_alias');
   if (error) {
-    logger.error('[getMyAlias] failed:', error);
-    throw error;
+    const errorMsg = extractErrorMessage(error);
+    logger.error('[API] getMyAlias 에러:', errorMsg, { code: error.code });
+    throw new APIError(500, errorMsg, error.code);
   }
   return data as string | null;
 }

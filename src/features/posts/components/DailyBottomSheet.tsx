@@ -1,9 +1,10 @@
 import React, { forwardRef, useCallback, useMemo, useState } from 'react';
-import { View, Text, TextInput, Pressable, useColorScheme } from 'react-native';
+import { View, Text, TextInput, Pressable, useColorScheme, StyleSheet } from 'react-native';
 import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import type { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import type { BottomSheetBackdropProps, BottomSheetBackgroundProps } from '@gorhom/bottom-sheet';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
+import { BlurView } from 'expo-blur';
 import {
   ALLOWED_EMOTIONS,
   EMOTION_EMOJI,
@@ -16,9 +17,42 @@ import { useTabBarHeight } from '@/shared/hooks/useTabBarHeight';
 import { useCreateDaily } from '@/features/my/hooks/useCreateDaily';
 import { useQueryClient } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
-
 interface DailyBottomSheetProps {
   onDismiss?: () => void;
+}
+
+/** Glassmorphism 배경 — 탭바와 동일한 블러 디자인 언어 */
+function GlassBackground({ style }: BottomSheetBackgroundProps) {
+  const isDark = useColorScheme() === 'dark';
+  return (
+    <Animated.View style={[style, styles.glassBg]}>
+      <BlurView
+        intensity={isDark ? 40 : 60}
+        tint={isDark ? 'dark' : 'light'}
+        style={StyleSheet.absoluteFill}
+      />
+      <View
+        style={[
+          StyleSheet.absoluteFill,
+          {
+            backgroundColor: isDark ? 'rgba(28, 25, 23, 0.75)' : 'rgba(255, 255, 255, 0.80)',
+            borderTopWidth: 1,
+            borderColor: isDark ? 'rgba(120, 113, 108, 0.2)' : 'rgba(255, 255, 255, 0.4)',
+          },
+        ]}
+      />
+    </Animated.View>
+  );
+}
+
+/** 오늘 날짜 포맷 (M월 d일 요일, KST) */
+function todayLabel(): string {
+  const now = new Date();
+  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const m = kst.getUTCMonth() + 1;
+  const d = kst.getUTCDate();
+  const dayNames = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+  return `${m}월 ${d}일 ${dayNames[kst.getUTCDay()]}`;
 }
 
 export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
@@ -49,7 +83,10 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
           setEmotions([...emotions, emotion]);
         } else {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-          Toast.show({ type: 'info', text1: `감정은 최대 ${DAILY_CONFIG.MAX_EMOTIONS}개까지 선택할 수 있어요` });
+          Toast.show({
+            type: 'info',
+            text1: `감정은 최대 ${DAILY_CONFIG.MAX_EMOTIONS}개까지 선택할 수 있어요`,
+          });
         }
       },
       [emotions],
@@ -81,12 +118,30 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
 
     const renderBackdrop = useCallback(
       (props: BottomSheetBackdropProps) => (
-        <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.4} />
+        <BottomSheetBackdrop
+          {...props}
+          disappearsOnIndex={-1}
+          appearsOnIndex={0}
+          opacity={0.5}
+          pressBehavior="close"
+        />
       ),
       [],
     );
 
-    const bgColor = isDark ? '#1c1917' : '#fff';
+    const handleChange = useCallback(
+      (index: number) => {
+        // 스냅 포인트 도달 시 햅틱 피드백
+        if (index >= 0) {
+          Haptics.impactAsync(
+            index === 0 ? Haptics.ImpactFeedbackStyle.Light : Haptics.ImpactFeedbackStyle.Medium,
+          );
+        }
+        setCurrentIndex(index);
+        if (index === -1) resetState();
+      },
+      [resetState],
+    );
 
     return (
       <BottomSheet
@@ -100,21 +155,23 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
         keyboardBlurBehavior="restore"
         android_keyboardInputMode="adjustResize"
         backdropComponent={renderBackdrop}
-        onChange={(index) => {
-          setCurrentIndex(index);
-          if (index === -1) resetState();
-        }}
+        backgroundComponent={GlassBackground}
+        onChange={handleChange}
         onClose={onDismiss}
-        handleIndicatorStyle={{ backgroundColor: isDark ? '#57534e' : '#a8a29e' }}
-        backgroundStyle={{ backgroundColor: bgColor, borderRadius: 24 }}>
+        handleIndicatorStyle={styles.handleIndicator}
+        backgroundStyle={styles.backgroundShadow}>
         <BottomSheetScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}>
           {/* 헤더 */}
-          <Text
-            className={`text-lg font-bold mb-4 ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>
-            오늘의 하루
-          </Text>
+          <View className="items-center mb-5 pt-2">
+            <Text className={`text-lg font-bold ${isDark ? 'text-stone-100' : 'text-stone-900'}`}>
+              오늘의 하루
+            </Text>
+            <Text className={`text-xs mt-1 ${isDark ? 'text-stone-500' : 'text-stone-400'}`}>
+              {todayLabel()}
+            </Text>
+          </View>
 
           {/* Step 1: 감정 (항상 보임) */}
           <Text
@@ -129,7 +186,10 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
                 <Pressable
                   key={emotion}
                   onPress={() => toggleEmotion(emotion)}
-                  style={isActive ? { backgroundColor: colors?.gradient[0] } : undefined}
+                  style={[
+                    isActive ? { backgroundColor: colors?.gradient[0] } : undefined,
+                    isActive ? { transform: [{ scale: 1.05 }] } : undefined,
+                  ]}
                   className={`rounded-full px-3 py-1.5 ${
                     isActive ? '' : isDark ? 'bg-stone-800' : 'bg-stone-100'
                   }`}
@@ -152,14 +212,16 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
 
           {/* Step 2: 활동 (75%+에서 보임) */}
           {currentIndex >= 1 && (
-            <Animated.View entering={FadeIn.duration(200)} className="mb-4">
+            <Animated.View
+              entering={FadeInDown.delay(50).duration(250).springify()}
+              className="mb-4">
               <ActivityTagSelector selected={activities} onSelect={setActivities} />
             </Animated.View>
           )}
 
           {/* Step 3: 한마디 + 제출 (92%에서 보임) */}
           {currentIndex >= 2 && (
-            <Animated.View entering={FadeIn.duration(200)}>
+            <Animated.View entering={FadeInDown.delay(100).duration(250).springify()}>
               <Text className={`text-sm mb-2 ${isDark ? 'text-stone-300' : 'text-stone-600'}`}>
                 한마디 <Text className={isDark ? 'text-stone-500' : 'text-stone-400'}>(선택)</Text>
               </Text>
@@ -177,7 +239,8 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
                     : 'bg-stone-50 text-stone-900 border-stone-200'
                 } border`}
               />
-              <Text className={`text-right text-[10px] mb-3 ${isDark ? 'text-stone-500' : 'text-stone-400'}`}>
+              <Text
+                className={`text-right text-[10px] mb-3 ${isDark ? 'text-stone-500' : 'text-stone-400'}`}>
                 {note.length}/{DAILY_CONFIG.MAX_NOTE_LENGTH}
               </Text>
             </Animated.View>
@@ -185,7 +248,7 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
 
           {/* 나누기 버튼 (감정 1개 이상 선택 시) */}
           {emotions.length > 0 && (
-            <Animated.View entering={FadeIn.duration(200)}>
+            <Animated.View entering={FadeInDown.delay(50).duration(200).springify()}>
               <Pressable
                 onPress={handleSubmit}
                 disabled={isPending}
@@ -205,3 +268,25 @@ export const DailyBottomSheet = forwardRef<BottomSheet, DailyBottomSheetProps>(
     );
   },
 );
+
+const styles = StyleSheet.create({
+  glassBg: {
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  handleIndicator: {
+    backgroundColor: '#78716c', // stone-500
+    width: 40,
+    height: 5,
+  },
+  backgroundShadow: {
+    borderRadius: 24,
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    // Android elevation
+    elevation: 24,
+  },
+});

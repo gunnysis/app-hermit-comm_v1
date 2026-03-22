@@ -27,7 +27,7 @@ export function HomeCheckinBanner({ onCreatePress }: HomeCheckinBannerProps = {}
     });
   }, [user, dismissKey]);
 
-  // BottomSheet等で記録後、バナーを自動リセット
+  // 바텀시트에서 기록 후 배너 자동 리셋
   React.useEffect(() => {
     if (todayDaily && dismissed) {
       AsyncStorage.removeItem(dismissKey);
@@ -115,7 +115,7 @@ export function HomeCheckinBanner({ onCreatePress }: HomeCheckinBannerProps = {}
         </Pressable>
         <Pressable onPress={handleDismiss} hitSlop={8} style={{ opacity: 0.5 }}>
           <Text className={`text-[10px] ${isDark ? 'text-stone-600' : 'text-stone-350'}`}>
-            다음에
+            괜찮아요
           </Text>
         </Pressable>
       </View>

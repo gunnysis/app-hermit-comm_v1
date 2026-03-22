@@ -4,7 +4,7 @@ import { Stack } from 'expo-router';
 import Constants from 'expo-constants';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Alert, AppState, View, Text, ActivityIndicator } from 'react-native';
+import { Alert, AppState, View, Text, ActivityIndicator, Pressable } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { queryClient } from '@/shared/lib/queryClient';
@@ -32,6 +32,11 @@ if (!__DEV__ && SENTRY_DSN) {
           /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
           '[email]',
         );
+        // Custom fingerprint: [API] 패턴 매칭하여 API별 이슈 분리
+        const apiMatch = message.match(/\[API\]\s+(\w+)/);
+        if (apiMatch) {
+          event.fingerprint = ['api-error', apiMatch[1]];
+        }
       }
       if (event.extra && typeof event.extra === 'object') {
         const safe: Record<string, unknown> = {};
@@ -73,7 +78,7 @@ async function checkAndApplyUpdate() {
 }
 
 export default function RootLayout() {
-  const { loading, error } = useAuth();
+  const { loading, error, retry } = useAuth();
 
   // 앱 실행 시 1회만 OTA 업데이트 확인 후 자동 적용 (사용자 선택 없음)
   useEffect(() => {
@@ -111,9 +116,14 @@ export default function RootLayout() {
       <View className="flex-1 items-center justify-center bg-cream-50 p-5">
         <Text className="text-6xl mb-4">😢</Text>
         <Text className="text-base text-coral-600 text-center mb-2">{error}</Text>
-        <Text className="text-sm text-gray-500 text-center">
-          네트워크 연결을 확인하고{'\n'}앱을 다시 시작해주세요.
+        <Text className="text-sm text-gray-500 text-center mb-6">
+          서버 점검 중이거나 네트워크가{'\n'}불안정할 수 있습니다.
         </Text>
+        <Pressable
+          onPress={retry}
+          className="bg-coral-500 px-6 py-3 rounded-full active:opacity-80">
+          <Text className="text-white font-semibold">다시 시도</Text>
+        </Pressable>
       </View>
     );
   }

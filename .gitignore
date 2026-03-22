@@ -55,3 +55,12 @@ coverage/
 # generated native folders
 /ios
 /android
+
+# supabase (중앙 프로젝트에서 관리)
+supabase/.temp/
+
+# IDE
+.cursor/
+
+# Sentry
+.env.sentry-build-plugin
