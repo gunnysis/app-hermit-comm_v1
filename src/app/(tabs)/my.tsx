@@ -9,13 +9,8 @@ import { ProfileSection } from '@/features/my/components/ProfileSection';
 import { ActivitySummary } from '@/features/my/components/ActivitySummary';
 import { EmotionCalendar } from '@/features/posts/components/EmotionCalendar';
 import { EmotionWaveNative } from '@/features/my/components/EmotionWaveNative';
-import { DailyInsights } from '@/features/my/components/DailyInsights';
-import { WeeklySummary } from '@/features/my/components/WeeklySummary';
 import { ReminderSetting } from '@/features/my/components/ReminderSetting';
-import { StreakBadge } from '@/features/my/components/StreakBadge';
 import { EmotionTrendChart } from '@/features/my/components/EmotionTrendChart';
-import { MonthlyReport } from '@/features/my/components/MonthlyReport';
-import { DailyHistory } from '@/features/my/components/DailyHistory';
 import { Loading } from '@/shared/components/primitives/Loading';
 
 export default function MyScreen() {
@@ -49,9 +44,6 @@ export default function MyScreen() {
           <ProfileSection user={user} />
         </View>
 
-        {/* 스트릭 */}
-        <StreakBadge enabled={!!user} />
-
         {/* 활동 요약 */}
         <Text
           className={`text-xs font-semibold mb-2 ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
@@ -59,11 +51,7 @@ export default function MyScreen() {
         </Text>
         <ActivitySummary enabled={!!user} />
 
-        <WeeklySummary enabled={!!user} />
         <EmotionTrendChart enabled={!!user} />
-        <DailyInsights enabled={!!user} />
-        <MonthlyReport enabled={!!user} />
-        <DailyHistory enabled={!!user} />
 
         <EmotionCalendar userId={user.id} />
 

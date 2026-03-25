@@ -4,7 +4,6 @@ import { PostBody } from './PostBody';
 import { EmotionTags } from './EmotionTags';
 import { ReactionBar } from './ReactionBar';
 import { RecommendedPosts } from './RecommendedPosts';
-import { SameMoodDailies } from './SameMoodDailies';
 import { formatDate } from '@/shared/utils/format';
 import { EMOTION_COLOR_MAP, EMOTION_EMOJI, ACTIVITY_PRESETS } from '@/shared/lib/constants';
 import type { Post, Reaction, RecommendedPost, AnalysisStatus } from '@/types';
@@ -128,11 +127,6 @@ export function PostDetailBody({
             posts={recommendedPosts}
             isLoading={recommendedPostsLoading}
             hasEmotions={emotions.length > 0}
-          />
-          <SameMoodDailies
-            postId={post.id}
-            emotions={postAnalysis?.emotions ?? post.initial_emotions ?? []}
-            postType={post.post_type}
           />
         </View>
       </View>
