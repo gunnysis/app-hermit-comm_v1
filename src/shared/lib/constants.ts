@@ -1,6 +1,3 @@
-/** 공개 게시판 기본 ID. 자유게시판 (visibility='public') */
-export const DEFAULT_PUBLIC_BOARD_ID = 12;
-
 /** 익명 별칭 형용사 목록 */
 export const ALIAS_ADJECTIVES = [
   '따뜻한',
@@ -52,5 +49,8 @@ export {
   ACTIVITY_PRESETS,
   DAILY_CONFIG,
   DAILY_INSIGHTS_CONFIG,
+  DEFAULT_PUBLIC_BOARD_ID,
+  POETRY_BOARD_ID,
+  PUBLIC_BOARDS,
 } from './constants.generated';
 export type { AllowedEmotion, ReactionColorKey } from './constants.generated';

@@ -33,7 +33,6 @@ const IGNORED_DOM_TAGS = [
 
 interface PostBodyProps {
   content: string;
-  imageUrl?: string | null;
 }
 
 /** RenderHTML 렌더 실패 시 plain 텍스트로 fallback */
@@ -122,7 +121,7 @@ function SafeImageRenderer(props: CustomRendererProps<TBlock>): React.ReactEleme
   return <InternalRenderer {...props} />;
 }
 
-function PostBodyComponent({ content, imageUrl }: PostBodyProps) {
+function PostBodyComponent({ content }: PostBodyProps) {
   const { width } = useWindowDimensions();
   const contentWidth = Math.min(Math.max(0, width - 32), CONTENT_MAX_WIDTH);
   const htmlStyles = useHtmlStyles();
@@ -191,19 +190,7 @@ function PostBodyComponent({ content, imageUrl }: PostBodyProps) {
       </Text>
     );
 
-  return (
-    <>
-      {imageUrl ? (
-        <Image
-          source={{ uri: imageUrl }}
-          className="w-full aspect-video rounded-xl mb-3 bg-stone-100 dark:bg-stone-800"
-          resizeMode="cover"
-          accessibilityLabel="게시글 첨부 이미지"
-        />
-      ) : null}
-      {bodyContent}
-    </>
-  );
+  return bodyContent;
 }
 
 export const PostBody = memo(PostBodyComponent);

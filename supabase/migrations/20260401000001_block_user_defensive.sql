@@ -10,7 +10,7 @@ SET search_path = public
 AS $$
 BEGIN
   -- 자기 자신 차단 방지
-  IF p_alias = (SELECT display_alias FROM user_preferences WHERE id = auth.uid()) THEN
+  IF p_alias = (SELECT display_alias FROM user_preferences WHERE user_id = auth.uid()) THEN
     RAISE EXCEPTION 'Cannot block yourself' USING ERRCODE = 'P0001';
   END IF;
 

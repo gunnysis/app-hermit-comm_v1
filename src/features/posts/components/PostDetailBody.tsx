@@ -156,7 +156,7 @@ export function PostDetailBody({
           </Text>
         </View>
         <View className="mb-4" accessibilityLabel="게시글 본문">
-          <PostBody content={post.content} imageUrl={post.image_url} />
+          <PostBody content={post.content} />
         </View>
         <EmotionTags
           emotions={postAnalysis?.emotions ?? []}

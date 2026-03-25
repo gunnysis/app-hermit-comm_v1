@@ -11,7 +11,6 @@ import { EmotionCalendar } from '@/features/posts/components/EmotionCalendar';
 import { EmotionWaveNative } from '@/features/my/components/EmotionWaveNative';
 import { DailyInsights } from '@/features/my/components/DailyInsights';
 import { WeeklySummary } from '@/features/my/components/WeeklySummary';
-import { BlockedUsersSection } from '@/features/my/components/BlockedUsersSection';
 import { ReminderSetting } from '@/features/my/components/ReminderSetting';
 import { StreakBadge } from '@/features/my/components/StreakBadge';
 import { EmotionTrendChart } from '@/features/my/components/EmotionTrendChart';
@@ -80,9 +79,6 @@ export default function MyScreen() {
           설정
         </Text>
         <ReminderSetting />
-        <View className="h-3" />
-        <BlockedUsersSection enabled={!!user} />
-
         {/* 로그아웃: 개발 환경에서만 표시 (익명 사용자 데이터 손실 방지) */}
         {__DEV__ && (
           <View className="mt-4 mb-2">

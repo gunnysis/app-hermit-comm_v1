@@ -22,7 +22,6 @@ import { useRecommendedPosts } from '@/features/posts/hooks/useRecommendedPosts'
 
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useBoards } from '@/features/boards/hooks/useBoards';
-import { useBlockUser } from '@/features/blocks/hooks/useBlocks';
 import { useQueryClient } from '@tanstack/react-query';
 import { useResponsiveLayout } from '@/shared/hooks/useResponsiveLayout';
 import { api } from '@/shared/lib/api';
@@ -39,7 +38,6 @@ export default function PostDetailScreen() {
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
   const { isWide } = useResponsiveLayout();
-  const { mutate: blockUser } = useBlockUser();
 
   const {
     data: post,
@@ -172,35 +170,6 @@ export default function PostDetailScreen() {
     ]);
   }, [post, id, queryClient, router]);
 
-  const handleBlockUser = useCallback(() => {
-    if (!post || user?.id === post.author_id) return;
-    Alert.alert(
-      '차단',
-      `${post.display_name}님을 차단할까요?\n차단하면 이 사용자의 글이 피드에서 숨겨집니다.`,
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '차단',
-          style: 'destructive',
-          onPress: () => {
-            blockUser(post.display_name, {
-              onSuccess: () => {
-                Toast.show({ type: 'success', text1: '차단되었습니다.' });
-                queryClient.invalidateQueries({ queryKey: ['boardPosts'] });
-                router.back();
-              },
-              onError: (err: Error & { code?: string }) => {
-                const msg =
-                  err.code === 'P0002' ? '차단할 수 없는 사용자입니다.' : '차단에 실패했습니다.';
-                Toast.show({ type: 'error', text1: msg });
-              },
-            });
-          },
-        },
-      ],
-    );
-  }, [post, user, blockUser, queryClient, router]);
-
   const onSubmitComment = useCallback(async () => {
     const result = await handleSubmitComment(() => {
       Toast.show({ type: 'success', text1: replyTo ? '답글을 남겼어요 ✓' : '댓글을 남겼어요 ✓' });
@@ -263,7 +232,6 @@ export default function PostDetailScreen() {
   }
 
   const canDeletePost = user?.id === post.author_id;
-  const canBlock = !!user && user.id !== post.author_id && post.display_name !== '익명';
 
   return (
     <Container>
@@ -284,7 +252,6 @@ export default function PostDetailScreen() {
             }
           }}
           onDelete={handleDeletePost}
-          onBlock={canBlock ? handleBlockUser : undefined}
           canDelete={canDeletePost}
           isWide={isWide}
         />

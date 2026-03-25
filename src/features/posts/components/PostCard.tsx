@@ -87,14 +87,6 @@ const PostCardComponent = ({ post }: PostCardProps) => {
               }}
             />
           )}
-          {post.image_url ? (
-            <Image
-              source={{ uri: post.image_url }}
-              className="w-full h-36 bg-stone-100 dark:bg-stone-800"
-              resizeMode="cover"
-              accessibilityLabel="게시글 썸네일"
-            />
-          ) : null}
           <View className="p-4">
             <Text
               className="text-[17px] font-bold text-gray-800 dark:text-stone-100 leading-6 mb-2"

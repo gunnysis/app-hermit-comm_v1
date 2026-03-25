@@ -8,8 +8,6 @@ import { Loading } from '@/shared/components/primitives/Loading';
 import { ErrorView } from '@/shared/components/composed/ErrorView';
 import { Input } from '@/shared/components/primitives/Input';
 import { ContentEditor } from '@/shared/components/composed/ContentEditor';
-import { ImagePicker } from '@/features/posts/components/ImagePicker';
-import { MoodSelector } from '@/features/posts/components/MoodSelector';
 import { Button } from '@/shared/components/primitives/Button';
 import { ScreenHeader } from '@/shared/components/composed/ScreenHeader';
 import { api } from '@/shared/lib/api';
@@ -27,8 +25,6 @@ export default function EditPostScreen() {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [initialEmotions, setInitialEmotions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({ title: '', content: '' });
 
@@ -58,8 +54,6 @@ export default function EditPostScreen() {
     if (post) {
       setTitle(post.title);
       setContent(post.content);
-      setImageUrl(post.image_url ?? null);
-      setInitialEmotions(post.initial_emotions ?? []);
     }
   }, [post]);
 
@@ -83,8 +77,6 @@ export default function EditPostScreen() {
       await api.updatePost(Number(id), {
         title: title.trim(),
         content: content.trim(),
-        image_url: imageUrl,
-        initial_emotions: initialEmotions.length > 0 ? initialEmotions : null,
       });
 
       queryClient.invalidateQueries({ queryKey: ['post', postId] });
@@ -142,7 +134,6 @@ export default function EditPostScreen() {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingBottom: 16 }}>
           <View className="p-4 pb-2">
-            <ImagePicker imageUrl={imageUrl} onImageUrlChange={setImageUrl} disabled={loading} />
             <Input
               label="제목"
               value={title}
@@ -161,13 +152,6 @@ export default function EditPostScreen() {
               maxLength={5000}
               accessibilityLabel="본문"
             />
-
-            <View className="mb-3">
-              <Text className="text-sm font-medium text-gray-700 dark:text-stone-300 mb-1">
-                지금 어떤 마음인가요? (선택)
-              </Text>
-              <MoodSelector value={initialEmotions} onChange={setInitialEmotions} />
-            </View>
 
             <View className="mt-2 mb-2">
               {anonMode === 'always_anon' ? (
