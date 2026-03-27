@@ -40,8 +40,21 @@ function reportToSentry(args: unknown[]): void {
     const message = parts.join(' ') || 'Unknown error';
 
     // 핑거프린트 추출: "[API] searchPosts 에러:" → "API-searchPosts"
+    // 폴백: 에러 이름 또는 메시지 첫 단어 사용 (unknown 방지)
     const tagMatch = message.match(/\[(\w+)\]\s*(\S+)/);
-    const fingerprint = tagMatch ? `${tagMatch[1]}-${tagMatch[2]}` : 'unknown';
+    let fingerprint: string;
+    if (tagMatch) {
+      fingerprint = `${tagMatch[1]}-${tagMatch[2]}`;
+    } else if (errors.length > 0) {
+      fingerprint = errors[0].name || errors[0].constructor.name || 'Error';
+    } else {
+      // 메시지 첫 의미있는 단어 추출
+      const firstWord = message
+        .replace(/[^a-zA-Z가-힣_]/g, ' ')
+        .trim()
+        .split(/\s+/)[0];
+      fingerprint = firstWord || 'unclassified';
+    }
 
     // Throttle: 같은 fingerprint는 30초에 1번만
     const now = Date.now();
@@ -49,15 +62,17 @@ function reportToSentry(args: unknown[]): void {
     if (now - lastSent < THROTTLE_MS) return;
     sentryThrottle.set(fingerprint, now);
 
+    const commonExtra = { fullMessage: message, fingerprint, ...extras };
+
     if (errors.length > 0) {
       Sentry.captureException(errors[0], {
-        extra: { fullMessage: message, ...extras },
+        extra: commonExtra,
         fingerprint: ['{{ default }}', fingerprint],
       });
     } else {
       Sentry.captureMessage(message, {
         level: 'error',
-        extra: { args, ...extras },
+        extra: commonExtra,
         fingerprint: [fingerprint, message.slice(0, 80)],
       });
     }
