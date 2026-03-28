@@ -64,3 +64,4 @@ supabase/.temp/
 
 # Sentry
 .env.sentry-build-plugin
+.key/
