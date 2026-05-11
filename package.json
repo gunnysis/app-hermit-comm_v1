@@ -26,8 +26,14 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "update:preview": "eas update --channel preview",
     "update:production": "eas update --channel production",
-    "db:migration-list": "supabase migration list",
-    "db:push": "supabase db push"
+    "db:push": "bash scripts/db.sh push",
+    "db:push:dry": "bash scripts/db.sh push --dry-run",
+    "db:pull": "bash scripts/db.sh pull",
+    "db:lint": "bash scripts/db.sh lint",
+    "db:status": "bash scripts/db.sh status",
+    "db:gen-types": "bash scripts/gen-types.sh",
+    "build:web": "expo export -p web",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@10play/tentap-editor": "^1.0.1",
@@ -86,6 +92,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^9.0.11",
     "jest": "29.7.0",
+    "supabase": "latest",
     "jest-expo": "~55.0.9",
     "lint-staged": "^15.2.10",
     "prettier": "^3.2.4",

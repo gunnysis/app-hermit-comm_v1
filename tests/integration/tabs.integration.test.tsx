@@ -43,9 +43,12 @@ describe('통합: 프로바이더 + 컴포넌트 트리', () => {
       />,
     );
 
-    expect(screen.getByText('은둔마을 첫 게시글')).toBeTruthy();
-    expect(screen.getByText('따뜻한 이야기가 있는 곳입니다.')).toBeTruthy();
-    expect(screen.getByText('익명')).toBeTruthy();
+    // PostCard 내부 뷰는 accessibilityElementsHidden=true로 AT에서 숨겨짐
+    // → includeHiddenElements 옵션으로 DOM 텍스트 직접 검색
+    const opts = { includeHiddenElements: true };
+    expect(screen.getByText('은둔마을 첫 게시글', opts)).toBeTruthy();
+    expect(screen.getByText('따뜻한 이야기가 있는 곳입니다.', opts)).toBeTruthy();
+    expect(screen.getByText('익명', opts)).toBeTruthy();
   });
 
   it('PostList가 에러 시 에러 메시지를 표시한다', () => {
