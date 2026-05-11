@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, useColorScheme, Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/shared/utils/haptics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = 'daily_reminder_settings';
@@ -71,7 +71,7 @@ export function ReminderSetting() {
   };
 
   const toggleEnabled = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    haptics.light();
 
     if (!settings.enabled) {
       const granted = hasPermission || (await requestPermission());
@@ -90,7 +90,7 @@ export function ReminderSetting() {
   };
 
   const selectTime = async (hour: number, minute: number) => {
-    Haptics.selectionAsync();
+    haptics.light();
     const newSettings = { ...settings, hour, minute };
     setSettings(newSettings);
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings));

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { View, Text, Pressable, Animated, useColorScheme, LayoutChangeEvent } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/shared/utils/haptics';
 import { MOTION } from '@/shared/lib/constants';
 
 export type SortOrder = 'latest' | 'popular';
@@ -38,7 +38,7 @@ export function SortTabs({ value, onChange }: SortTabsProps) {
   const handleChange = useCallback(
     (order: SortOrder) => {
       if (order !== value) {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        haptics.light();
         onChange(order);
       }
     },

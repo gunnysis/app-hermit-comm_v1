@@ -23,7 +23,7 @@ import { useResponsiveLayout } from '@/shared/hooks/useResponsiveLayout';
 import { useIsAdmin } from '@/features/admin/hooks/useIsAdmin';
 import { api } from '@/shared/lib/api';
 import { NotificationBell } from '@/shared/components/composed/NotificationBell';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/shared/utils/haptics';
 import type { Post } from '@/types';
 
 type TimeSlot = keyof typeof GREETING_MESSAGES;
@@ -99,7 +99,7 @@ export default function HomeScreen() {
   }, []);
 
   const handleTitleLongPress = useCallback(() => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    haptics.success();
     pushAdminLogin(router);
   }, [router]);
 

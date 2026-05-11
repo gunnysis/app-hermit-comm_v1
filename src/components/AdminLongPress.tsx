@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Pressable } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/shared/utils/haptics';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -21,7 +21,7 @@ export function AdminLongPress({ children }: Props) {
   const handleLongPress = useCallback(() => {
     if (!isAdmin) return;
 
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    haptics.medium();
     scale.value = withSequence(
       withTiming(0.95, { duration: 80 }),
       withTiming(1, { duration: 120 }),

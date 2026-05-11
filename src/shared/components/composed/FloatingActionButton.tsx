@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useEffect } from 'react';
 import { Pressable, Animated, useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/shared/utils/haptics';
 import { useThemeColors } from '@/shared/hooks/useThemeColors';
 import { useTabBarHeight } from '@/shared/hooks/useTabBarHeight';
 import { MOTION } from '@/shared/lib/constants';
@@ -52,7 +52,7 @@ export function FloatingActionButton({
   }, [pressScale]);
 
   const handlePress = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    haptics.medium();
     onPress();
   }, [onPress]);
 

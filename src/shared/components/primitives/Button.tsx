@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import { Pressable, Text, ActivityIndicator, Animated, useColorScheme } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/shared/utils/haptics';
 import { MOTION } from '@/shared/lib/constants';
 
 interface ButtonProps {
@@ -47,7 +47,7 @@ export function Button({
 
   const handlePress = useCallback(() => {
     if (isDisabled) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    haptics.light();
     onPress();
   }, [isDisabled, onPress]);
 

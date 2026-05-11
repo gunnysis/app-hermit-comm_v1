@@ -4,8 +4,10 @@ import { Stack } from 'expo-router';
 import Constants from 'expo-constants';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Alert, AppState, View, Text, ActivityIndicator, Pressable } from 'react-native';
+import { Alert, AppState, Platform, View, Text, ActivityIndicator, Pressable } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useFonts } from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { queryClient } from '@/shared/lib/queryClient';
 import { supabase } from '@/shared/lib/supabase';
@@ -80,13 +82,20 @@ async function checkAndApplyUpdate() {
 export default function RootLayout() {
   const { loading, error, retry } = useAuth();
 
-  // 앱 실행 시 1회만 OTA 업데이트 확인 후 자동 적용 (사용자 선택 없음)
+  // Ionicons 웹 폰트 로드 (웹에서 아이콘 깨짐 방지)
+  const [fontsLoaded] = useFonts({
+    ...Ionicons.font,
+  });
+
+  // 앱 실행 시 1회만 OTA 업데이트 확인 후 자동 적용 (웹/DEV 제외)
   useEffect(() => {
+    if (Platform.OS === 'web') return;
     checkAndApplyUpdate();
   }, []);
 
-  // 포그라운드/백그라운드에 따라 Supabase 토큰 자동 갱신 제어
+  // 포그라운드/백그라운드에 따라 Supabase 토큰 자동 갱신 제어 (웹은 항상 active)
   useEffect(() => {
+    if (Platform.OS === 'web') return;
     const subscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') {
         supabase.auth.startAutoRefresh();

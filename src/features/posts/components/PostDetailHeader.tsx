@@ -1,8 +1,19 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { View, Pressable, Animated, useColorScheme, Modal, Text, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
-import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
+
+// expo-blur는 웹에서 지원되나 번들 크기 영향 — Platform.OS로 분기
+const BlurView =
+  Platform.OS !== 'web'
+    ? require('expo-blur').BlurView
+    : ({
+        children,
+        className,
+        style,
+        ...props
+      }: React.ComponentProps<typeof View> & Record<string, unknown>) =>
+        React.createElement(View, { style, className, ...props }, children);
 
 interface PostDetailHeaderProps {
   onShare: () => void;

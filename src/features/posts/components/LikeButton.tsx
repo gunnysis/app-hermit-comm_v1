@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, Text } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/shared/utils/haptics';
 
 interface LikeButtonProps {
   count: number;
@@ -17,7 +17,7 @@ export function LikeButton({ count, onPress, loading = false }: LikeButtonProps)
     setPressed(true);
 
     // 햅틱 피드백
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    haptics.medium();
 
     onPress();
   };

@@ -1,0 +1,9 @@
+node_modules
+android
+ios
+.expo
+dist
+.maestro
+docs
+supabase
+tests

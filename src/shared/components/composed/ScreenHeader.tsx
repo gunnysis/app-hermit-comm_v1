@@ -3,7 +3,7 @@ import { View, Text, Pressable, Animated, useColorScheme } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/shared/utils/haptics';
 import { useResponsiveLayout } from '@/shared/hooks/useResponsiveLayout';
 
 interface ScreenHeaderProps {
@@ -34,7 +34,7 @@ export function ScreenHeader({
   const backScale = useRef(new Animated.Value(1)).current;
 
   const handleBack = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    haptics.light();
     Animated.sequence([
       Animated.timing(backScale, { toValue: 0.9, duration: 60, useNativeDriver: true }),
       Animated.spring(backScale, { toValue: 1, friction: 4, tension: 200, useNativeDriver: true }),
