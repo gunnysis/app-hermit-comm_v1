@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 import { View, Text } from 'react-native';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -35,8 +35,14 @@ export function ContentEditor({
   accessibilityHint,
   minHeight = 200,
 }: ContentEditorProps) {
+  // extensions를 메모이제이션하여 리렌더 시 중복 등록 방지
+  const extensions = useMemo(
+    () => [StarterKit, Underline, Link.configure({ openOnClick: false })],
+    [],
+  );
+
   const editor = useEditor({
-    extensions: [StarterKit, Underline, Link.configure({ openOnClick: false })],
+    extensions,
     content: value || '',
     editable,
     onUpdate: ({ editor: ed }) => {

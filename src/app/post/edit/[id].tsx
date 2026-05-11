@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
@@ -12,6 +12,7 @@ import { Button } from '@/shared/components/primitives/Button';
 import { ScreenHeader } from '@/shared/components/composed/ScreenHeader';
 import { api } from '@/shared/lib/api';
 import { toFriendlyErrorMessage } from '@/shared/lib/errors';
+import Toast from 'react-native-toast-message';
 import { usePostDetail } from '@/features/posts/hooks/usePostDetail';
 import { useBoards } from '@/features/boards/hooks/useBoards';
 import { validatePostTitle, validatePostContent } from '@/shared/utils/validate';
@@ -84,11 +85,13 @@ export default function EditPostScreen() {
         queryClient.invalidateQueries({ queryKey: ['boardPosts', boardId] });
       }
 
-      Alert.alert('완료', '게시글이 수정되었습니다.', [
-        { text: '확인', onPress: () => router.back() },
-      ]);
+      Toast.show({ type: 'success', text1: '게시글이 수정되었습니다.' });
+      router.back();
     } catch (e) {
-      Alert.alert('오류', toFriendlyErrorMessage(e, '게시글 수정에 실패했습니다.'));
+      Toast.show({
+        type: 'error',
+        text1: toFriendlyErrorMessage(e, '게시글 수정에 실패했습니다.'),
+      });
     } finally {
       setLoading(false);
     }

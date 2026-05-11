@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
@@ -16,6 +16,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { DEFAULT_PUBLIC_BOARD_ID } from '@/shared/lib/constants';
 import { pushTabs } from '@/shared/lib/navigation';
 import Toast from 'react-native-toast-message';
+import { confirmAlert } from '@/shared/utils/confirmAlert';
 
 export default function CreateScreen() {
   return (
@@ -66,7 +67,7 @@ function RegularCreateForm({ boardId }: RegularCreateFormProps) {
         pushTabs(router);
       }
     },
-    onError: (message) => Alert.alert('오류', message),
+    onError: (message) => Toast.show({ type: 'error', text1: message }),
   });
 
   const watched = watch();
@@ -85,16 +86,16 @@ function RegularCreateForm({ boardId }: RegularCreateFormProps) {
     draftCheckedRef.current = true;
     const draft = loadDraft();
     if (!draft) return;
-    Alert.alert('임시저장된 글', '임시저장된 글이 있습니다. 복원할까요?', [
-      { text: '취소', style: 'cancel', onPress: () => clearDraft() },
-      {
-        text: '복원',
-        onPress: () => {
+    confirmAlert('임시저장된 글', '임시저장된 글이 있습니다. 복원할까요?', '복원').then(
+      (restore) => {
+        if (restore) {
           setValue('title', draft.title);
           setValue('content', draft.content);
-        },
+        } else {
+          clearDraft();
+        }
       },
-    ]);
+    );
   }, [loadDraft, clearDraft, setValue]);
 
   const draftLabel =

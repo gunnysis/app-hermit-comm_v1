@@ -48,9 +48,15 @@ function IconButton({
       const Haptics = require('expo-haptics');
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
+    const useNative = Platform.OS !== 'web';
     Animated.sequence([
-      Animated.timing(scaleAnim, { toValue: 0.85, duration: 80, useNativeDriver: true }),
-      Animated.spring(scaleAnim, { toValue: 1, friction: 4, tension: 200, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 0.85, duration: 80, useNativeDriver: useNative }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 4,
+        tension: 200,
+        useNativeDriver: useNative,
+      }),
     ]).start();
     onPress();
   }, [onPress, scaleAnim]);
@@ -89,14 +95,15 @@ function MoreMenu({
   const scaleAnim = useRef(new Animated.Value(0.9)).current;
 
   useEffect(() => {
+    const useNative = Platform.OS !== 'web';
     if (visible) {
       Animated.parallel([
-        Animated.timing(fadeAnim, { toValue: 1, duration: 150, useNativeDriver: true }),
+        Animated.timing(fadeAnim, { toValue: 1, duration: 150, useNativeDriver: useNative }),
         Animated.spring(scaleAnim, {
           toValue: 1,
           friction: 6,
           tension: 200,
-          useNativeDriver: true,
+          useNativeDriver: useNative,
         }),
       ]).start();
     } else {

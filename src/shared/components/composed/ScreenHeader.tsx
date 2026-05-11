@@ -15,6 +15,8 @@ interface ScreenHeaderProps {
   rightContent?: React.ReactNode;
   children?: React.ReactNode;
   onTitleLongPress?: () => void;
+  /** 웹에서 헤더를 숨기고 children만 렌더. _layout.web.tsx의 WebHeader가 있는 탭 화면에서만 사용 */
+  suppressOnWeb?: boolean;
 }
 
 export function ScreenHeader({
@@ -26,6 +28,7 @@ export function ScreenHeader({
   rightContent,
   children,
   onTitleLongPress,
+  suppressOnWeb = false,
 }: ScreenHeaderProps) {
   const router = useRouter();
   const { isWide } = useResponsiveLayout();
@@ -33,18 +36,25 @@ export function ScreenHeader({
   const isDark = colorScheme === 'dark';
   const backScale = useRef(new Animated.Value(1)).current;
 
+  const useNative = Platform.OS !== 'web';
+
   const handleBack = useCallback(() => {
     haptics.light();
     Animated.sequence([
-      Animated.timing(backScale, { toValue: 0.9, duration: 60, useNativeDriver: true }),
-      Animated.spring(backScale, { toValue: 1, friction: 4, tension: 200, useNativeDriver: true }),
+      Animated.timing(backScale, { toValue: 0.9, duration: 60, useNativeDriver: useNative }),
+      Animated.spring(backScale, {
+        toValue: 1,
+        friction: 4,
+        tension: 200,
+        useNativeDriver: useNative,
+      }),
     ]).start();
     router.back();
-  }, [router, backScale]);
+  }, [router, backScale, useNative]);
 
-  // 웹에서는 _layout.web.tsx의 WebHeader가 네비게이션 역할을 하므로 헤더 숨김
-  // children(SortTabs 등 스크롤 헤더 내 컨텐츠)만 렌더
-  if (Platform.OS === 'web') {
+  // suppressOnWeb: _layout.web.tsx의 WebHeader가 있는 탭 화면에서만 헤더 숨김
+  // 수정/작성 모달 등 WebHeader 없는 화면은 정상 렌더
+  if (Platform.OS === 'web' && suppressOnWeb) {
     return children ? <View className="px-4 pt-2">{children}</View> : null;
   }
 
@@ -52,7 +62,7 @@ export function ScreenHeader({
     <BlurView
       intensity={isDark ? 30 : 50}
       tint={isDark ? 'dark' : 'light'}
-      className={`px-4 ${isWide ? 'pt-4' : 'pt-12'} pb-3 border-b ${
+      className={`px-4 ${Platform.OS === 'web' ? 'pt-3' : isWide ? 'pt-4' : 'pt-12'} pb-3 border-b ${
         isDark ? 'border-stone-800/60' : 'border-cream-200/60'
       }`}>
       {showBack && (

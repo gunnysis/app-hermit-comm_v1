@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, Share } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, Share } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -28,6 +28,7 @@ import { useResponsiveLayout } from '@/shared/hooks/useResponsiveLayout';
 import { api } from '@/shared/lib/api';
 import { ANALYSIS_CONFIG } from '@/shared/lib/constants';
 import { toFriendlyErrorMessage } from '@/shared/lib/errors';
+import { confirmAlert } from '@/shared/utils/confirmAlert';
 
 const postIdNum = (id: string) => Number(id);
 
@@ -132,43 +133,38 @@ export default function PostDetailScreen() {
     }
   }, [post, id]);
 
-  const handleDeletePost = useCallback(() => {
+  const handleDeletePost = useCallback(async () => {
     const isDaily = post?.post_type === 'daily';
     const title = isDaily ? '오늘의 하루 삭제' : '게시글 삭제';
     const message = isDaily
       ? '오늘의 하루를 삭제할까요?\n삭제하면 오늘 다시 나눌 수 있어요.'
       : '정말로 이 게시글을 삭제하시겠습니까?';
-    Alert.alert(title, message, [
-      { text: '취소', style: 'cancel' },
-      {
-        text: '삭제',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await api.deletePost(Number(id));
-            if (post?.board_id) {
-              queryClient.invalidateQueries({
-                queryKey: ['boardPosts', post.board_id],
-              });
-            }
-            queryClient.invalidateQueries({ queryKey: ['boardPosts'] });
-            if (post?.post_type === 'daily') {
-              queryClient.invalidateQueries({ queryKey: ['todayDaily'] });
-              queryClient.invalidateQueries({ queryKey: ['myStreak'] });
-              queryClient.invalidateQueries({ queryKey: ['activitySummary'] });
-              queryClient.invalidateQueries({ queryKey: ['dailyInsights'] });
-              queryClient.invalidateQueries({ queryKey: ['dailyHistory'] });
-              queryClient.invalidateQueries({ queryKey: ['monthlyReport'] });
-            }
-            Alert.alert('완료', '게시글이 삭제되었습니다.', [
-              { text: '확인', onPress: () => router.back() },
-            ]);
-          } catch (e) {
-            Alert.alert('오류', toFriendlyErrorMessage(e, '게시글 삭제에 실패했습니다.'));
-          }
-        },
-      },
-    ]);
+
+    const confirmed = await confirmAlert(title, message, '삭제');
+    if (!confirmed) return;
+
+    try {
+      await api.deletePost(Number(id));
+      if (post?.board_id) {
+        queryClient.invalidateQueries({ queryKey: ['boardPosts', post.board_id] });
+      }
+      queryClient.invalidateQueries({ queryKey: ['boardPosts'] });
+      if (post?.post_type === 'daily') {
+        queryClient.invalidateQueries({ queryKey: ['todayDaily'] });
+        queryClient.invalidateQueries({ queryKey: ['myStreak'] });
+        queryClient.invalidateQueries({ queryKey: ['activitySummary'] });
+        queryClient.invalidateQueries({ queryKey: ['dailyInsights'] });
+        queryClient.invalidateQueries({ queryKey: ['dailyHistory'] });
+        queryClient.invalidateQueries({ queryKey: ['monthlyReport'] });
+      }
+      Toast.show({ type: 'success', text1: '게시글이 삭제되었습니다.' });
+      router.back();
+    } catch (e) {
+      Toast.show({
+        type: 'error',
+        text1: toFriendlyErrorMessage(e, '게시글 삭제에 실패했습니다.'),
+      });
+    }
   }, [post, id, queryClient, router]);
 
   const onSubmitComment = useCallback(async () => {
@@ -176,25 +172,22 @@ export default function PostDetailScreen() {
       Toast.show({ type: 'success', text1: replyTo ? '답글을 남겼어요 ✓' : '댓글을 남겼어요 ✓' });
     });
     if (result?.error) {
-      Alert.alert('오류', result.error);
+      Toast.show({ type: 'error', text1: result.error });
     }
   }, [handleSubmitComment, replyTo]);
 
   const onDeleteComment = useCallback(
     async (commentId: number) => {
-      Alert.alert('댓글 삭제', '정말로 이 댓글을 삭제하시겠습니까?', [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '삭제',
-          style: 'destructive',
-          onPress: async () => {
-            const result = await handleDeleteComment(commentId);
-            if (result?.error) {
-              Alert.alert('오류', result.error);
-            }
-          },
-        },
-      ]);
+      const confirmed = await confirmAlert(
+        '댓글 삭제',
+        '정말로 이 댓글을 삭제하시겠습니까?',
+        '삭제',
+      );
+      if (!confirmed) return;
+      const result = await handleDeleteComment(commentId);
+      if (result?.error) {
+        Toast.show({ type: 'error', text1: result.error });
+      }
     },
     [handleDeleteComment],
   );
@@ -204,7 +197,10 @@ export default function PostDetailScreen() {
       try {
         await handleEditComment(commentId, content);
       } catch (e) {
-        Alert.alert('오류', e instanceof Error ? e.message : '댓글 수정에 실패했습니다.');
+        Toast.show({
+          type: 'error',
+          text1: e instanceof Error ? e.message : '댓글 수정에 실패했습니다.',
+        });
         throw e;
       }
     },

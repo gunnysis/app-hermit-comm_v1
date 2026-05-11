@@ -156,7 +156,8 @@ export default function HomeScreen() {
           title="은둔마을"
           greeting={greeting}
           rightContent={rightContent}
-          onTitleLongPress={handleTitleLongPress}>
+          onTitleLongPress={handleTitleLongPress}
+          suppressOnWeb>
           <View className="flex-row items-center gap-2 mt-2">
             <Pressable
               onPress={() => pushSearch(router)}

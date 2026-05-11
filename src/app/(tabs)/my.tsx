@@ -35,7 +35,7 @@ export default function MyScreen() {
 
   return (
     <View className="flex-1" style={{ backgroundColor: isDark ? '#1c1917' : '#fff' }}>
-      <ScreenHeader title="나" />
+      <ScreenHeader title="나" suppressOnWeb />
       <ScrollView
         className="flex-1 px-4"
         contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
