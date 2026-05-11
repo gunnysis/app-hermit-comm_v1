@@ -8,5 +8,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
  */
 export function useTabBarHeight() {
   const insets = useSafeAreaInsets();
+  if (Platform.OS === 'web') return 0;
   return Platform.OS === 'ios' ? 88 : 60 + insets.bottom;
 }
