@@ -1,9 +1,8 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
-import { View, Pressable, Animated, useColorScheme, Modal, Text } from 'react-native';
+import { View, Pressable, Animated, useColorScheme, Modal, Text, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
 
 interface PostDetailHeaderProps {
   onShare: () => void;
@@ -34,7 +33,10 @@ function IconButton({
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const handlePress = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (Platform.OS !== 'web') {
+      const Haptics = require('expo-haptics');
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     Animated.sequence([
       Animated.timing(scaleAnim, { toValue: 0.85, duration: 80, useNativeDriver: true }),
       Animated.spring(scaleAnim, { toValue: 1, friction: 4, tension: 200, useNativeDriver: true }),
@@ -167,7 +169,7 @@ function MoreMenu({
   );
 }
 
-export function PostDetailHeader({
+export const PostDetailHeader = React.memo(function PostDetailHeader({
   onShare,
   onEdit,
   onDelete,
@@ -232,4 +234,4 @@ export function PostDetailHeader({
       />
     </>
   );
-}
+});

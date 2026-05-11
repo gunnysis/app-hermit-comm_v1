@@ -12,6 +12,7 @@ import { EmotionWaveNative } from '@/features/my/components/EmotionWaveNative';
 import { ReminderSetting } from '@/features/my/components/ReminderSetting';
 import { EmotionTrendChart } from '@/features/my/components/EmotionTrendChart';
 import { Loading } from '@/shared/components/primitives/Loading';
+import { SectionErrorBoundary } from '@/shared/components/composed/SectionErrorBoundary';
 
 export default function MyScreen() {
   const isDark = useColorScheme() === 'dark';
@@ -49,15 +50,23 @@ export default function MyScreen() {
           className={`text-xs font-semibold mb-2 ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
           활동
         </Text>
-        <ActivitySummary enabled={!!user} />
+        <SectionErrorBoundary message="활동 요약을 불러올 수 없어요.">
+          <ActivitySummary enabled={!!user} />
+        </SectionErrorBoundary>
 
-        <EmotionTrendChart enabled={!!user} />
+        <SectionErrorBoundary message="감정 트렌드를 불러올 수 없어요.">
+          <EmotionTrendChart enabled={!!user} />
+        </SectionErrorBoundary>
 
-        <EmotionCalendar userId={user.id} />
+        <SectionErrorBoundary message="감정 캘린더를 불러올 수 없어요.">
+          <EmotionCalendar userId={user.id} />
+        </SectionErrorBoundary>
 
         <View className={`h-px my-3 ${isDark ? 'bg-stone-700' : 'bg-stone-200'}`} />
 
-        <EmotionWaveNative />
+        <SectionErrorBoundary message="감정 웨이브를 불러올 수 없어요.">
+          <EmotionWaveNative />
+        </SectionErrorBoundary>
 
         <View className={`h-px my-3 ${isDark ? 'bg-stone-700' : 'bg-stone-200'}`} />
 

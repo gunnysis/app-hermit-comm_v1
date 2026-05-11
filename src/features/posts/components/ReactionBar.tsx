@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { View, Text, Pressable, Animated, useColorScheme } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import { View, Text, Pressable, Animated, useColorScheme, Platform } from 'react-native';
 import type { Reaction } from '@/types';
 import { formatReactionCount } from '@/shared/utils/format';
 import { REACTION_COLOR_MAP, SHARED_PALETTE } from '@/shared/lib/constants';
@@ -55,7 +54,7 @@ function getTotalCount(reactions: Reaction[]): number {
 }
 
 /** 개별 반응 칩 버튼 — 스프링 바운스 애니메이션, 글로우 이펙트, 44pt 최소 터치 영역 */
-function ReactionChip({
+const ReactionChip = React.memo(function ReactionChip({
   type,
   emoji,
   label,
@@ -83,7 +82,11 @@ function ReactionChip({
 
   const handlePress = useCallback(() => {
     if (isPending) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // 햅틱은 네이티브만
+    if (Platform.OS !== 'web') {
+      const Haptics = require('expo-haptics');
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
 
     // 타입별 차별화된 애니메이션
     switch (type) {
@@ -111,7 +114,7 @@ function ReactionChip({
         ]).start();
         break;
       case 'laugh':
-        // wiggle rotation
+        // wiggle rotation + scale
         Animated.sequence([
           Animated.timing(rotateAnim, { toValue: -12, duration: 80, useNativeDriver: true }),
           Animated.timing(rotateAnim, { toValue: 12, duration: 80, useNativeDriver: true }),
@@ -259,9 +262,9 @@ function ReactionChip({
       </Pressable>
     </Animated.View>
   );
-}
+});
 
-export function ReactionBar({
+export const ReactionBar = React.memo(function ReactionBar({
   reactions,
   userReactedTypes,
   onReaction,
@@ -323,4 +326,4 @@ export function ReactionBar({
       </View>
     </View>
   );
-}
+});

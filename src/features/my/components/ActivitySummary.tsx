@@ -27,7 +27,11 @@ function StatItem({ emoji, label, value, isDark }: StatItemProps) {
   );
 }
 
-export function ActivitySummary({ enabled = true }: { enabled?: boolean }) {
+export const ActivitySummary = React.memo(function ActivitySummary({
+  enabled = true,
+}: {
+  enabled?: boolean;
+}) {
   const isDark = useColorScheme() === 'dark';
   const { data: summary, isLoading } = useActivitySummary(enabled);
 
@@ -55,4 +59,4 @@ export function ActivitySummary({ enabled = true }: { enabled?: boolean }) {
       <StatItem emoji="💛" label="보낸 반응" value={summary?.reaction_count ?? 0} isDark={isDark} />
     </View>
   );
-}
+});

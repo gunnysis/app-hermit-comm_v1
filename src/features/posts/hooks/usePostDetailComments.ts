@@ -153,7 +153,10 @@ export function usePostDetailComments({
     async (commentId: number): Promise<{ error?: string } | void> => {
       try {
         await api.deleteComment(commentId);
-        await refetchComments();
+        queryClient.setQueryData<Comment[]>(
+          ['comments', postId],
+          (old) => old?.filter((c) => c.id !== commentId) ?? [],
+        );
         invalidateListQueries();
       } catch (e) {
         return {
@@ -161,7 +164,7 @@ export function usePostDetailComments({
         };
       }
     },
-    [refetchComments, invalidateListQueries],
+    [postId, queryClient, invalidateListQueries],
   );
 
   return {

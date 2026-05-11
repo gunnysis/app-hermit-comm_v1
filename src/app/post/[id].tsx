@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 
 import { Container } from '@/shared/components/primitives/Container';
 import { ErrorView } from '@/shared/components/composed/ErrorView';
+import { SectionErrorBoundary } from '@/shared/components/composed/SectionErrorBoundary';
 import { Loading } from '@/shared/components/primitives/Loading';
 import { PostDetailHeader } from '@/features/posts/components/PostDetailHeader';
 import { PostDetailBody } from '@/features/posts/components/PostDetailBody';
@@ -260,29 +261,33 @@ export default function PostDetailScreen() {
           className="flex-1"
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingBottom: 12 }}>
-          <PostDetailBody
-            post={post}
-            postAnalysis={postAnalysis}
-            analysisLoading={analysisLoading}
-            reactions={reactions}
-            userReactedTypes={userReactedTypes}
-            onReaction={handleReaction}
-            pendingTypes={pendingTypes}
-            recommendedPosts={recommendedPosts}
-            recommendedPostsLoading={recommendedPostsLoading}
-            onEmotionPress={handleEmotionPress}
-            onRetryAnalysis={handleRetryAnalysis}
-            isRetryingAnalysis={isRetryingAnalysis}
-          />
+          <SectionErrorBoundary message="게시글 내용을 불러올 수 없어요.">
+            <PostDetailBody
+              post={post}
+              postAnalysis={postAnalysis}
+              analysisLoading={analysisLoading}
+              reactions={reactions}
+              userReactedTypes={userReactedTypes}
+              onReaction={handleReaction}
+              pendingTypes={pendingTypes}
+              recommendedPosts={recommendedPosts}
+              recommendedPostsLoading={recommendedPostsLoading}
+              onEmotionPress={handleEmotionPress}
+              onRetryAnalysis={handleRetryAnalysis}
+              isRetryingAnalysis={isRetryingAnalysis}
+            />
+          </SectionErrorBoundary>
 
-          <PostDetailCommentList
-            comments={comments}
-            commentsLoading={commentsLoading}
-            onDelete={onDeleteComment}
-            onEdit={onEditComment}
-            onReply={handleReply}
-            currentUserId={user?.id}
-          />
+          <SectionErrorBoundary message="댓글을 불러올 수 없어요.">
+            <PostDetailCommentList
+              comments={comments}
+              commentsLoading={commentsLoading}
+              onDelete={onDeleteComment}
+              onEdit={onEditComment}
+              onReply={handleReply}
+              currentUserId={user?.id}
+            />
+          </SectionErrorBoundary>
         </ScrollView>
 
         <PostDetailCommentForm

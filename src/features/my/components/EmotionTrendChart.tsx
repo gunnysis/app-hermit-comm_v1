@@ -26,10 +26,11 @@ export function EmotionTrendChart({ enabled = true }: EmotionTrendChartProps) {
     })),
   });
 
+  const [t0, t1, t2, t3] = weekQueries.map((q) => q.dataUpdatedAt ?? 0);
   const weeks = useMemo(
     () => weekQueries.map((q) => q.data).filter(Boolean),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [weekQueries.map((q) => q.dataUpdatedAt).join(',')],
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- weekQueries ref changes every render; individual timestamps as stable change signals
+    [t0, t1, t2, t3],
   );
 
   // 주별 Top 감정 추출

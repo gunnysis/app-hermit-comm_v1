@@ -25,7 +25,12 @@ export const queryClient = new QueryClient({
       staleTime: 1000 * 60 * 2, // 2분 (앱 특성에 맞게 조정)
       gcTime: 1000 * 60 * 30, // 30분
       retry: (failureCount, error) => {
-        // 4xx 에러는 재시도 안함 (웹과 동일 전략)
+        // 4xx 에러는 재시도 안함
+        if (error && typeof (error as unknown as { status?: number }).status === 'number') {
+          const status = (error as unknown as { status: number }).status;
+          if (status >= 400 && status < 500) return false;
+        }
+        // Supabase/fetch 에러는 message에 상태코드 포함 (fallback)
         if (error instanceof Error && /\b4\d{2}\b/.test(error.message)) return false;
         return failureCount < 2;
       },

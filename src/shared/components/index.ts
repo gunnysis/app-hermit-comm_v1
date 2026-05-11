@@ -18,3 +18,4 @@ export { NotificationBell } from './composed/NotificationBell';
 export { ScreenHeader } from './composed/ScreenHeader';
 export { SortTabs } from './composed/SortTabs';
 export type { SortOrder } from './composed/SortTabs';
+export { SectionErrorBoundary } from './composed/SectionErrorBoundary';
