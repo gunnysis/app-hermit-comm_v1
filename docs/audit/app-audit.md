@@ -1,22 +1,35 @@
 # 앱 레포 (gns-hermit-comm) 분석 스냅샷
 
-> **최종 갱신**: 2026-03-28 | **Expo SDK 55** | **React Native 0.83.2** | **파일**: 137개+
+> **최종 갱신**: 2026-05-11 | **Expo SDK 55** | **React Native 0.83.2** | **파일**: 145개+
 
 ## 통계 요약
 
 | 항목 | 수량 |
 |------|------|
-| .ts/.tsx 파일 | 137 |
+| .ts/.tsx 파일 | 145 |
 | API 함수 | 49 |
-| 커스텀 훅 | 27 |
+| 커스텀 훅 | 29 |
 | Feature 모듈 | 9 |
-| 공유 컴포넌트 | 21 |
+| 공유 컴포넌트 | 23 |
 | 테스트 파일 | 6 (16 suites, 143 tests) |
 | Edge Functions | 2 |
 | 네비게이션 라우트 | 13 |
 | `as any` | 0 |
 | TODO/FIXME | 0 |
 | @ts-ignore | 0 |
+
+## 주요 변경 이력 (2026-05-11)
+
+- **Expo Web 타겟 추가**: `.web.tsx` 플랫폼 분기 파일 신규 생성
+  - `PostList.web.tsx`: FlashList → FlatList
+  - `ContentEditor.web.tsx`: @10play/tentap-editor → @tiptap/react
+  - `(tabs)/_layout.web.tsx`: 탭바 → 상단 Header 네비게이션
+  - `storage.web.ts`: MMKV → localStorage 심
+  - `useNetworkStatus.web.ts`: NetInfo → navigator.onLine
+- **SectionErrorBoundary**: 섹션 단위 에러 격리 경계 추가 (MyPage + PostDetail)
+- **React.memo**: ReactionBar, PostDetailHeader, ActivitySummary 메모이제이션
+- **성능**: EmotionTrendChart 의존성 배열 해킹 제거, handleDeleteComment 이중 fetch 제거
+- **Vercel**: vercel.json SPA rewrites + 보안 헤더 추가
 
 ---
 

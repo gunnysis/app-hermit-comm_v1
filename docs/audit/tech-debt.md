@@ -1,6 +1,6 @@
 # 기술부채 + 개선 백로그
 
-> **최종 갱신**: 2026-03-28
+> **최종 갱신**: 2026-05-11
 
 ## 범례
 - `[ ]` 미착수 | `[~]` 진행중 | `[x]` 완료
@@ -68,10 +68,27 @@
 - [x] 캐시 무효화 전략 세분화 — TanStack Query prefix 매칭으로 이미 동작 중 (2026-03-21)
 
 ### 앱
-- [ ] 테스트 커버리지 확대 (현재 6파일/121테스트 → 핵심 API 훅 커버)
+- [ ] 테스트 커버리지 확대 (현재 6파일/143테스트 → 핵심 API 훅 커버)
 - [ ] ANR 개선 — Sentry에서 Background/Foreground ANR 3건 보고 (3/22~3/26, 프로파일링 필요)
 - [x] Realtime 채널 수 — 홈 1채널만 활성, 상세 진입 시 3채널 추가 (적정, 2026-03-21)
 - [x] EmotionCalendar/EmotionWaveNative React.memo 적용 (2026-03-21)
+- [x] ReactionBar/PostDetailHeader/ActivitySummary React.memo 적용 (2026-05-11)
+- [x] EmotionTrendChart 의존성 배열 해킹 → timestamps 개별 추출 (2026-05-11)
+- [x] handleDeleteComment 이중 fetch 제거 — setQueryData 즉시 반영 (2026-05-11)
+- [x] queryClient retry 개선 — status 필드 우선 검사 (2026-05-11)
+- [x] SectionErrorBoundary 컴포넌트 생성 + MyPage/PostDetail 적용 (2026-05-11)
+
+### Expo Web (신규)
+- [x] PostList.web.tsx 생성 — FlashList → FlatList (2026-05-11)
+- [x] ContentEditor.web.tsx 생성 — @tiptap/react 웹 에디터 (2026-05-11)
+- [x] _layout.web.tsx 생성 — 상단 Header 네비게이션 (2026-05-11)
+- [x] storage.web.ts 생성 — MMKV → localStorage 심 (2026-05-11)
+- [x] useNetworkStatus.web.ts 생성 — NetInfo → navigator.onLine (2026-05-11)
+- [x] vercel.json 생성 — SPA rewrites + 캐시/보안 헤더 (2026-05-11)
+- [ ] expo-haptics 사용처 전체 Platform.OS 가드 확인 (PostDetailHeader 완료, 나머지 검토 필요)
+- [ ] Expo Web 빌드 실제 구동 테스트 (`npm run build:web`)
+- [ ] Vercel 도메인 전환 (web-hermit-comm → gns-hermit-comm Expo Web)
+- [ ] web-hermit-comm 레포 아카이브
 
 ---
 
@@ -118,3 +135,7 @@
 | 2026-03-28 | DB lint 수정: search_posts_v2 image_url 제거(DROP+재생성), admin_cleanup author_id, get_my_streak STABLE→VOLATILE | #50-51 |
 | 2026-03-28 | 성능: 앱 Realtime invalidate전환, FlashList estimatedItemSize, renderItem 추출, search pagination O(1), 웹 PostCard memo+useMemo | — |
 | 2026-03-28 | 품질: 웹 PublicFeed 재시도버튼, PostCard 키보드접근, EmotionFilterBar aria-label, CreatePostForm label, 앱 emoji fallback, NetInfo catch | — |
+| 2026-05-11 | supabase-hermit → 앱 레포 병합: DB 관리 스크립트+문서 통합, 단일 레포 체제 전환 | — |
+| 2026-05-11 | React.memo (ReactionBar/PostDetailHeader/ActivitySummary), 의존성 배열 해킹 제거, handleDeleteComment 최적화, queryClient retry 개선 | — |
+| 2026-05-11 | SectionErrorBoundary 생성 + MyPage/PostDetail 6개 섹션 적용 | — |
+| 2026-05-11 | Expo Web: PostList.web/ContentEditor.web/_layout.web/storage.web/useNetworkStatus.web + vercel.json | — |
