@@ -33,6 +33,7 @@
     "db:status": "bash scripts/db.sh status",
     "db:gen-types": "bash scripts/gen-types.sh",
     "build:web": "expo export -p web",
+    "deploy:web": "expo export -p web && vercel --prod --yes",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
