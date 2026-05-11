@@ -95,7 +95,7 @@ const CommentItemComponent = ({
             {onReply && !isReply && (
               <Pressable
                 onPress={() => onReply(comment.id)}
-                className="active:opacity-70"
+                className="active:opacity-70 focus:outline-none focus:ring-2 focus:ring-stone-300 rounded-md"
                 accessibilityLabel="답글 달기"
                 accessibilityRole="button">
                 <Text className="text-sm text-gray-500 dark:text-stone-400">답글</Text>
@@ -104,7 +104,7 @@ const CommentItemComponent = ({
             {canEdit && onEdit && (
               <Pressable
                 onPress={() => setIsEditing(true)}
-                className="active:opacity-70"
+                className="active:opacity-70 focus:outline-none focus:ring-2 focus:ring-happy-300 rounded-md"
                 accessibilityLabel="댓글 수정"
                 accessibilityHint="이 댓글을 수정합니다"
                 accessibilityRole="button">
@@ -116,11 +116,13 @@ const CommentItemComponent = ({
             {canEdit && onDelete && (
               <Pressable
                 onPress={() => onDelete(comment.id)}
-                className="active:opacity-70"
+                className="active:opacity-70 focus:outline-none focus:ring-2 focus:ring-coral-300 rounded-md"
                 accessibilityLabel="댓글 삭제"
                 accessibilityHint="이 댓글을 삭제합니다"
                 accessibilityRole="button">
-                <Text className="text-sm text-coral-500 font-semibold">삭제</Text>
+                <Text className="text-sm text-coral-600 dark:text-coral-400 font-semibold">
+                  삭제
+                </Text>
               </Pressable>
             )}
           </View>

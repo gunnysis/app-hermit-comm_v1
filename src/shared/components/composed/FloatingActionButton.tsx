@@ -75,7 +75,7 @@ export function FloatingActionButton({
         onPress={handlePress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        className="w-14 h-14 bg-happy-500 dark:bg-happy-500 rounded-2xl items-center justify-center"
+        className="w-14 h-14 bg-happy-500 dark:bg-happy-500 rounded-2xl items-center justify-center focus:outline-none focus:ring-4 focus:ring-happy-300"
         accessibilityLabel={accessibilityLabel}
         accessibilityRole="button">
         <Ionicons name={icon} size={22} color={fabIcon} />

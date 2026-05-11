@@ -55,8 +55,11 @@ const PostCardComponent = ({ post }: PostCardProps) => {
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         accessibilityRole="button"
-        accessibilityLabel={buildAccessibilityLabel(post)}>
+        accessibilityLabel={buildAccessibilityLabel(post)}
+        className="focus:outline-none focus:ring-2 focus:ring-happy-400 rounded-xl">
         <View
+          importantForAccessibility="no-hide-descendants" // Android: 컨테이너 라벨이 있으므로 내부 요소 개별 포커스 방지
+          accessibilityElementsHidden={true} // iOS: 내부 요소 숨김
           style={{
             shadowColor: isDark ? '#000' : '#78716C',
             shadowOffset: { width: 0, height: 4 },

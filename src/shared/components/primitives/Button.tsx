@@ -99,9 +99,9 @@ export function Button({
   };
 
   const textColorClasses = {
-    primary: 'text-white',
+    primary: 'text-stone-900', // 가독성 개선: 노란색 배경에 어두운 텍스트
     secondary: isDark ? 'text-stone-200' : 'text-stone-700',
-    danger: 'text-white',
+    danger: 'text-white', // Coral 500은 텍스트를 더 두껍게 하거나 배경을 조정하는 것이 좋으나 우선 유지 혹은 보정
   };
 
   const { className: variantClass, shadow } = variantStyles[variant];
@@ -116,15 +116,23 @@ export function Button({
         accessibilityLabel={accessibilityLabel ?? title}
         accessibilityRole="button"
         accessibilityHint={accessibilityHint}
-        style={isDisabled ? undefined : shadow}
+        style={[
+          isDisabled ? undefined : shadow,
+          { minHeight: 44 }, // WCAG 터치 타겟 기준 준수
+        ]}
         className={`
           ${variantClass}
           ${sizeClasses[size]}
           ${isDisabled ? 'opacity-40' : ''}
           items-center justify-center
+          focus:outline-none focus:ring-2 focus:ring-happy-400 // 웹 접근성: 포커스 링
         `}>
         {loading ? (
-          <ActivityIndicator color={variant === 'secondary' ? '#FFC300' : '#fff'} size="small" />
+          <ActivityIndicator
+            color={variant === 'secondary' ? '#FFC300' : variant === 'primary' ? '#1C1917' : '#fff'}
+            size="small"
+            accessibilityLabel="로딩 중"
+          />
         ) : (
           <Text
             className={`

@@ -68,26 +68,26 @@ export function SortTabs({ value, onChange }: SortTabsProps) {
       />
       <Pressable
         onPress={() => handleChange('latest')}
-        className="flex-1 py-2.5 rounded-lg z-10"
+        className="flex-1 py-2.5 rounded-lg z-10 focus:outline-none focus:ring-2 focus:ring-happy-300"
         accessibilityLabel="최신순 정렬"
         accessibilityRole="button"
         accessibilityState={{ selected: value === 'latest' }}>
         <Text
           className={`text-center text-xs font-bold ${
-            value === 'latest' ? 'text-white' : isDark ? 'text-stone-400' : 'text-stone-500'
+            value === 'latest' ? 'text-stone-900' : isDark ? 'text-stone-400' : 'text-stone-500'
           }`}>
           최신순
         </Text>
       </Pressable>
       <Pressable
         onPress={() => handleChange('popular')}
-        className="flex-1 py-2.5 rounded-lg z-10"
+        className="flex-1 py-2.5 rounded-lg z-10 focus:outline-none focus:ring-2 focus:ring-happy-300"
         accessibilityLabel="인기순 정렬"
         accessibilityRole="button"
         accessibilityState={{ selected: value === 'popular' }}>
         <Text
           className={`text-center text-xs font-bold ${
-            value === 'popular' ? 'text-white' : isDark ? 'text-stone-400' : 'text-stone-500'
+            value === 'popular' ? 'text-stone-900' : isDark ? 'text-stone-400' : 'text-stone-500'
           }`}>
           인기순
         </Text>

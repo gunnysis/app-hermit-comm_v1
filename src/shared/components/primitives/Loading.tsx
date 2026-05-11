@@ -13,7 +13,10 @@ export function Loading({ message, size = 'large', skeleton = false }: LoadingPr
   }
 
   return (
-    <View className="flex-1 items-center justify-center p-8">
+    <View
+      className="flex-1 items-center justify-center p-8"
+      accessibilityRole="progressbar"
+      accessibilityLabel={message ?? '콘텐츠를 불러오는 중입니다'}>
       <View
         style={{
           shadowColor: '#FFC300',
@@ -26,7 +29,10 @@ export function Loading({ message, size = 'large', skeleton = false }: LoadingPr
         <ActivityIndicator size={size} color="#FFC300" />
       </View>
       {message && (
-        <Text className="mt-3 text-sm text-stone-500 dark:text-stone-400 text-center font-medium">
+        <Text
+          className="mt-3 text-sm text-stone-500 dark:text-stone-400 text-center font-medium"
+          importantForAccessibility="no" // 부모에서 이미 설명함
+        >
           {message}
         </Text>
       )}
