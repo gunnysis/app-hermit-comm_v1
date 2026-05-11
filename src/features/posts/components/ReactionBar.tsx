@@ -71,6 +71,7 @@ const ReactionChip = React.memo(function ReactionChip({
   isPending: boolean;
   onPress: (type: string) => void;
 }) {
+  const useNative = Platform.OS !== 'web';
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -97,54 +98,58 @@ const ReactionChip = React.memo(function ReactionChip({
             toValue: 1.3,
             friction: 3,
             tension: 300,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
           Animated.spring(scaleAnim, {
             toValue: 0.9,
             friction: 4,
             tension: 200,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
           Animated.spring(scaleAnim, {
             toValue: 1,
             friction: 5,
             tension: 120,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
         ]).start();
         break;
       case 'laugh':
         // wiggle rotation + scale
         Animated.sequence([
-          Animated.timing(rotateAnim, { toValue: -12, duration: 80, useNativeDriver: true }),
-          Animated.timing(rotateAnim, { toValue: 12, duration: 80, useNativeDriver: true }),
-          Animated.timing(rotateAnim, { toValue: -8, duration: 60, useNativeDriver: true }),
-          Animated.timing(rotateAnim, { toValue: 0, duration: 60, useNativeDriver: true }),
+          Animated.timing(rotateAnim, { toValue: -12, duration: 80, useNativeDriver: useNative }),
+          Animated.timing(rotateAnim, { toValue: 12, duration: 80, useNativeDriver: useNative }),
+          Animated.timing(rotateAnim, { toValue: -8, duration: 60, useNativeDriver: useNative }),
+          Animated.timing(rotateAnim, { toValue: 0, duration: 60, useNativeDriver: useNative }),
         ]).start();
         Animated.sequence([
           Animated.spring(scaleAnim, {
             toValue: 1.1,
             friction: 3,
             tension: 200,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
           Animated.spring(scaleAnim, {
             toValue: 1,
             friction: 4,
             tension: 120,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
         ]).start();
         break;
       case 'sad':
         // droop: 살짝 아래로
         Animated.sequence([
-          Animated.timing(translateYAnim, { toValue: 3, duration: 150, useNativeDriver: true }),
+          Animated.timing(translateYAnim, {
+            toValue: 3,
+            duration: 150,
+            useNativeDriver: useNative,
+          }),
           Animated.spring(translateYAnim, {
             toValue: 0,
             friction: 5,
             tension: 120,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
         ]).start();
         Animated.sequence([
@@ -152,31 +157,31 @@ const ReactionChip = React.memo(function ReactionChip({
             toValue: 1.05,
             friction: 4,
             tension: 150,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
           Animated.spring(scaleAnim, {
             toValue: 1,
             friction: 5,
             tension: 120,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
         ]).start();
         break;
       case 'surprise':
         // pop: 0.5 → 1.2 → 1
         Animated.sequence([
-          Animated.timing(scaleAnim, { toValue: 0.5, duration: 50, useNativeDriver: true }),
+          Animated.timing(scaleAnim, { toValue: 0.5, duration: 50, useNativeDriver: useNative }),
           Animated.spring(scaleAnim, {
             toValue: 1.2,
             friction: 3,
             tension: 300,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
           Animated.spring(scaleAnim, {
             toValue: 1,
             friction: 4,
             tension: 120,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
         ]).start();
         break;
@@ -187,13 +192,13 @@ const ReactionChip = React.memo(function ReactionChip({
             toValue: 1.15,
             friction: 3,
             tension: 200,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
           Animated.spring(scaleAnim, {
             toValue: 1,
             friction: 4,
             tension: 120,
-            useNativeDriver: true,
+            useNativeDriver: useNative,
           }),
         ]).start();
     }

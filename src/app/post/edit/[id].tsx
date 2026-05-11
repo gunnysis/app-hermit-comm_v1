@@ -13,6 +13,7 @@ import { ScreenHeader } from '@/shared/components/composed/ScreenHeader';
 import { api } from '@/shared/lib/api';
 import { toFriendlyErrorMessage } from '@/shared/lib/errors';
 import Toast from 'react-native-toast-message';
+import { goBack } from '@/shared/utils/navigation';
 import { usePostDetail } from '@/features/posts/hooks/usePostDetail';
 import { useBoards } from '@/features/boards/hooks/useBoards';
 import { validatePostTitle, validatePostContent } from '@/shared/utils/validate';
@@ -86,7 +87,7 @@ export default function EditPostScreen() {
       }
 
       Toast.show({ type: 'success', text1: '게시글이 수정되었습니다.' });
-      router.back();
+      goBack(router);
     } catch (e) {
       Toast.show({
         type: 'error',

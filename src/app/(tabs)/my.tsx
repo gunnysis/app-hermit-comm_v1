@@ -1,9 +1,10 @@
 import React from 'react';
-import { ScrollView, View, Text, Pressable, Alert, useColorScheme } from 'react-native';
+import { ScrollView, View, Text, Pressable, useColorScheme } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { auth } from '@/features/auth/auth';
+import { confirmAlert } from '@/shared/utils/confirmAlert';
 import { ScreenHeader } from '@/shared/components/composed/ScreenHeader';
 import { ProfileSection } from '@/features/my/components/ProfileSection';
 import { ActivitySummary } from '@/features/my/components/ActivitySummary';
@@ -80,26 +81,19 @@ export default function MyScreen() {
         {__DEV__ && (
           <View className="mt-4 mb-2">
             <Pressable
-              onPress={() => {
-                Alert.alert(
+              onPress={async () => {
+                const confirmed = await confirmAlert(
                   '⚠️ 개발용 로그아웃',
                   '익명 사용자가 로그아웃하면 새로운 계정이 생성되어 기존 글을 수정/삭제할 수 없게 됩니다.\n\n이 버튼은 개발 환경에서만 표시됩니다.',
-                  [
-                    { text: '취소', style: 'cancel' },
-                    {
-                      text: '로그아웃',
-                      style: 'destructive',
-                      onPress: async () => {
-                        try {
-                          await auth.signOut();
-                          await auth.signInAnonymously();
-                        } catch {
-                          Toast.show({ type: 'error', text1: '로그아웃에 실패했어요' });
-                        }
-                      },
-                    },
-                  ],
+                  '로그아웃',
                 );
+                if (!confirmed) return;
+                try {
+                  await auth.signOut();
+                  await auth.signInAnonymously();
+                } catch {
+                  Toast.show({ type: 'error', text1: '로그아웃에 실패했어요' });
+                }
               }}
               className={`rounded-lg px-4 py-3 ${isDark ? 'bg-stone-800' : 'bg-stone-100'}`}>
               <Text

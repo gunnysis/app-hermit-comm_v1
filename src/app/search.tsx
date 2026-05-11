@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { View, Text, TextInput, Pressable, ScrollView, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { goBack } from '@/shared/utils/navigation';
 import { Ionicons } from '@expo/vector-icons';
 import { Container } from '@/shared/components/primitives/Container';
 import { EmptyState } from '@/shared/components/primitives/EmptyState';
@@ -170,7 +171,7 @@ export default function SearchScreen() {
         {/* 헤더: 뒤로 + 검색 입력 */}
         <View className="flex-row items-center gap-2 px-3 pt-3 pb-2 bg-cream-50 dark:bg-stone-900 border-b border-cream-200 dark:border-stone-700">
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => goBack(router)}
             className="p-2 rounded-lg active:bg-stone-200/30 dark:active:bg-stone-700/30"
             accessibilityLabel="뒤로 가기"
             accessibilityRole="button">

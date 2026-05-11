@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useEffect } from 'react';
-import { Pressable, Animated, useColorScheme } from 'react-native';
+import { Pressable, Animated, useColorScheme, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { haptics } from '@/shared/utils/haptics';
 import { useThemeColors } from '@/shared/hooks/useThemeColors';
@@ -21,6 +21,7 @@ export function FloatingActionButton({
   const tabBarHeight = useTabBarHeight();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const useNative = Platform.OS !== 'web';
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const pressScale = useRef(new Animated.Value(1)).current;
 
@@ -30,7 +31,7 @@ export function FloatingActionButton({
       toValue: 1,
       ...MOTION.spring.fab,
       delay: 300,
-      useNativeDriver: true,
+      useNativeDriver: useNative,
     }).start();
   }, [scaleAnim]);
 
@@ -38,7 +39,7 @@ export function FloatingActionButton({
     Animated.spring(pressScale, {
       toValue: 0.88,
       ...MOTION.spring.button,
-      useNativeDriver: true,
+      useNativeDriver: useNative,
     }).start();
   }, [pressScale]);
 
@@ -47,7 +48,7 @@ export function FloatingActionButton({
       toValue: 1,
       friction: 3,
       tension: 200,
-      useNativeDriver: true,
+      useNativeDriver: useNative,
     }).start();
   }, [pressScale]);
 

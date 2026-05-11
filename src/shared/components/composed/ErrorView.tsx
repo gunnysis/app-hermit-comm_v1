@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated, Platform } from 'react-native';
 import { Button } from '../primitives/Button';
 
 interface ErrorViewProps {
@@ -8,6 +8,7 @@ interface ErrorViewProps {
 }
 
 export function ErrorView({ message, onRetry }: ErrorViewProps) {
+  const useNative = Platform.OS !== 'web';
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const emojiAnim = useRef(new Animated.Value(0)).current;
@@ -17,20 +18,20 @@ export function ErrorView({ message, onRetry }: ErrorViewProps) {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 400,
-        useNativeDriver: true,
+        useNativeDriver: useNative,
       }),
       Animated.spring(scaleAnim, {
         toValue: 1,
         friction: 5,
         tension: 120,
-        useNativeDriver: true,
+        useNativeDriver: useNative,
       }),
     ]).start(() => {
       // 이모지 바운스
       Animated.loop(
         Animated.sequence([
-          Animated.timing(emojiAnim, { toValue: -6, duration: 600, useNativeDriver: true }),
-          Animated.timing(emojiAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
+          Animated.timing(emojiAnim, { toValue: -6, duration: 600, useNativeDriver: useNative }),
+          Animated.timing(emojiAnim, { toValue: 0, duration: 600, useNativeDriver: useNative }),
         ]),
       ).start();
     });

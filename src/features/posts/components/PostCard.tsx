@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useRef } from 'react';
-import { View, Text, Pressable, Image, Animated, useColorScheme } from 'react-native';
+import { View, Text, Pressable, Image, Animated, useColorScheme, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { pushPost } from '@/shared/lib/navigation';
 import { Post, PostWithCounts } from '@/types';
@@ -25,6 +25,7 @@ const PostCardComponent = ({ post }: PostCardProps) => {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const useNative = Platform.OS !== 'web';
   const excerpt = useMemo(() => getExcerpt(post.content, 120), [post.content]);
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -32,7 +33,7 @@ const PostCardComponent = ({ post }: PostCardProps) => {
     Animated.spring(scaleAnim, {
       toValue: 0.975,
       ...MOTION.spring.card,
-      useNativeDriver: true,
+      useNativeDriver: useNative,
     }).start();
   }, [scaleAnim]);
 
@@ -40,7 +41,7 @@ const PostCardComponent = ({ post }: PostCardProps) => {
     Animated.spring(scaleAnim, {
       toValue: 1,
       ...MOTION.spring.cardAlt,
-      useNativeDriver: true,
+      useNativeDriver: useNative,
     }).start();
   }, [scaleAnim]);
 

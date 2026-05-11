@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Animated } from 'react-native';
+import { View, Animated, Platform } from 'react-native';
 
 interface SkeletonProps {
   className?: string;
@@ -7,6 +7,7 @@ interface SkeletonProps {
 
 /** 기본 스켈레톤 블록 (shimmer 애니메이션) */
 export function Skeleton({ className = '' }: SkeletonProps) {
+  const useNative = Platform.OS !== 'web';
   const opacity = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {
@@ -15,12 +16,12 @@ export function Skeleton({ className = '' }: SkeletonProps) {
         Animated.timing(opacity, {
           toValue: 0.6,
           duration: 600,
-          useNativeDriver: true,
+          useNativeDriver: useNative,
         }),
         Animated.timing(opacity, {
           toValue: 0.3,
           duration: 600,
-          useNativeDriver: true,
+          useNativeDriver: useNative,
         }),
       ]),
     );

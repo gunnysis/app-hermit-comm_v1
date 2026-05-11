@@ -2,6 +2,7 @@ import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { View, Pressable, Animated, useColorScheme, Modal, Text, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { goBack } from '@/shared/utils/navigation';
 
 // expo-blur는 웹에서 지원되나 번들 크기 영향 — Platform.OS로 분기
 const BlurView =
@@ -216,7 +217,7 @@ export const PostDetailHeader = React.memo(function PostDetailHeader({
           icon="chevron-back"
           label="뒤로 가기"
           hint="이전 화면으로 돌아갑니다"
-          onPress={() => router.back()}
+          onPress={() => goBack(router)}
           color={iconColor}
           size={24}
         />

@@ -1,5 +1,12 @@
 import React, { useCallback, useRef } from 'react';
-import { Pressable, Text, ActivityIndicator, Animated, useColorScheme } from 'react-native';
+import {
+  Pressable,
+  Text,
+  ActivityIndicator,
+  Animated,
+  useColorScheme,
+  Platform,
+} from 'react-native';
 import { haptics } from '@/shared/utils/haptics';
 import { MOTION } from '@/shared/lib/constants';
 
@@ -25,6 +32,7 @@ export function Button({
   accessibilityHint,
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const useNative = Platform.OS !== 'web';
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -33,7 +41,7 @@ export function Button({
     Animated.spring(scaleAnim, {
       toValue: 0.95,
       ...MOTION.spring.button,
-      useNativeDriver: true,
+      useNativeDriver: useNative,
     }).start();
   }, [scaleAnim]);
 
@@ -41,7 +49,7 @@ export function Button({
     Animated.spring(scaleAnim, {
       toValue: 1,
       ...MOTION.spring.release,
-      useNativeDriver: true,
+      useNativeDriver: useNative,
     }).start();
   }, [scaleAnim]);
 

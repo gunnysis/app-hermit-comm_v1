@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback, useRef } from 'react';
-import { View, Text, Pressable, Animated, useColorScheme } from 'react-native';
+import { View, Text, Pressable, Animated, useColorScheme, Platform } from 'react-native';
 import { EMOTION_EMOJI, EMOTION_COLOR_MAP } from '@/shared/lib/constants';
 import type { EmotionTrend } from '@/types';
 
@@ -20,6 +20,7 @@ function Bubble({
   isSelected: boolean;
   onPress: () => void;
 }) {
+  const useNative = Platform.OS !== 'web';
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const colors = EMOTION_COLOR_MAP[emotion];
 
@@ -29,9 +30,14 @@ function Bubble({
         toValue: 1.15,
         friction: 3,
         tension: 200,
-        useNativeDriver: true,
+        useNativeDriver: useNative,
       }),
-      Animated.spring(scaleAnim, { toValue: 1, friction: 4, tension: 120, useNativeDriver: true }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 4,
+        tension: 120,
+        useNativeDriver: useNative,
+      }),
     ]).start();
     onPress();
   }, [onPress, scaleAnim]);

@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { View, Text, Pressable, Animated, useColorScheme, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BlurView } from 'expo-blur';
+import { goBack } from '@/shared/utils/navigation';
 import { Ionicons } from '@expo/vector-icons';
 import { haptics } from '@/shared/utils/haptics';
 import { useResponsiveLayout } from '@/shared/hooks/useResponsiveLayout';
@@ -49,7 +50,7 @@ export function ScreenHeader({
         useNativeDriver: useNative,
       }),
     ]).start();
-    router.back();
+    goBack(router);
   }, [router, backScale, useNative]);
 
   // suppressOnWeb: _layout.web.tsx의 WebHeader가 있는 탭 화면에서만 헤더 숨김

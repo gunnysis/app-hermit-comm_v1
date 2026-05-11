@@ -1,10 +1,12 @@
 import React, { useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { Container } from '@/shared/components/primitives/Container';
 import { auth } from '@/features/auth/auth';
 import { toFriendlyErrorMessage } from '@/shared/lib/errors';
+import Toast from 'react-native-toast-message';
+import { goBack } from '@/shared/utils/navigation';
 import Constants from 'expo-constants';
 
 export default function AdminIndexScreen() {
@@ -12,7 +14,7 @@ export default function AdminIndexScreen() {
   const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
   const handleBack = useCallback(() => {
-    router.back();
+    goBack(router);
   }, [router]);
 
   const handleLogout = useCallback(async () => {
@@ -22,7 +24,7 @@ export default function AdminIndexScreen() {
       router.replace('/(tabs)');
     } catch (e) {
       const message = toFriendlyErrorMessage(e, '로그아웃에 실패했습니다. 다시 시도해주세요.');
-      Alert.alert('로그아웃 실패', message);
+      Toast.show({ type: 'error', text1: '로그아웃 실패', text2: message });
     }
   }, [router]);
 

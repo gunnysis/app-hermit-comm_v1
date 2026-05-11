@@ -1,5 +1,13 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import { View, Text, Pressable, Animated, useColorScheme, LayoutChangeEvent } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  Animated,
+  useColorScheme,
+  LayoutChangeEvent,
+  Platform,
+} from 'react-native';
 import { haptics } from '@/shared/utils/haptics';
 import { MOTION } from '@/shared/lib/constants';
 
@@ -13,6 +21,7 @@ interface SortTabsProps {
 export function SortTabs({ value, onChange }: SortTabsProps) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const useNative = Platform.OS !== 'web';
   const translateX = useRef(new Animated.Value(0)).current;
   const containerWidth = useRef(0);
 
@@ -21,7 +30,7 @@ export function SortTabs({ value, onChange }: SortTabsProps) {
     Animated.spring(translateX, {
       toValue: target,
       ...MOTION.spring.tab,
-      useNativeDriver: true,
+      useNativeDriver: useNative,
     }).start();
   }, [value, translateX]);
 

@@ -29,6 +29,7 @@ import { api } from '@/shared/lib/api';
 import { ANALYSIS_CONFIG } from '@/shared/lib/constants';
 import { toFriendlyErrorMessage } from '@/shared/lib/errors';
 import { confirmAlert } from '@/shared/utils/confirmAlert';
+import { goBack } from '@/shared/utils/navigation';
 
 const postIdNum = (id: string) => Number(id);
 
@@ -122,6 +123,19 @@ export default function PostDetailScreen() {
   const handleShare = useCallback(async () => {
     if (!post) return;
     const url = Linking.createURL(`/post/${id}`);
+    if (Platform.OS === 'web') {
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        try {
+          await navigator.share({ title: post.title, url });
+        } catch {
+          // 취소 시 무시
+        }
+      } else {
+        await navigator.clipboard.writeText(url);
+        Toast.show({ type: 'success', text1: '링크가 복사됐어요' });
+      }
+      return;
+    }
     try {
       await Share.share({
         url,
@@ -158,7 +172,7 @@ export default function PostDetailScreen() {
         queryClient.invalidateQueries({ queryKey: ['monthlyReport'] });
       }
       Toast.show({ type: 'success', text1: '게시글이 삭제되었습니다.' });
-      router.back();
+      goBack(router);
     } catch (e) {
       Toast.show({
         type: 'error',

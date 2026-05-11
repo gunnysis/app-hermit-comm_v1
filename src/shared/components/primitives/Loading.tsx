@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, ActivityIndicator, Text, Animated, useColorScheme } from 'react-native';
+import { View, ActivityIndicator, Text, Animated, useColorScheme, Platform } from 'react-native';
 
 interface LoadingProps {
   message?: string;
@@ -44,6 +44,7 @@ export function Loading({ message, size = 'large', skeleton = false }: LoadingPr
 function ShimmerBox({ className }: { className: string }) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const useNative = Platform.OS !== 'web';
   const shimmerAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -52,12 +53,12 @@ function ShimmerBox({ className }: { className: string }) {
         Animated.timing(shimmerAnim, {
           toValue: 1,
           duration: 1200,
-          useNativeDriver: true,
+          useNativeDriver: useNative,
         }),
         Animated.timing(shimmerAnim, {
           toValue: 0,
           duration: 1200,
-          useNativeDriver: true,
+          useNativeDriver: useNative,
         }),
       ]),
     );
@@ -76,6 +77,7 @@ function ShimmerBox({ className }: { className: string }) {
 function SkeletonCard({ delay }: { delay: number }) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const useNative = Platform.OS !== 'web';
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -83,7 +85,7 @@ function SkeletonCard({ delay }: { delay: number }) {
       toValue: 1,
       duration: 400,
       delay,
-      useNativeDriver: true,
+      useNativeDriver: useNative,
     }).start();
   }, [fadeAnim, delay]);
 

@@ -63,6 +63,7 @@ if (!__DEV__ && SENTRY_DSN) {
 
 async function checkAndApplyUpdate() {
   if (__DEV__) return;
+  if (Platform.OS === 'web') return; // OTA 업데이트는 네이티브 전용
   try {
     const Updates = await import('expo-updates');
     if (typeof Updates.checkForUpdateAsync !== 'function') return;
