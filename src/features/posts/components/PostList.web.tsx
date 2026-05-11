@@ -69,7 +69,7 @@ export function PostList({
 
   if (loading && posts.length === 0) {
     return (
-      <View className="p-4 web:max-w-2xl web:mx-auto web:w-full">
+      <View className="p-4">
         {[1, 2, 3, 4, 5].map((i) => (
           <PostCardSkeleton key={i} />
         ))}
@@ -82,7 +82,7 @@ export function PostList({
   }
 
   return (
-    <View style={{ flex: 1 }} className="web:max-w-2xl web:mx-auto web:w-full">
+    <View style={{ flex: 1 }}>
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id.toString()}
