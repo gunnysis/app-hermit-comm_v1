@@ -13,6 +13,7 @@ function WebHeader() {
 
   const navLinks: NavLink[] = [
     { href: '/', label: '홈' },
+    { href: '/search' as Href, label: '검색' },
     { href: '/create' as Href, label: '글쓰기' },
     { href: '/my' as Href, label: '나' },
   ];

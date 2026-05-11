@@ -148,13 +148,11 @@ export default function PostDetailScreen() {
   }, [post, id]);
 
   const handleDeletePost = useCallback(async () => {
-    const isDaily = post?.post_type === 'daily';
-    const title = isDaily ? '오늘의 하루 삭제' : '게시글 삭제';
-    const message = isDaily
-      ? '오늘의 하루를 삭제할까요?\n삭제하면 오늘 다시 나눌 수 있어요.'
-      : '정말로 이 게시글을 삭제하시겠습니까?';
-
-    const confirmed = await confirmAlert(title, message, '삭제');
+    const confirmed = await confirmAlert(
+      '게시글 삭제',
+      '정말로 이 게시글을 삭제하시겠습니까?',
+      '삭제',
+    );
     if (!confirmed) return;
 
     try {
@@ -163,14 +161,6 @@ export default function PostDetailScreen() {
         queryClient.invalidateQueries({ queryKey: ['boardPosts', post.board_id] });
       }
       queryClient.invalidateQueries({ queryKey: ['boardPosts'] });
-      if (post?.post_type === 'daily') {
-        queryClient.invalidateQueries({ queryKey: ['todayDaily'] });
-        queryClient.invalidateQueries({ queryKey: ['myStreak'] });
-        queryClient.invalidateQueries({ queryKey: ['activitySummary'] });
-        queryClient.invalidateQueries({ queryKey: ['dailyInsights'] });
-        queryClient.invalidateQueries({ queryKey: ['dailyHistory'] });
-        queryClient.invalidateQueries({ queryKey: ['monthlyReport'] });
-      }
       Toast.show({ type: 'success', text1: '게시글이 삭제되었습니다.' });
       goBack(router);
     } catch (e) {
@@ -255,13 +245,7 @@ export default function PostDetailScreen() {
         }>
         <PostDetailHeader
           onShare={handleShare}
-          onEdit={() => {
-            if (post.post_type === 'daily') {
-              router.push(`/create?type=daily&edit=${id}`);
-            } else {
-              router.push(`/post/edit/${id}`);
-            }
-          }}
+          onEdit={() => router.push(`/post/edit/${id}`)}
           onDelete={handleDeletePost}
           canDelete={canDeletePost}
           isWide={isWide}
