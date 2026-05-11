@@ -12,12 +12,12 @@ function TrendingPostCard({ post }: { post: TrendingPost }) {
   return (
     <Pressable
       onPress={() => pushPost(router, post.id)}
-      className="w-40 mr-2.5 p-2.5 rounded-xl bg-cream-50 dark:bg-stone-800 border border-cream-200 dark:border-stone-700 active:opacity-80"
+      className="w-52 mr-3 p-3 rounded-xl bg-cream-50 dark:bg-stone-800 border border-cream-200 dark:border-stone-700 active:opacity-75"
       accessibilityLabel={`트렌딩 게시글: ${post.title}`}
       accessibilityRole="button">
       <Text
-        className="text-sm font-semibold text-gray-800 dark:text-stone-100 mb-1"
-        numberOfLines={2}>
+        className="text-sm font-semibold text-gray-800 dark:text-stone-100 mb-1.5 leading-5"
+        numberOfLines={3}>
         {post.title}
       </Text>
 
