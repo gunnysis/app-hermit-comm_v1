@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { View, Text, Pressable, Animated, useColorScheme } from 'react-native';
+import { View, Text, Pressable, Animated, useColorScheme, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
@@ -41,6 +41,12 @@ export function ScreenHeader({
     ]).start();
     router.back();
   }, [router, backScale]);
+
+  // 웹에서는 _layout.web.tsx의 WebHeader가 네비게이션 역할을 하므로 헤더 숨김
+  // children(SortTabs 등 스크롤 헤더 내 컨텐츠)만 렌더
+  if (Platform.OS === 'web') {
+    return children ? <View className="px-4 pt-2">{children}</View> : null;
+  }
 
   return (
     <BlurView
