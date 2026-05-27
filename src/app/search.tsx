@@ -24,6 +24,7 @@ import {
 } from '@/shared/lib/recent-searches';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useThemeColors } from '@/shared/hooks/useThemeColors';
+import { useSEO } from '@/shared/hooks/useSEO';
 import { SearchResultList } from '@/features/search/components/SearchResultList';
 import { EmotionPostList } from '@/features/search/components/EmotionPostList';
 import type { SearchSort, Post } from '@/types';
@@ -33,6 +34,11 @@ import type { SearchSort, Post } from '@/types';
 export default function SearchScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
+  useSEO({
+    title: '검색',
+    description: '은둔마을에서 감정, 키워드로 글을 검색해보세요.',
+    url: '/search',
+  });
   const isDark = colorScheme === 'dark';
   const { placeholder } = useThemeColors();
   const params = useLocalSearchParams<{ q?: string; emotion?: string }>();

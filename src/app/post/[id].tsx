@@ -25,10 +25,12 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useBoards } from '@/features/boards/hooks/useBoards';
 import { useQueryClient } from '@tanstack/react-query';
 import { useResponsiveLayout } from '@/shared/hooks/useResponsiveLayout';
+import { useSEO } from '@/shared/hooks/useSEO';
 import { api } from '@/shared/lib/api';
 import { ANALYSIS_CONFIG } from '@/shared/lib/constants';
 import { toFriendlyErrorMessage } from '@/shared/lib/errors';
 import { confirmAlert } from '@/shared/utils/confirmAlert';
+import { getExcerpt, stripHtml } from '@/shared/utils/html';
 import { goBack } from '@/shared/utils/navigation';
 
 const postIdNum = (id: string) => Number(id);
@@ -48,6 +50,48 @@ export default function PostDetailScreen() {
     error: postError,
     refetch: refetchPost,
   } = usePostDetail(postId);
+
+  // 웹 SEO: 게시글 제목·본문 + JSON-LD 구조화 데이터
+  const postJsonLd = useMemo(() => {
+    if (!post) return undefined;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'DiscussionForumPosting',
+      headline: post.title,
+      text: post.content ? getExcerpt(stripHtml(post.content), 300) : '',
+      url: `https://www.eundunmaeul.store/post/${post.id}`,
+      datePublished: post.created_at,
+      dateModified: post.updated_at || post.created_at,
+      author: {
+        '@type': 'Person',
+        name: post.display_name || '익명',
+      },
+      interactionStatistic: [
+        {
+          '@type': 'InteractionCounter',
+          interactionType: 'https://schema.org/CommentAction',
+          userInteractionCount: post.comment_count ?? 0,
+        },
+        {
+          '@type': 'InteractionCounter',
+          interactionType: 'https://schema.org/LikeAction',
+          userInteractionCount: post.like_count ?? 0,
+        },
+      ],
+      isPartOf: {
+        '@type': 'WebSite',
+        name: '은둔마을',
+        url: 'https://www.eundunmaeul.store',
+      },
+    };
+  }, [post]);
+
+  useSEO({
+    title: post?.title,
+    description: post?.content ? getExcerpt(stripHtml(post.content), 150) : undefined,
+    url: post ? `/post/${post.id}` : undefined,
+    jsonLd: postJsonLd,
+  });
 
   const boardId = post?.board_id ?? null;
 

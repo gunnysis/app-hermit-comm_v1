@@ -113,7 +113,7 @@ module.exports = ({ config }) => {
       web: {
         bundler: 'metro',
         output: 'static',
-        favicon: './assets/favicon.png',
+        favicon: './assets/favicon.ico',
       },
       plugins: [
         'expo-router',

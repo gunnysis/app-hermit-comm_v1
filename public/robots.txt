@@ -1,0 +1,24 @@
+# 은둔마을 (eundunmaeul.store) robots.txt
+# Google: https://developers.google.com/search/docs/crawling-indexing/robots/intro
+# Naver: https://searchadvisor.naver.com/guide
+
+User-agent: *
+
+# 공개 페이지 허용
+Allow: /
+Allow: /post/
+Allow: /search
+
+# 사용자 전용 / 액션 페이지 차단
+Disallow: /create
+Disallow: /post/edit/
+Disallow: /my
+Disallow: /notifications
+Disallow: /admin
+
+# JS/CSS 번들 크롤링 허용 (Google: 렌더링에 필요)
+Allow: /_expo/
+Allow: /assets/
+
+# Sitemap (Google + Naver 공통)
+Sitemap: https://www.eundunmaeul.store/sitemap.xml

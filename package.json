@@ -32,7 +32,8 @@
     "db:lint": "bash scripts/db.sh lint",
     "db:status": "bash scripts/db.sh status",
     "db:gen-types": "bash scripts/gen-types.sh",
-    "build:web": "expo export -p web",
+    "gen-sitemap": "bash scripts/gen-sitemap.sh",
+    "build:web": "bash scripts/gen-sitemap.sh && expo export -p web",
     "deploy:web": "bash scripts/deploy-web.sh",
     "type-check": "tsc --noEmit"
   },

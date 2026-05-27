@@ -11,8 +11,10 @@ import {
   useMarkRead,
 } from '@/features/notifications/hooks/useNotifications';
 import type { Notification } from '@/shared/lib/api/notifications';
+import { useSEO } from '@/shared/hooks/useSEO';
 
 export default function NotificationsScreen() {
+  useSEO({ title: '알림', url: '/notifications', noindex: true });
   const isDark = useColorScheme() === 'dark';
   const router = useRouter();
   const { data: notifications = [] } = useNotifications();

@@ -23,6 +23,7 @@ import { useResponsiveLayout } from '@/shared/hooks/useResponsiveLayout';
 import { useIsAdmin } from '@/features/admin/hooks/useIsAdmin';
 import { api } from '@/shared/lib/api';
 import { NotificationBell } from '@/shared/components/composed/NotificationBell';
+import { useSEO } from '@/shared/hooks/useSEO';
 import { haptics } from '@/shared/utils/haptics';
 import type { Post } from '@/types';
 
@@ -40,6 +41,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
   useResponsiveLayout();
+  useSEO({ url: '/' });
   const { isAdmin, isLoading: isAdminLoading } = useIsAdmin();
   const selectedBoardId = DEFAULT_PUBLIC_BOARD_ID;
   const [sortOrder, setSortOrder] = useState<SortOrder>('latest');

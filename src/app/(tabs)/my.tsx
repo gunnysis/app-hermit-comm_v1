@@ -13,8 +13,10 @@ import { EmotionWaveNative } from '@/features/my/components/EmotionWaveNative';
 import { Loading } from '@/shared/components/primitives/Loading';
 import { SectionErrorBoundary } from '@/shared/components/composed/SectionErrorBoundary';
 import { useResponsiveLayout, CONTENT_MAX_WIDTH } from '@/shared/hooks/useResponsiveLayout';
+import { useSEO } from '@/shared/hooks/useSEO';
 
 export default function MyScreen() {
+  useSEO({ title: '마이페이지', url: '/my', noindex: true });
   const isDark = useColorScheme() === 'dark';
   const insets = useSafeAreaInsets();
   const { user, loading } = useAuth();
